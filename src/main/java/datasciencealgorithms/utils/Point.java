@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class Point<K> {
 
-    private K x;     // aka key
-    private BigDecimal y;     // aka value
+    private final K x;     // aka key
+    private final BigDecimal y;     // aka value
 
     public Point(K x, BigDecimal y) {
         this.x = x;

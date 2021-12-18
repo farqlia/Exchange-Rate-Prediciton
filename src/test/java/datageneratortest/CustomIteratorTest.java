@@ -72,7 +72,7 @@ public class CustomIteratorTest {
     @Test
     void shouldNtMoveToNextElementDescendingIterator(){
 
-        itr = new DescendingIterator(data, LocalDate.now().minusDays(7), LocalDate.now().minusDays(6));
+        itr = new DescendingIterator(data, LocalDate.now().minusDays(6), LocalDate.now().minusDays(7));
         itr.next();  // returns the next element
         itr.next();
         Assertions.assertFalse(itr.hasNext());

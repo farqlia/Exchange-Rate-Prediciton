@@ -43,7 +43,7 @@ public class AlgorithmsTest {
 
         // We start off with some later date because the 1st values are not computed correctly
         LocalDate sD = dataPoints.get(2).getX(),
-                eD = LocalDate.now();
+                eD = LocalDate.now().minusDays(1);
 
         List<Point<LocalDate>> list = naiveAlgorithmWithTrend.forecastValuesForDates(sD, eD);
         Iterator<Point<LocalDate>> itr = new AscendingIterator(dataPoints, sD, eD);

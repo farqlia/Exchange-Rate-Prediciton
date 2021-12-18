@@ -17,6 +17,7 @@ public abstract class CustomIterator implements Iterator<Point<LocalDate>> {
         this.data = data;
         this.startDate = startDate;
         this.endDate = endDate;
+        findStartIndex(startDate);
     }
 
     public CustomIterator(List<Point<LocalDate>> data, LocalDate startDate){
@@ -26,7 +27,7 @@ public abstract class CustomIterator implements Iterator<Point<LocalDate>> {
     public void findStartIndex(LocalDate dateToStartFrom){
         currIndex = Collections.binarySearch(
                 // We look for an index based on a date: if it's not found, then based on return
-                // value we can compute the index of next biggest value
+                // value we can compute the index of the next biggest value
                 data.stream().map(Point::getX).collect(Collectors.toList()),
                 dateToStartFrom);
 

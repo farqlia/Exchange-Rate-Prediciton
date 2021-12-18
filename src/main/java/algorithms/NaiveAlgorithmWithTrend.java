@@ -2,6 +2,7 @@ package algorithms;
 
 import datasciencealgorithms.utils.Point;
 import iterators.AscendingIterator;
+import iterators.BiDirectionalIterator;
 import iterators.DescendingIterator;
 
 import java.math.BigDecimal;
@@ -22,28 +23,22 @@ public class NaiveAlgorithmWithTrend implements Algorithm{
     @Override
     public List<Point<LocalDate>> forecastValuesForDates(LocalDate startDate, LocalDate endDate) {
 
+        // Improvement: we have one iterator instead of two, and the binarySearch
+        // internally used by CustomIterator to find startDate is used only once (comparing to
+        // the previous version where it was used with each iteration in loop)
         List<Point<LocalDate>> generatedData = new ArrayList<>();
-        // TODO: make two-directional iterator, that iterates a given steps backwards,
-        //  and then returns to the latest point and steps forward
-        Iterator<Point<LocalDate>> outerItr = new AscendingIterator(actualData, startDate, endDate);
-        Iterator<Point<LocalDate>> innerItr;
+        Iterator<Point<LocalDate>> outerItr = new BiDirectionalIterator(actualData, startDate, endDate, 2);
 
-        while (outerItr.hasNext()){
-
+        while (outerItr.hasNext()) {
             Point<LocalDate> currPoint = outerItr.next();
-
-            // Creates an iterator for the current point that can move backwards
-            innerItr = new DescendingIterator(actualData, currPoint.getX().minusDays(1));
-
-            BigDecimal previousValue = innerItr.next().getY();
+            BigDecimal previousValue = outerItr.next().getY();
 
             // Computes a predicted value
             generatedData.add(new Point<>(currPoint.getX(),
                     previousValue
                     .multiply(new BigDecimal("2"))
-                    .subtract(innerItr.next().getY())));
-
-        }
+                    .subtract(outerItr.next().getY())));
+        } ;
 
         return generatedData;
     }

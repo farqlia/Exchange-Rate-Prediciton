@@ -11,7 +11,6 @@ public class DescendingIterator extends CustomIterator{
     // oldest date
     public DescendingIterator(List<Point<LocalDate>> data, LocalDate startDate, LocalDate endDate){
         super(data, startDate, endDate);
-        findStartIndex(startDate);
     }
 
     public DescendingIterator(List<Point<LocalDate>> data, LocalDate startDate){
