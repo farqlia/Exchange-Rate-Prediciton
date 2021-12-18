@@ -3,6 +3,7 @@ package datasciencealgorithms.utils;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 public class Point<K> {
 
@@ -20,5 +21,18 @@ public class Point<K> {
 
     public BigDecimal getY() {
         return y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Point)) return false;
+        Point<?> point = (Point<?>) o;
+        return Objects.equals(getX(), point.getX()) && Objects.equals(getY(), point.getY());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY());
     }
 }

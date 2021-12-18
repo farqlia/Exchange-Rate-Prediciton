@@ -1,16 +1,22 @@
 package datageneratortest;
 
+import datagenerator.DataGenerator;
+import datasciencealgorithms.utils.Point;
+import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataGeneratorTest {
 
     DataGenerator dataGenerator;
-    @Test
+    @BeforeEach
     void setUp(){
         dataGenerator = new DataGenerator();
     }
@@ -20,7 +26,9 @@ public class DataGeneratorTest {
 
         BigDecimal trend = new BigDecimal(".2");
         List<BigDecimal> actualDecimals = new ArrayList<>();
-        List<BigDecimal> expectedDecimals = dataGenerator.generateDataWithTrend(10, trend);
+        List<BigDecimal> expectedDecimals = dataGenerator.generateDataWithTrend(10, trend)
+                .stream()
+                .map(Point::getY).collect(Collectors.toList());
 
         actualDecimals.add(BigDecimal.ONE);
         // Generate each point of data
@@ -31,7 +39,7 @@ public class DataGeneratorTest {
         // Assert that the expected data is equal to generated data
         Assertions.assertAll(
                 actualDecimals.stream().map(x ->
-                        (() -> Assertions.assertEquals(x.doubleValue(), expectedDecimals.get(actualDecimals.indexOf(x)).doubleValue(), .1))));
+                        (() -> Assertions.assertEquals(x.doubleValue(), expectedDecimals.get(actualDecimals.indexOf(x)).doubleValue(), 0))));
 
     }
 
