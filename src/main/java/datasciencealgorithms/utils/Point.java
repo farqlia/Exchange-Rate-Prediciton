@@ -1,7 +1,6 @@
 package datasciencealgorithms.utils;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 
@@ -21,6 +20,14 @@ public class Point<K> {
 
     public BigDecimal getY() {
         return y;
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 
     @Override

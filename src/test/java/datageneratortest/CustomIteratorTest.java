@@ -22,7 +22,7 @@ public class CustomIteratorTest {
     @BeforeEach
     void setUp(){
         DataGenerator dG = new DataGenerator();
-        data = dG.generateDataWithTrend(dataset, new BigDecimal(".2"));
+        data = dG.generateDataWithTrend(dataset, BigDecimal.ONE,new BigDecimal(".2"));
     }
 
     @Test

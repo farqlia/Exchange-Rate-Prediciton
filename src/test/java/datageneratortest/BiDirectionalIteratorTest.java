@@ -21,15 +21,16 @@ public class BiDirectionalIteratorTest {
     @BeforeEach
     void setUp(){
         DataGenerator dG = new DataGenerator();
-        data = dG.generateDataWithTrend(dataset, new BigDecimal(".2"));
+        data = dG.generateDataWithTrend(dataset, BigDecimal.ONE, new BigDecimal(".2"));
     }
 
     @Test
     void shouldMoveOneStepBackwards(){
 
         LocalDate now = LocalDate.now();
-        itr = new BiDirectionalIterator(data, now.minusDays(1), 2);
-        itr.next();    // t
+        // Start with index 3
+        itr = new BiDirectionalIterator(data, now.minusDays(1));
+        if (itr.hasNext()) itr.next();    // t
         Assertions.assertEquals(data.get(2), itr.next());
 
     }
@@ -38,8 +39,9 @@ public class BiDirectionalIteratorTest {
     void shouldMoveTwoStepBackwards(){
 
         LocalDate now = LocalDate.now();
-        itr = new BiDirectionalIterator(data, now.minusDays(1), 2);
-        itr.next();    // t
+        // Start with 3rd index (t)
+        itr = new BiDirectionalIterator(data, now.minusDays(1));
+        if (itr.hasNext()) itr.next();    // t
         itr.next();    // t - 1
         Assertions.assertEquals(data.get(1), itr.next());
 
@@ -50,12 +52,13 @@ public class BiDirectionalIteratorTest {
 
         LocalDate now = LocalDate.now();
         // The latest point generated has always today's date
-        itr = new BiDirectionalIterator(data, now.minusDays(1), 1);
+        itr = new BiDirectionalIterator(data, now.minusDays(1));
         itr.next();   // t
         itr.next();    // t - 1
-        // After the two moves, it should change the direction and proceed towards
-        // the point with date t + 1
-        Assertions.assertEquals(data.get(dataset - 1), itr.next());
+        Point<LocalDate> point = null;
+        if (itr.hasNext()) point = itr.next();
+        // Initially the starting index is behind the point we wanted to start with
+        Assertions.assertEquals(data.get(dataset - 2), point);
 
     }
 
@@ -63,10 +66,10 @@ public class BiDirectionalIteratorTest {
     void shouldNtMoveForward(){
 
         LocalDate now = LocalDate.now();
-        itr = new BiDirectionalIterator(data, now, 1);
-        itr.next();   // t
+        itr = new BiDirectionalIterator(data, now);
+        if (itr.hasNext()) itr.next();   // t : shifts the internal index to the position we want to start with
         itr.next();    // t - 1
-        // Should return null since there's no more data
+        // Should return false since there's no more data
         Assertions.assertFalse(itr.hasNext());
 
     }

@@ -27,7 +27,7 @@ public class NaiveAlgorithmWithTrend implements Algorithm{
         // internally used by CustomIterator to find startDate is used only once (comparing to
         // the previous version where it was used with each iteration in loop)
         List<Point<LocalDate>> generatedData = new ArrayList<>();
-        Iterator<Point<LocalDate>> outerItr = new BiDirectionalIterator(actualData, startDate, endDate, 2);
+        Iterator<Point<LocalDate>> outerItr = new BiDirectionalIterator(actualData, startDate, endDate);
 
         while (outerItr.hasNext()) {
             Point<LocalDate> currPoint = outerItr.next();
@@ -38,7 +38,7 @@ public class NaiveAlgorithmWithTrend implements Algorithm{
                     previousValue
                     .multiply(new BigDecimal("2"))
                     .subtract(outerItr.next().getY())));
-        } ;
+        }
 
         return generatedData;
     }
