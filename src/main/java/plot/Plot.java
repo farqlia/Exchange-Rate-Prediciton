@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class Plot<E> extends JComponent {
 
     int xWidth = 100, yWidth = 50;
-    int startX = 0, startY = 0, endX, endY, x0, y0;
+    int startX = 20, startY = 20, endX, endY, x0, y0;
     int numOfXGrids, numOfYGrids;
     double distanceToNextPoint, scale;
     Color backgroundColor = new Color(234, 234, 234, 136),
@@ -89,7 +89,7 @@ public class Plot<E> extends JComponent {
     public void setScaling(java.util.List<Point<E>> data){
 
         // For now, we calculate a distance between two next points like this
-        distanceToNextPoint = ((double) (endX) / data.size());
+        distanceToNextPoint = ((double) (endX - startX) / data.size());
 
         // The biggest positive value or zero
         double biggestValue = data.stream()
@@ -108,11 +108,15 @@ public class Plot<E> extends JComponent {
                 .doubleValue();
 
         double rangeOfValues = Math.abs(biggestValue - smallestValue);
-        double height = ((numOfYGrids - 1) * yWidth);
+        double height = ((numOfYGrids - 1) * yWidth);      // Area of plot where we want to draw lines
         scale = height / rangeOfValues;
 
         // This value is calculated in a way that Y axis lays on a grid
-        y0 = (int) ((Math.abs(biggestValue / rangeOfValues)) * (numOfYGrids + 1)) * yWidth;
+        y0 = startY + BigDecimal.valueOf(Math.abs(biggestValue / rangeOfValues) * (numOfYGrids))
+                .setScale(0, RoundingMode.DOWN).intValue() * yWidth;
+                // * ) ;
+
+        x0 = startX;
 
         System.out.println("Distance between to next points=" + distanceToNextPoint);
         System.out.println("Height=" + height);

@@ -2,6 +2,7 @@ package algorithmstests;
 
 import algorithms.Algorithm;
 import algorithms.NaiveAlgorithmWithTrend;
+import algorithms.NaiveAlgorithmWithTrendAndAverageIncrement;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.Point;
 import iterators.AscendingIterator;
@@ -29,13 +30,13 @@ public class AlgorithmsTest {
     void shouldTestForNaiveModelWithTrend(){
 
         Algorithm naiveAlgorithmWithTrend =
-                new NaiveAlgorithmWithTrend(dataPoints);
+                new NaiveAlgorithmWithTrend();
 
         // We start off with some later date because the 1st values are not computed correctly
         LocalDate sD = dataPoints.get(2).getX(),
                 eD = LocalDate.now().minusDays(1);
 
-        List<Point<LocalDate>> list = naiveAlgorithmWithTrend.forecastValuesForDates(sD, eD);
+        List<Point<LocalDate>> list = naiveAlgorithmWithTrend.forecastValuesForDates(dataPoints, sD, eD);
         Iterator<Point<LocalDate>> itr = new AscendingIterator(dataPoints, sD, eD);
 
         Assertions.assertAll(
@@ -43,6 +44,26 @@ public class AlgorithmsTest {
                         // At this point of testing, we only test whether an algorithm computes values correctly
                         // We don't test a real data we would receive normally
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .1))));
+    }
+
+    @Test
+    void shouldTestForNaiveModelWithTrendAndAverageIncrement(){
+
+        Algorithm naiveAlgorithmWithTrendAndAverageIncrement =
+                new NaiveAlgorithmWithTrendAndAverageIncrement();
+
+        // We start off with some later date because the 1st values are not computed correctly
+        LocalDate sD = dataPoints.get(3).getX(),
+                eD = LocalDate.now().minusDays(1);
+
+        List<Point<LocalDate>> list = naiveAlgorithmWithTrendAndAverageIncrement.forecastValuesForDates(dataPoints, sD, eD);
+        Iterator<Point<LocalDate>> itr = new AscendingIterator(dataPoints, sD, eD);
+
+        Assertions.assertAll(
+                list.stream()
+                        // At this point of testing, we only test whether an algorithm computes values correctly
+                        // We don't test a real data we would receive normally
+                        .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .5))));
 
 
 

@@ -1,8 +1,7 @@
-package studygraphics;
+package plot;
 
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.Point;
-import plot.Plot;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -27,7 +26,7 @@ public class MainTest extends JFrame {
 
         DataGenerator g = new DataGenerator();
 
-        data = g.generateDataWithTrend(100, new BigDecimal("-10"), new BigDecimal("2"), 20);
+        data = g.generateDataWithTrend(100, new BigDecimal("-1"), new BigDecimal("2"));
 
         plot = new Plot<>();
 

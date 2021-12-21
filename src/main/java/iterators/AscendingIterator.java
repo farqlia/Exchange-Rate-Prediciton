@@ -16,6 +16,10 @@ public class AscendingIterator extends CustomIterator {
         this(data, startDate, LocalDate.now());
     }
 
+    public AscendingIterator(List<Point<LocalDate>> data){
+        super(data);
+    }
+
     @Override
     public boolean hasNext() {
         return currIndex < data.size()

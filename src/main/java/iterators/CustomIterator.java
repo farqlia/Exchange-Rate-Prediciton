@@ -24,6 +24,10 @@ public abstract class CustomIterator implements Iterator<Point<LocalDate>> {
         this(data, startDate, LocalDate.now());
     }
 
+    public CustomIterator(List<Point<LocalDate>> data){
+        this(data, data.get(0).getX(), LocalDate.now());
+    }
+
     public void findStartIndex(LocalDate dateToStartFrom){
         currIndex = Collections.binarySearch(
                 // We look for an index based on a date: if it's not found, then based on return
