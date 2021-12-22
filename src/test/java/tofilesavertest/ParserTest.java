@@ -1,14 +1,20 @@
 package tofilesavertest;
 
+import datasciencealgorithms.utils.Parser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.util.Map;
 import java.util.regex.Matcher;
+
+import static datasciencealgorithms.utils.Parser.PATH_REGEX;
 
 public class ParserTest {
 
     Parser fileParser;
+    String DELIMITER = "\\";
     String dir = "some" + DELIMITER + "random" + DELIMITER + "dir" + DELIMITER;
     String name = "file";
     String extension = "txt";
@@ -22,7 +28,7 @@ public class ParserTest {
     @Test
     void shouldParseDirectoryNames(){
 
-        Matcher m = PATH_REGEX.matcher(dir + name + "." + extension);
+        Matcher m = PATH_REGEX.matcher(fileName);
 
         Assertions.assertTrue(m.matches());
         Assertions.assertEquals(dir, m.group("dir"));
@@ -33,24 +39,38 @@ public class ParserTest {
     @Test
     void shouldParseAndReturnMapping(){
 
-        Map<String, String> mapping = fileParser.parse(fileName);
+        Map<Parser.Entries, String> mapping = fileParser.parseFilePath(fileName);
         Assertions.assertAll(
-                () -> Assertions.assertEquals(dir, mapping.get(Parse.DIRECTORY)),
-                () -> Assertions.assertEquals(name, mapping.get(Parse.FILENAME)),
-                () -> Assertions.assertEquals(extension, mapping.get(Parse.EXTENSION))
+                () -> Assertions.assertEquals(dir, mapping.get(Parser.Entries.DIRECTORY)),
+                () -> Assertions.assertEquals(fileName, mapping.get(Parser.Entries.FILEPATH)),
+                () -> Assertions.assertEquals(extension, mapping.get(Parser.Entries.EXTENSION))
         );
     }
 
     @Test
     void shouldNtParseDirectoryPathWithNoFileName(){
-        Map<String, String> mapping = fileParser.parse("some/dir/with/no/file");
+        Map<Parser.Entries, String> mapping = fileParser.parseFilePath("some" + DELIMITER + "dir");
         Assertions.assertNull(mapping);
     }
 
     @Test
+    void shouldParseFileNameFromFileObject() {
+
+        File f = new File(fileName);
+
+        Map<Parser.Entries, String> mapping = fileParser.parseFilePath(f.getPath());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(dir, mapping.get(Parser.Entries.DIRECTORY)),
+                () -> Assertions.assertEquals(fileName, mapping.get(Parser.Entries.FILEPATH)),
+                () -> Assertions.assertEquals(extension, mapping.get(Parser.Entries.EXTENSION))
+        );
+    }
+
+    @Test
     void shouldNtParseNull(){
-        Map<String, String> mapping = fileParser.parse(null);
+        Map<Parser.Entries, String> mapping = fileParser.parseFilePath(null);
         Assertions.assertNull(mapping);
     }
+
 
 }

@@ -4,12 +4,14 @@ import datasciencealgorithms.utils.Point;
 import datasciencealgorithms.utils.UtilityMethods;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NaiveAlgorithmWithTrendAndAverageIncrement extends Algorithm{
+public class NaiveAlgorithmWithTrendAndAverageIncrement implements Algorithm{
 
+    RoundingMode roundingMode = RoundingMode.HALF_EVEN;
 
     @Override
     public List<Point<LocalDate>> forecastValuesForDates(List<Point<LocalDate>> actualData, LocalDate startDate, LocalDate endDate) {

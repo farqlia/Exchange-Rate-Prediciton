@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class NaiveAlgorithmWithTrend extends Algorithm{
+public class NaiveAlgorithmWithTrend implements Algorithm{
 
     // TODO: the start date should be shifted so that the 1st values don't break the overall result
     @Override
