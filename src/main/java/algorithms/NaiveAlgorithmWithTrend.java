@@ -1,6 +1,6 @@
 package algorithms;
 
-import datasciencealgorithms.utils.Point;
+import datasciencealgorithms.utils.point.Point;
 import iterators.BiDirectionalIterator;
 
 import java.math.BigDecimal;
@@ -11,16 +11,15 @@ import java.util.List;
 
 public class NaiveAlgorithmWithTrend implements Algorithm{
 
-    // TODO: the start date should be shifted so that the 1st values don't break the overall result
     @Override
-    public List<Point<LocalDate>> forecastValuesForDates(List<Point<LocalDate>> actualData,
+    public List<Point<LocalDate>> forecastValuesForDates(List<Point<LocalDate>> expectedData,
                                                          LocalDate startDate, LocalDate endDate) {
 
         // Improvement: we have one iterator instead of two, and the binarySearch
         // internally used by CustomIterator to find startDate is used only once (comparing to
         // the previous version where it was used with each iteration in loop)
         List<Point<LocalDate>> generatedData = new ArrayList<>();
-        Iterator<Point<LocalDate>> outerItr = new BiDirectionalIterator(actualData, startDate, endDate);
+        Iterator<Point<LocalDate>> outerItr = new BiDirectionalIterator(expectedData, startDate, endDate);
 
         while (outerItr.hasNext()) {
             Point<LocalDate> currPoint = outerItr.next();

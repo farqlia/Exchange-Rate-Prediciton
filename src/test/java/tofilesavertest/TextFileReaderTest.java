@@ -1,10 +1,12 @@
 package tofilesavertest;
 
-import dataconverter.CustomFileReader;
+import dataconverter.writersandreaders.CustomFileReader;
 import dataconverter.IncorrectDataFormat;
-import dataconverter.ReaderForTimePoints;
+import dataconverter.writersandreaders.TextFileReader;
+import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
-import datasciencealgorithms.utils.Point;
+import dataconverter.writersandreaders.CSVParser;
+import datasciencealgorithms.utils.point.Point;
 import iterators.AscendingIterator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 
-public class ReaderForTimePointsTest {
+public class TextFileReaderTest {
 
     CustomFileReader<Point<LocalDate>> dataConverter;
     List<Point<LocalDate>> testData;
@@ -29,15 +31,15 @@ public class ReaderForTimePointsTest {
 
     @BeforeEach
     void setUp(){
-        dataConverter = new ReaderForTimePoints();
-        testData = new DataGenerator()
+        dataConverter = new TextFileReader<>(CSVParser.getInstance());
+        testData = DataGenerator.getInstance()
                 .generateDataWithTrend(10, BigDecimal.ONE, new BigDecimal(".2"));
     }
 
     @Test
     void shouldParseLine(){
         String line = "01-12-2002,1.50000";
-        Matcher m = ReaderForTimePoints.objectPattern.matcher(line);
+        Matcher m = CSVParser.objectPattern.matcher(line);
         Assertions.assertTrue(m.matches());
         Assertions.assertEquals("01-12-2002", m.group(1));
         Assertions.assertEquals("1.50000", m.group(2));
@@ -46,14 +48,14 @@ public class ReaderForTimePointsTest {
     @Test
     void shouldNtParseLine() {
         String line = "01-12-02,1.50000";
-        Matcher m = ReaderForTimePoints.objectPattern.matcher(line);
+        Matcher m = CSVParser.objectPattern.matcher(line);
         Assertions.assertFalse(m.matches());
     }
 
     @Test
     void shouldNtParseLine2() {
         String line = "01-12-2002,adsf";
-        Matcher m = ReaderForTimePoints.objectPattern.matcher(line);
+        Matcher m = CSVParser.objectPattern.matcher(line);
         Assertions.assertFalse(m.matches());
     }
 
@@ -79,6 +81,8 @@ public class ReaderForTimePointsTest {
 
     @Test
     void shouldCorrectlyReadData() throws IOException, IncorrectDataFormat {
+        new TextFileWriter<>(CSVParser.getInstance()).saveToFile(fileName,
+                testData);
         List<Point<LocalDate>> readData = dataConverter.readFromFile(fileName);
 
         Iterator<Point<LocalDate>> itr = new AscendingIterator(testData);

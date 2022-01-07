@@ -1,16 +1,17 @@
 package plot;
 
 import datagenerator.DataGenerator;
-import datasciencealgorithms.utils.Point;
+import datasciencealgorithms.utils.point.Point;
 
 import javax.swing.*;
+import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public class MainTest extends JFrame {
 
-    Plot<LocalDate> plot;
+    Plot<LocalDate> plotDemo;
     List<Point<LocalDate>> data;
 
     public static void main(String[] args) {
@@ -22,34 +23,44 @@ public class MainTest extends JFrame {
         setSize(1191, 800);
         setResizable(false);
 
-        JPanel thePanel = new JPanel();
-
-        DataGenerator g = new DataGenerator();
-
-        data = g.generateDataWithTrend(100, new BigDecimal("-1"), new BigDecimal("2"));
-
-        plot = new Plot<>();
+        data = DataGenerator.getInstance().generateDataWithTrend(50, new BigDecimal("-1"), new BigDecimal("2"));
+        plotDemo = new TimeSeriesPlot(new BigDecimal("-10"), new BigDecimal("250"),
+                LocalDate.now().minusDays(60), LocalDate.now());
 
         debugData(data);
 
-        add(plot);
+        this.getContentPane().add(plotDemo);
 
-        updatePlot();
+
+        JButton button = new JButton("Click to update plotDemo");
+        button.addActionListener(e -> updatePlot());
+
+        //this.getContentPane().add(button);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        updatePlot();
         setVisible(true);
-
     }
 
     public void updatePlot(){
-        SwingUtilities.invokeLater(() -> plot.plotData(data));
+        SwingUtilities.invokeLater(() -> plotDemo.plotLine(data));
     }
 
     public void debugData(List<Point<LocalDate>> data){
 
         for (int i = 0; i < data.size(); i++){
             System.out.println(i + ": " + data.get(i).getY());
+        }
+
+    }
+
+    public class CustomPanel extends JPanel{
+
+        @Override
+        public void paintComponent(Graphics g){
+
+            plotDemo.paintComponent(g);
+
         }
 
     }

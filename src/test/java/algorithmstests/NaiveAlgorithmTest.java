@@ -4,7 +4,7 @@ import algorithms.Algorithm;
 import algorithms.NaiveAlgorithmWithTrend;
 import algorithms.NaiveAlgorithmWithTrendAndAverageIncrement;
 import datagenerator.DataGenerator;
-import datasciencealgorithms.utils.Point;
+import datasciencealgorithms.utils.point.Point;
 import iterators.AscendingIterator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,15 +15,13 @@ import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 
-public class AlgorithmsTest {
+public class NaiveAlgorithmTest {
 
     List<Point<LocalDate>> dataPoints;
-    DataGenerator dataGenerator;
 
     @BeforeEach
     void setUp(){
-        dataGenerator = new DataGenerator();
-        dataPoints = dataGenerator.generateDataWithTrend(10,BigDecimal.ONE, new BigDecimal(".2"));
+        dataPoints = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, new BigDecimal(".2"));
     }
 
     @Test
@@ -68,5 +66,6 @@ public class AlgorithmsTest {
 
 
     }
+
 
 }

@@ -3,6 +3,7 @@ package exchangerateclass;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,6 +22,7 @@ public class ExchangeRate {
         this.bid = bid;
         this.ask = ask;
     }
+
 
     public String getCurrency() {
         return currency;

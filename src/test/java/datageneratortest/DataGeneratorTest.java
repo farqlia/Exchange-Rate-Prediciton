@@ -1,24 +1,22 @@
 package datageneratortest;
 
 import datagenerator.DataGenerator;
-import datasciencealgorithms.utils.Point;
-import org.junit.Before;
+import datasciencealgorithms.utils.point.Point;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DataGeneratorTest {
 
-    DataGenerator dataGenerator;
+    int dataset;
     @BeforeEach
     void setUp(){
-        dataGenerator = new DataGenerator();
+        dataset = 10;
     }
 
     @Test
@@ -26,7 +24,7 @@ public class DataGeneratorTest {
 
         BigDecimal trend = new BigDecimal(".2");
         List<BigDecimal> actualDecimals = new ArrayList<>();
-        List<BigDecimal> expectedDecimals = dataGenerator.generateDataWithTrend(10, BigDecimal.ONE, trend)
+        List<BigDecimal> expectedDecimals = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, trend)
                 .stream()
                 .map(Point::getY).collect(Collectors.toList());
 
@@ -44,11 +42,11 @@ public class DataGeneratorTest {
     }
 
     @Test
-    void shouldGenerateDataWithTrendAndFluctuations(){
+    void shouldGenerateDataWithTrendAndFluctuations() {
 
         BigDecimal trend = new BigDecimal(".2");
         List<BigDecimal> actualDecimals = new ArrayList<>();
-        List<BigDecimal> expectedDecimals = dataGenerator.generateDataWithTrend(10, BigDecimal.ONE, trend, 0.1)
+        List<BigDecimal> expectedDecimals = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, trend, 0.1)
                 .stream()
                 .map(Point::getY).collect(Collectors.toList());
 

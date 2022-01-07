@@ -1,6 +1,6 @@
 package studygraphics;
 
-import datasciencealgorithms.utils.Point;
+import datasciencealgorithms.utils.point.Point;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Random;
 
-public class GraphicsComponent<E> extends JComponent {
+public class GraphicsComponent extends JComponent {
 
     int xWidth = 100, yWidth = 50;
     int startX = 0, startY = 0, endX, endY;
@@ -20,9 +20,9 @@ public class GraphicsComponent<E> extends JComponent {
             gridColor = new Color(208, 208, 208);
     Random random = new Random();
 
-    List<Point<E>> data;
+    List<Point> data;
 
-    public GraphicsComponent(List<Point<E>> data){
+    public GraphicsComponent(List<Point> data){
         this.data = data;
     }
 

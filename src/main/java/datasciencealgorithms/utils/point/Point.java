@@ -1,20 +1,20 @@
-package datasciencealgorithms.utils;
+package datasciencealgorithms.utils.point;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-public class Point<K> {
+public class Point<E> {
 
-    private final K x;     // aka key
+    private final E x;     // aka key
     private final BigDecimal y;     // aka value
 
-    public Point(K x, BigDecimal y) {
+    public Point(E x, BigDecimal y) {
         this.x = x;
         this.y = y.setScale(10, RoundingMode.HALF_DOWN);
     }
 
-    public K getX() {
+    public E getX() {
         return x;
     }
 
@@ -34,7 +34,7 @@ public class Point<K> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Point)) return false;
-        Point<?> point = (Point<?>) o;
+        Point point = (Point) o;
         return Objects.equals(getX(), point.getX()) && Objects.equals(getY(), point.getY());
     }
 

@@ -1,4 +1,4 @@
-package dataconverter;
+package dataconverter.writersandreaders;
 
 import datasciencealgorithms.utils.Parser;
 
@@ -16,7 +16,7 @@ public abstract class CustomFileWriter<E> extends DataConverter {
     public void saveToFile(String fileName, List<E> data) throws IOException{
         parseFilePath(fileName);
         createFile();
-        handleObjectWriting(mapping.get(Parser.Entries.FILEPATH), data);
+        handleObjectWriting(getProperty(Parser.Entries.FILEPATH), data);
     }
 
 }

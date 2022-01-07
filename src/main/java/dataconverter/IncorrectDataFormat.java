@@ -9,8 +9,4 @@ public class IncorrectDataFormat extends Exception {
         super(message);
     }
 
-    public IncorrectDataFormat(){
-        super();
-    }
-
 }

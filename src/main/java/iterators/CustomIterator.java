@@ -1,6 +1,6 @@
 package iterators;
 
-import datasciencealgorithms.utils.Point;
+import datasciencealgorithms.utils.point.Point;
 
 import java.time.LocalDate;
 import java.util.*;

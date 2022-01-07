@@ -1,4 +1,4 @@
-package dataconverter;
+package dataconverter.writersandreaders;
 
 import datasciencealgorithms.utils.Parser;
 

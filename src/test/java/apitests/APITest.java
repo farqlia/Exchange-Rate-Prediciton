@@ -21,11 +21,13 @@ public class APITest {
         String getExchangeRatesForTable = "tables/";
         String getTopCount = "last/";
 
-        System.out.println("Get exchange rates for table C");
-        apiTest.sendAndOutputRequest(exchangesRates  + getExchangeRatesForTable + "C/" + getTopCount + "2/");
+        System.out.println("Get exchange rates for table A");
+        apiTest.sendAndOutputRequest(exchangesRates  + getExchangeRatesForTable + "A/" + getTopCount + "2/");
 
         System.out.println("Get exchange rates for currency EUR");
-        apiTest.sendAndOutputRequest(exchangesRates + rates + "C/" + "EUR/" + getTopCount + "10/");
+        apiTest.sendAndOutputRequest(exchangesRates + rates + "C/" + "EUR/" + "2021-01-01/2021-12-31/");
+
+        apiTest.sendAndOutputRequest(exchangesRates + getExchangeRatesForTable + "C/" + "2021-12-01/2021-12-31/");
     }
 
     // params should be built like this: "/param1/param2...paramn/"
@@ -38,5 +40,6 @@ public class APITest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
+        System.out.println(response.statusCode());
     }
 }

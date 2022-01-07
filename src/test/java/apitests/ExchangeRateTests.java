@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import exchangerateclass.CurrencyName;
 import exchangerateclass.ExchangeRate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import studyjson.CustomExchangeRateSerializer;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -81,5 +83,7 @@ public class ExchangeRateTests {
 
         System.out.println(listOfExR);
     }
+
+
 
 }

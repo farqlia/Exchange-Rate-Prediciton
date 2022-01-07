@@ -1,10 +1,11 @@
 package tofilesavertest;
 
-import dataconverter.CustomFileWriter;
-import dataconverter.WriterForTimePoints;
+import dataconverter.writersandreaders.CustomFileWriter;
+import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.Parser;
-import datasciencealgorithms.utils.Point;
+import dataconverter.writersandreaders.CSVParser;
+import datasciencealgorithms.utils.point.Point;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
+import java.time.LocalDate;
 import java.util.List;
 
-public class WriterForTimePointsTest {
+public class TextFileWriterTest {
 
     CustomFileWriter<Point<LocalDate>> dataConverter;
     List<Point<LocalDate>> testData;
@@ -29,8 +30,8 @@ public class WriterForTimePointsTest {
 
     @BeforeEach
     void setUp(){
-        dataConverter = new WriterForTimePoints();
-        testData = new DataGenerator()
+        dataConverter = new TextFileWriter<>(CSVParser.getInstance());
+        testData = DataGenerator.getInstance()
                 .generateDataWithTrend(10, BigDecimal.ONE, new BigDecimal(".2"));
     }
 

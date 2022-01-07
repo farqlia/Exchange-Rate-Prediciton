@@ -1,7 +1,7 @@
 package datageneratortest;
 
 import datagenerator.DataGenerator;
-import datasciencealgorithms.utils.Point;
+import datasciencealgorithms.utils.point.Point;
 import iterators.BiDirectionalIterator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +20,7 @@ public class BiDirectionalIteratorTest {
 
     @BeforeEach
     void setUp(){
-        DataGenerator dG = new DataGenerator();
-        data = dG.generateDataWithTrend(dataset, BigDecimal.ONE, new BigDecimal(".2"));
+        data = DataGenerator.getInstance().generateDataWithTrend(dataset, BigDecimal.ONE, new BigDecimal(".2"));
     }
 
     @Test

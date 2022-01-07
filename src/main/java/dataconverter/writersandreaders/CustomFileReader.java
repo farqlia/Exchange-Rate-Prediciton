@@ -1,10 +1,10 @@
-package dataconverter;
+package dataconverter.writersandreaders;
 
+import dataconverter.IncorrectDataFormat;
 import datasciencealgorithms.utils.Parser;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 public abstract class CustomFileReader<E> extends DataConverter {
@@ -19,7 +19,7 @@ public abstract class CustomFileReader<E> extends DataConverter {
 
         parseFilePath(fileName);
 
-        File f = new File(mapping.get(Parser.Entries.FILEPATH));
+        File f = new File(getProperty(Parser.Entries.FILEPATH));
 
         if (!f.exists() || f.length() == 0L)
             throw new IOException("File doesn't exist or is empty");

@@ -1,5 +1,7 @@
 package datasciencealgorithms.utils;
 
+import datasciencealgorithms.utils.point.Point;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
