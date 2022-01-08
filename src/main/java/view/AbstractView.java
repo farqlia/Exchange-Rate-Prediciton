@@ -1,10 +1,11 @@
 package view;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractView{
+public abstract class AbstractView extends JFrame {
 
     List<ViewObserver> observers;
 

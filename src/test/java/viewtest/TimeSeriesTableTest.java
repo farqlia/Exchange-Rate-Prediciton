@@ -24,7 +24,7 @@ public class TimeSeriesTableTest {
     @BeforeEach
     void setUp() {
         view = new View();
-        table = ((View) view).table;
+        table = ((View) view).tableModel;
         data = DataGenerator.getInstance().generateDataWithTrend(10,
                 BigDecimal.ZERO, BigDecimal.ONE);
         flatData = DataPointsFlattering.getInstance().flatten(data, data);

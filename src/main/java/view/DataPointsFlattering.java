@@ -21,6 +21,7 @@ public class DataPointsFlattering implements DataFlattering<Point<LocalDate>> {
     public final Object[][] flatten(List<Point<LocalDate>>... data) {
 
         assert data.length == 2;
+        assert !data[0].isEmpty() && !data[1].isEmpty();
 
         List<Point<LocalDate>> l1 = data[0];
         List<Point<LocalDate>> l2 = data[1];

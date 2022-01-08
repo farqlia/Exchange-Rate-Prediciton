@@ -54,6 +54,11 @@ public class Controller {
             List<ExchangeRate> exchangeRatesList = SingleRateMapper
                     .getInstance().parse(response.get());
 
+            if (exchangeRatesList.isEmpty()){
+                System.out.println("Couldn't convert response");
+                return;
+            }
+
             for (ExchangeRate eR : exchangeRatesList){
                 // Date in ExchangeRates class is 'Date' type so we convert it to LocalDate
                 actualDataPoints.add(new Point<>(LocalDate.ofInstant(eR.getEffectiveDate().toInstant(),

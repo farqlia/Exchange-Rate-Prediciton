@@ -21,7 +21,7 @@ public class APITest {
         String getExchangeRatesForTable = "tables/";
         String getTopCount = "last/";
 
-        System.out.println("Get exchange rates for table A");
+        System.out.println("Get exchange rates for tableModel A");
         apiTest.sendAndOutputRequest(exchangesRates  + getExchangeRatesForTable + "A/" + getTopCount + "2/");
 
         System.out.println("Get exchange rates for currency EUR");

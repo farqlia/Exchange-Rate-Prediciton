@@ -1,5 +1,6 @@
 package currencyparsing.currencymapper;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,6 +14,13 @@ public abstract class CurrencyObjectMapper<E> {
 
     abstract List<E> parse(JsonNode node);
 
+    /***
+     * Parses given json-type String into list of E objects
+     * @param json
+     * @return List of objects converted from String or empty list
+     * if conversion was unsuccessful
+     * @throws JsonProcessingException if a given String is not json-like
+     */
     public List<E> parse(String json){
 
         JsonNode jsonNodeRoot;
@@ -27,7 +35,11 @@ public abstract class CurrencyObjectMapper<E> {
             return Collections.emptyList();
         }
         // Returned node is an array, so we extract actual element
-        return parse(jsonNodeRoot);
+        List<E> parsedData = parse(jsonNodeRoot);
+
+        // If the String is correctly build according to json format,
+        // but can't be parsed to given class, then null is returned
+        return parsedData == null ? Collections.emptyList() : parsedData;
     }
 
 }

@@ -1,5 +1,6 @@
 package utilstests;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
@@ -25,5 +26,15 @@ public class LocalDateTest {
         Date d = new Date();
         LocalDate lD = LocalDate.ofInstant(d.toInstant(), ZoneId.of("CET"));
 
+    }
+
+    @Test
+    void shouldGetDateOneDayEarlier(){
+
+        Date d = new Date();
+        Date newD = new Date(ChronoUnit.DAYS.addTo(d.toInstant(), -2).toEpochMilli());
+
+        Assertions.assertTrue(d.after(newD));
+        System.out.println(newD);
     }
 }

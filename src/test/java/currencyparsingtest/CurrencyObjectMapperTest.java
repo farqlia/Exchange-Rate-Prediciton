@@ -1,5 +1,7 @@
 package currencyparsingtest;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import currencyparsing.currencymapper.CurrencyNameMapper;
 import currencyparsing.currencymapper.SingleRateMapper;
 import exchangerateclass.CurrencyName;
@@ -15,18 +17,19 @@ public class CurrencyObjectMapperTest {
     @Test
     void shouldNtParseForCurrencyNames(){
         // ? Why null and not an exception
-        Assertions.assertNull(CurrencyNameMapper.getInstance().parse("{\"badjson\":\"AAA\"}"));
+        Assertions.assertTrue(CurrencyNameMapper.getInstance().parse("{\"badjson\":\"AAA\"}").isEmpty());
     }
+
 
     @Test
     void shouldNtParseForSingleRate(){
-        Assertions.assertTrue(SingleRateMapper.getInstance().parse("{\"badjson\":\"AAA\"}").isEmpty());
+        Assertions.assertTrue(SingleRateMapper.getInstance().parse("badjson").isEmpty());
     }
 
 
     @Test
     void shouldParseFullJsonForCurrencyNames(){
-        String exampleJson = "{\"table\":\"A\",\"no\":\"253/A/NBP/2021\",\"effectiveDate\":\"2021-12-30\",\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1216}," +
+        String exampleJson = "{\"tableModel\":\"A\",\"no\":\"253/A/NBP/2021\",\"effectiveDate\":\"2021-12-30\",\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1216}," +
                 "{\"currency\":\"dolar amerykański\",\"code\":\"USD\",\"mid\":4.0631}]}";
 
         List<CurrencyName> rates = CurrencyNameMapper.getInstance().parse(exampleJson);
@@ -42,7 +45,7 @@ public class CurrencyObjectMapperTest {
 
     @Test
     void shouldParseFullJsonForSingleRate(){
-        String json = "{\"table\":\"C\",\"currency\":\"euro\",\"code\":\"EUR\",\"rates\":[{\"no\":\"245/C/NBP/2021\",\"effectiveDate\":\"2021-12-20\",\"bid\":4.5901,\"ask\":4.6829}," +
+        String json = "{\"tableModel\":\"C\",\"currency\":\"euro\",\"code\":\"EUR\",\"rates\":[{\"no\":\"245/C/NBP/2021\",\"effectiveDate\":\"2021-12-20\",\"bid\":4.5901,\"ask\":4.6829}," +
                 "{\"no\":\"246/C/NBP/2021\",\"effectiveDate\":\"2021-12-21\",\"bid\":4.5870,\"ask\":4.6796}]}";
 
         List<ExchangeRate> rates = SingleRateMapper.getInstance().parse(json);

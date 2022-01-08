@@ -2,6 +2,7 @@ package viewtest;
 
 import algorithms.AlgorithmNames;
 import controller.Controller;
+import datagenerator.DataGenerator;
 import model.Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,13 +12,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import view.View;
 import view.ViewEvent;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ControllerTest {
@@ -64,19 +65,12 @@ public class ControllerTest {
     }
 
     @Test
-    void shouldInvokePredictMethodOnModelWithExpectedArguments(){
-
-        controller.new ListenForView().update(viewEvent);
-
-        verify(model).setAlgorithm(AlgorithmNames.MOVING_AVERAGE_MEAN_ALGORITHM);
-
-        // If we use argument matchers, all arguments have to be provided by matchers
-        verify(model).predict(any(List.class), eq(viewEvent.getStartDate()),
-                eq(viewEvent.getEndDate()));
-    }
-
-    @Test
     void shouldInvokeUpdateTableOnView(){
+
+        // Simulate calling real algorithm, but since this is mock it's method is empty
+        when(model.predict(any(List.class), eq(viewEvent.getStartDate()),
+                eq(viewEvent.getEndDate())))
+                .thenReturn(DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE));
 
         controller.new ListenForView().update(viewEvent);
 
