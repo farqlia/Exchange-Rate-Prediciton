@@ -7,16 +7,16 @@ import java.util.List;
 
 public class AscendingIterator extends CustomIterator {
 
-    public AscendingIterator(List<Point<LocalDate>> data, LocalDate startDate, LocalDate endDate){
+    public AscendingIterator(List<Point> data, LocalDate startDate, LocalDate endDate){
         super(data, startDate, endDate);
         findStartIndex(startDate);
     }
 
-    public AscendingIterator(List<Point<LocalDate>> data, LocalDate startDate){
+    public AscendingIterator(List<Point> data, LocalDate startDate){
         this(data, startDate, LocalDate.now());
     }
 
-    public AscendingIterator(List<Point<LocalDate>> data){
+    public AscendingIterator(List<Point> data){
         super(data);
     }
 
@@ -26,9 +26,8 @@ public class AscendingIterator extends CustomIterator {
                 && data.get(currIndex).getX().compareTo(endDate) <= 0;
     }
 
-    // TODO : think about returning some other value than null, so that special cases are already handled
     @Override
-    public Point<LocalDate> next() {
+    public Point next() {
         if (hasNext()) return data.get(currIndex++);
         return data.get(data.size() - 1);
     }

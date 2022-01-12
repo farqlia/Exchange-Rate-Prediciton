@@ -1,0 +1,35 @@
+bat (Tajlandia),THB
+dolar amerykański,USD
+dolar australijski,AUD
+dolar Hongkongu,HKD
+dolar kanadyjski,CAD
+dolar nowozelandzki,NZD
+dolar singapurski,SGD
+euro,EUR
+forint (Węgry),HUF
+frank szwajcarski,CHF
+funt szterling,GBP
+hrywna (Ukraina),UAH
+jen (Japonia),JPY
+korona czeska,CZK
+korona duńska,DKK
+korona islandzka,ISK
+korona norweska,NOK
+korona szwedzka,SEK
+kuna (Chorwacja),HRK
+lej rumuński,RON
+lew (Bułgaria),BGN
+lira turecka,TRY
+nowy izraelski szekel,ILS
+peso chilijskie,CLP
+peso filipińskie,PHP
+peso meksykańskie,MXN
+rand (Republika Południowej Afryki),ZAR
+real (Brazylia),BRL
+ringgit (Malezja),MYR
+rubel rosyjski,RUB
+rupia indonezyjska,IDR
+rupia indyjska,INR
+won południowokoreański,KRW
+yuan renminbi (Chiny),CNY
+SDR (MFW),XDR

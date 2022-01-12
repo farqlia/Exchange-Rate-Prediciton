@@ -2,32 +2,63 @@ package viewtest;
 
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import view.DataFlattering;
+import org.junit.jupiter.api.*;
 import view.DataPointsFlattering;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Vector;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class DataFlatteringTest {
+
+    List<Point> data;
+
+    @BeforeEach
+    void setUp(){
+        data = DataGenerator.getInstance()
+                .generateDataWithTrend(10, BigDecimal.ZERO, BigDecimal.ONE);
+    }
 
     @Test
     void shouldFlattenDataPoints(){
 
-        List<Point<LocalDate>> data = DataGenerator.getInstance()
-                .generateDataWithTrend(10, BigDecimal.ZERO, BigDecimal.ONE);
-
-        Object[][] flatData = DataPointsFlattering.getInstance().flatten(data, data);
+        Vector<Vector<Object>> flatData = DataPointsFlattering.flatten(data, data);
 
         for (int i = 0; i < 10; i++){
 
-            Assertions.assertEquals(data.get(i).getX(), flatData[i][0]);
-            Assertions.assertEquals(data.get(i).getY(), flatData[i][1]);
-            Assertions.assertEquals(data.get(i).getY(), flatData[i][2]);
+            Assertions.assertEquals(data.get(i).getX(), flatData.get(i).get(0));
+            Assertions.assertEquals(data.get(i).getY(), flatData.get(i).get(1));
+            Assertions.assertEquals(data.get(i).getY(), flatData.get(i).get(2));
 
         }
+    }
+
+    @TestFactory
+    Stream<DynamicTest> shouldConcatWithArrays(){
+
+        List<Point> data = DataGenerator.getInstance()
+                .generateDataWithTrend(10, BigDecimal.ZERO, BigDecimal.ONE);
+
+        Vector<Vector<Object>> flatData = DataPointsFlattering.flatten(data, data);
+
+        Object[] arr1 = IntStream.rangeClosed(1, 10).boxed().toArray();
+        Object[] arr2 = IntStream.rangeClosed(2, 11).boxed().toArray();
+
+        DataPointsFlattering.concat(flatData, arr1, arr2);
+
+        return IntStream.rangeClosed(0, flatData.size() - 1)
+                .mapToObj(i -> DynamicTest.dynamicTest("Resolving: " + i,
+                        () -> {
+                            Assertions.assertEquals(data.get(i).getX(), flatData.get(i).get(0));
+                            Assertions.assertEquals(data.get(i).getY(), flatData.get(i).get(1));
+                            Assertions.assertEquals(arr1, flatData.get(i).get(3));
+                            Assertions.assertEquals(arr2, flatData.get(i).get(4));
+                        }));
+
     }
 
 }

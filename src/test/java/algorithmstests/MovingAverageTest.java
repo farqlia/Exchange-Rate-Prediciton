@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MovingAverageTest {
 
-    List<Point<LocalDate>> dataPoints;
+    List<Point> dataPoints;
 
     @BeforeEach
     void setUp(){
@@ -37,10 +37,10 @@ public class MovingAverageTest {
         LocalDate sD = LocalDate.now().minusDays(20);
         LocalDate eD = LocalDate.now();
 
-        List<Point<LocalDate>> predicted = movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
+        List<Point> predicted = movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
 
         Assertions.assertFalse(predicted.isEmpty());
-        Iterator<Point<LocalDate>> itr = new AscendingIterator(dataPoints, sD, eD);
+        Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
         Assertions.assertAll(
                 predicted.stream()
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .5))));
@@ -60,10 +60,10 @@ public class MovingAverageTest {
         LocalDate sD = LocalDate.now().minusDays(20);
         LocalDate eD = LocalDate.now();
 
-        List<Point<LocalDate>> predicted = linearlyWeightedMovingAverage.forecastValuesForDates(dataPoints, sD, eD);
+        List<Point> predicted = linearlyWeightedMovingAverage.forecastValuesForDates(dataPoints, sD, eD);
 
         Assertions.assertFalse(predicted.isEmpty());
-        Iterator<Point<LocalDate>> itr = new AscendingIterator(dataPoints, sD, eD);
+        Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
         Assertions.assertAll(
                 predicted.stream()
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .5))));

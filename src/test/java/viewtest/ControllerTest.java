@@ -1,6 +1,6 @@
 package viewtest;
 
-import algorithms.AlgorithmNames;
+import algorithms.AlgorithmName;
 import controller.Controller;
 import datagenerator.DataGenerator;
 import model.Model;
@@ -35,7 +35,7 @@ public class ControllerTest {
     void setUp(){
         controller = new Controller(view, model);
         viewEvent = new ViewEvent(LocalDate.now().minusDays(10),
-                LocalDate.now(), AlgorithmNames.MOVING_AVERAGE_MEAN_ALGORITHM,
+                LocalDate.now(), AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "EUR");
     }
 
@@ -44,7 +44,8 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model).setAlgorithm(any(AlgorithmNames.class));
+        verify(model).setAlgorithm(any(AlgorithmName.class), 5);
+
         verify(model).predict(any(List.class), any(LocalDate.class),
                 any(LocalDate.class));
     }
@@ -54,12 +55,13 @@ public class ControllerTest {
 
         // Currency is invalid, so we can't be provided with response body
         ViewEvent viewEvent = new ViewEvent(LocalDate.now().minusDays(10),
-                LocalDate.now(), AlgorithmNames.MOVING_AVERAGE_MEAN_ALGORITHM,
+                LocalDate.now(), AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "INVALID");
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model, never()).setAlgorithm(any(AlgorithmNames.class));
+        verify(model, never()).setAlgorithm(any(AlgorithmName.class), 5);
+
         verify(model, never()).predict(any(List.class), any(LocalDate.class),
                 any(LocalDate.class));
     }
@@ -74,7 +76,7 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(view).updateTable(any(Object[][].class));
+        verify(view).insertAlgorithmOutput(any(Object[][].class));
 
     }
 

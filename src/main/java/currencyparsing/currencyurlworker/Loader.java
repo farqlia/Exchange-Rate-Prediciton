@@ -1,6 +1,5 @@
 package currencyparsing.currencyurlworker;
 
-import currencyparsing.currencymapper.CurrencyNameMapper;
 import currencyparsing.currencymapper.CurrencyObjectMapper;
 import currencyparsing.currencyurlbuilders.CurrencyURL;
 
@@ -8,10 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class Loader<E> {
+public abstract class Loader<E> {
 
     private CurrencyURL url;
-    private CurrencyWorker currencyWorker;
+    private final CurrencyWorker currencyWorker;
     private CurrencyObjectMapper<E> mapper;
 
     public Loader(CurrencyURL url, CurrencyObjectMapper<E> mapper){
@@ -19,7 +18,7 @@ public class Loader<E> {
         this.mapper = mapper;
         currencyWorker = new CurrencyWorker();
     }
-
+    
     public List<E> load(){
 
         Optional<String> response
@@ -34,6 +33,7 @@ public class Loader<E> {
         if (mappedObjects.isEmpty()){
             return getDefault();
         }
+
         return mappedObjects;
     }
 

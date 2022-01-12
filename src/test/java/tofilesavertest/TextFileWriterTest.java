@@ -19,8 +19,8 @@ import java.util.List;
 
 public class TextFileWriterTest {
 
-    CustomFileWriter<Point<LocalDate>> dataConverter;
-    List<Point<LocalDate>> testData;
+    CustomFileWriter<Point> dataConverter;
+    List<Point> testData;
     String DELIMITER = "\\";
     String dir = "src" + DELIMITER + "test" + DELIMITER + "resources" + DELIMITER;
     String name = "testfile";

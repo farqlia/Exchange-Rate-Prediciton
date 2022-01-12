@@ -13,28 +13,37 @@ import java.util.List;
 public class LinearlyWeightedMovingAverage implements Algorithm{
 
     static RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
+    private int lookbackPeriod;
+
+    public LinearlyWeightedMovingAverage(int lookbackPeriod){
+        this.lookbackPeriod = lookbackPeriod;
+    }
+
+    public LinearlyWeightedMovingAverage(){
+        this.lookbackPeriod = 10;
+    }
 
     @Override
-    public List<Point<LocalDate>> forecastValuesForDates(List<Point<LocalDate>> expectedData, LocalDate startDate,
+    public List<Point> forecastValuesForDates(List<Point> expectedData, LocalDate startDate,
                                                          LocalDate endDate) {
 
         int startIndex = UtilityMethods.findIndexOfDate(startDate, expectedData);
         int endIndex = UtilityMethods.findIndexOfDate(endDate, expectedData);
 
-        int period = (int) ChronoUnit.DAYS.between(expectedData.get(0).getX(), startDate);
-        Weight weight = new Weight(period);
-        List<Point<LocalDate>> actualData = new ArrayList<>();
+        //int period = (int) ChronoUnit.DAYS.between(expectedData.get(0).getX(), startDate);
+        Weight weight = new Weight(lookbackPeriod);
+        List<Point> actualData = new ArrayList<>();
 
         for (int i = startIndex; i <= endIndex; i++){
 
             BigDecimal sum = BigDecimal.ZERO;
-            for (int j = i; j > 0 && j > (i - period); j--){
+            for (int j = i; j > 0 && j > (i - lookbackPeriod); j--){
                 // Sum the previous values * their corresponding weights
                 sum = sum.add(expectedData.get(j).getY().multiply(weight.nextWeight()));
             }
 
             // Predicted value is sum / sum of weights
-            actualData.add(new Point<>(expectedData.get(i).getX(),
+            actualData.add(new Point(expectedData.get(i).getX(),
                     sum.divide(weight.sumOfWeights(), ROUNDING_MODE)));
 
             // Set weight to the original state for the next point of data

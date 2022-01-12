@@ -11,7 +11,7 @@ public class ExchangeRate {
 
     private String currency, code;
     private Date effectiveDate;
-    private BigDecimal bid, ask;
+    private BigDecimal bid, ask, mid;
 
     public ExchangeRate(){}
 
@@ -23,6 +23,20 @@ public class ExchangeRate {
         this.ask = ask;
     }
 
+    public ExchangeRate(String currency, String code, Date effectiveDate, BigDecimal mid) {
+        this.currency = currency;
+        this.code = code;
+        this.effectiveDate = effectiveDate;
+        this.mid = mid;
+    }
+
+    public BigDecimal getMid() {
+        return mid;
+    }
+
+    public void setMid(BigDecimal mid) {
+        this.mid = mid;
+    }
 
     public String getCurrency() {
         return currency;

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import exchangerateclass.CurrencyName;
 import exchangerateclass.ExchangeRate;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import studyjson.CustomExchangeRateSerializer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -76,14 +78,29 @@ public class ExchangeRateTests {
         List<ExchangeRate> listOfExR = mapper.readValue(jsonList,
                 new TypeReference<List<ExchangeRate>>() {});
 
-        listOfExR.stream().forEach(x -> {
-            x.setCurrency("");
-            x.setCode("");
-        });
-
-        System.out.println(listOfExR);
+        Assertions.assertFalse(listOfExR.isEmpty());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(new BigDecimal("4.6671"), listOfExR.get(1).getBid()),
+                () -> Assertions.assertEquals(new BigDecimal("4.7613"), listOfExR.get(1).getAsk()),
+                () -> Assertions.assertEquals(LocalDate.parse("2021-11-29"), LocalDate.ofInstant(listOfExR.get(1).getEffectiveDate().toInstant(), ZoneId.of("CET")))
+        );
     }
 
+    @Test
+    void shouldConvertMidCourse() throws JsonProcessingException {
+        String json = "[{\"table\":\"A\",\"no\":\"003/A/NBP/2022\",\"effectiveDate\":\"2022-01-05\"," +
+                "\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1219}," +
+                "{\"currency\":\"dolar amerykański\",\"code\":\"USD\",\"mid\":4.0396}]}]";
 
+        List<ExchangeRate> listOfExR = mapper.readValue(json,
+                new TypeReference<List<ExchangeRate>>() {});
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(LocalDate.parse("2022-01-05"), LocalDate.ofInstant(listOfExR.get(0).getEffectiveDate().toInstant(), ZoneId.of("CET"))),
+                () -> Assertions.assertEquals(new BigDecimal("0.1219"), listOfExR.get(0).getMid()),
+                () -> Assertions.assertEquals("THB", listOfExR.get(0).getCode())
+        );
+
+    }
 
 }

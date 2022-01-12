@@ -6,25 +6,25 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class CustomIterator implements Iterator<Point<LocalDate>> {
+public abstract class CustomIterator implements Iterator<Point> {
 
-    protected List<Point<LocalDate>> data;
+    protected List<Point> data;
     protected LocalDate startDate,
                       endDate;
     protected int currIndex;
 
-    public CustomIterator(List<Point<LocalDate>> data, LocalDate startDate, LocalDate endDate) {
+    public CustomIterator(List<Point> data, LocalDate startDate, LocalDate endDate) {
         this.data = data;
         this.startDate = startDate;
         this.endDate = endDate;
         findStartIndex(startDate);
     }
 
-    public CustomIterator(List<Point<LocalDate>> data, LocalDate startDate){
+    public CustomIterator(List<Point> data, LocalDate startDate){
         this(data, startDate, LocalDate.now());
     }
 
-    public CustomIterator(List<Point<LocalDate>> data){
+    public CustomIterator(List<Point> data){
         this(data, data.get(0).getX(), LocalDate.now());
     }
 

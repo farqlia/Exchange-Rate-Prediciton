@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CSVParser implements PrintableAsCSV<Point<LocalDate>>{
+public class CSVParser implements PrintableAsCSV<Point>{
 
     private static final CSVParser instance = new CSVParser();
 
@@ -24,19 +24,19 @@ public class CSVParser implements PrintableAsCSV<Point<LocalDate>>{
         return instance;
     }
     @Override
-    public String getAsCSVString(Point<LocalDate> point) {
+    public String getAsCSVString(Point point) {
         return point.getX().format(dateFormatter) + delimiter + point.getY();
     }
 
     @Override
-    public Point<LocalDate> parseFromCSVString(String stringToParse) throws IncorrectDataFormat {
+    public Point parseFromCSVString(String stringToParse) throws IncorrectDataFormat {
         Matcher matcher = objectPattern.matcher(stringToParse);
 
         if (!matcher.matches()){
             throw new IncorrectDataFormat("Data is incorrectly formatted");
         }
 
-        return new Point<LocalDate>(LocalDate.parse(matcher.group("date"), dateFormatter),
+        return new Point(LocalDate.parse(matcher.group("date"), dateFormatter),
                 new BigDecimal(matcher.group("val")));
 
     }

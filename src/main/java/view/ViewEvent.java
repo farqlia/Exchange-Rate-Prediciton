@@ -1,7 +1,6 @@
 package view;
 
-import algorithms.Algorithm;
-import algorithms.AlgorithmNames;
+import algorithms.AlgorithmName;
 
 import java.time.LocalDate;
 
@@ -9,18 +8,27 @@ public class ViewEvent {
 
     LocalDate startDate;
     LocalDate endDate;
-    AlgorithmNames chosenAlgorithm;
+    AlgorithmName chosenAlgorithm;
     String currencyCode;
+    int lookbackPeriod;
 
     public ViewEvent(){};
 
     public ViewEvent(LocalDate startDate, LocalDate endDate,
-                     AlgorithmNames chosenAlgorithm,
-                     String currencyCode) {
+                     AlgorithmName chosenAlgorithm,
+                     String currencyCode,
+                     int lookbackPeriod) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.chosenAlgorithm = chosenAlgorithm;
         this.currencyCode = currencyCode;
+        this.lookbackPeriod = lookbackPeriod;
+    }
+
+    public ViewEvent(LocalDate startDate, LocalDate endDate,
+                     AlgorithmName chosenAlgorithm,
+                     String currencyCode) {
+        this(startDate, endDate, chosenAlgorithm, currencyCode, 5);
     }
 
     public LocalDate getStartDate() {
@@ -31,7 +39,7 @@ public class ViewEvent {
         return endDate;
     }
 
-    public AlgorithmNames getChosenAlgorithm() {
+    public AlgorithmName getChosenAlgorithm() {
         return chosenAlgorithm;
     }
 
@@ -39,5 +47,7 @@ public class ViewEvent {
         return currencyCode;
     }
 
-
+    public int getLookbackPeriod() {
+        return lookbackPeriod;
+    }
 }

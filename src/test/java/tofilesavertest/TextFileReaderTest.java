@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 
 public class TextFileReaderTest {
 
-    CustomFileReader<Point<LocalDate>> dataConverter;
-    List<Point<LocalDate>> testData;
+    CustomFileReader<Point> dataConverter;
+    List<Point> testData;
     String DELIMITER = "\\";
     String dir = "src" + DELIMITER + "test" + DELIMITER + "resources" + DELIMITER;
     String name = "testfiledonotdelete";
@@ -83,9 +83,9 @@ public class TextFileReaderTest {
     void shouldCorrectlyReadData() throws IOException, IncorrectDataFormat {
         new TextFileWriter<>(CSVParser.getInstance()).saveToFile(fileName,
                 testData);
-        List<Point<LocalDate>> readData = dataConverter.readFromFile(fileName);
+        List<Point> readData = dataConverter.readFromFile(fileName);
 
-        Iterator<Point<LocalDate>> itr = new AscendingIterator(testData);
+        Iterator<Point> itr = new AscendingIterator(testData);
         Assertions.assertAll(
                 readData.stream().map(x -> (() -> Assertions.assertEquals(itr.next(), x))));
     }

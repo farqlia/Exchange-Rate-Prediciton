@@ -18,7 +18,7 @@ public class JsonTest {
 
     @Test
     void shouldReturnList() throws JsonProcessingException {
-        String json = "[{\"tableModel\":\"A\",\"no\":\"253/A/NBP/2021\",\"effectiveDate\":\"2021-12-30\",\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1216}," +
+        String json = "[{\"algorithmTableModel\":\"A\",\"no\":\"253/A/NBP/2021\",\"effectiveDate\":\"2021-12-30\",\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1216}," +
                 "{\"currency\":\"dolar amerykański\",\"code\":\"USD\",\"mid\":4.0631}]}]";
         ObjectMapper mapper = new ObjectMapper();
 

@@ -18,7 +18,7 @@ public class ScienceLibraryTest {
     @BeforeEach
     void setUp(){
         // This will be a singleton class
-        library = ScienceLibrary.getInstance();
+        library = new ScienceLibrary();   // Change this later
     }
 
     @Test
@@ -26,7 +26,7 @@ public class ScienceLibraryTest {
 
         List<BigDecimal> data = DataGenerator.getInstance().generateSimpleData(dataset, BigDecimal.ONE,
                 new BigDecimal(".3"));
-        BigDecimal ME = library.calculateMeanError(data, data);
+        BigDecimal ME = ScienceLibrary.calculateMeanError(data, data);
         Assertions.assertEquals(ME.setScale(0, RoundingMode.CEILING), BigDecimal.ZERO);
 
     }

@@ -1,20 +1,22 @@
 package datasciencealgorithms.utils.point;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Objects;
 
-public class Point<E> {
+public class Point {
 
-    private final E x;     // aka key
-    private final BigDecimal y;     // aka value
+    private LocalDate x;
+    private BigDecimal y;
 
-    public Point(E x, BigDecimal y) {
+    public Point(LocalDate x, BigDecimal y) {
         this.x = x;
-        this.y = y.setScale(10, RoundingMode.HALF_DOWN);
+        this.y = y.setScale(8, RoundingMode.HALF_DOWN);
     }
 
-    public E getX() {
+    public LocalDate getX() {
         return x;
     }
 
@@ -24,6 +26,7 @@ public class Point<E> {
 
     @Override
     public String toString() {
+
         return "Point{" +
                 "x=" + x +
                 ", y=" + y +
@@ -42,4 +45,6 @@ public class Point<E> {
     public int hashCode() {
         return Objects.hash(getX(), getY());
     }
+
 }
+

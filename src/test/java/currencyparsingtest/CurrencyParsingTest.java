@@ -1,10 +1,13 @@
 package currencyparsingtest;
 
+import currencyparsing.currencymapper.CurrencyNameMapper;
 import currencyparsing.currencymapper.SingleRateMapper;
+import currencyparsing.currencyurlbuilders.AllCurrenciesURL;
 import currencyparsing.currencyurlbuilders.ConcreteCurrencyURL;
 import currencyparsing.currencyurlbuilders.MoneyType;
 import currencyparsing.currencyurlbuilders.Table;
 import currencyparsing.currencyurlworker.CurrencyWorker;
+import exchangerateclass.CurrencyName;
 import exchangerateclass.ExchangeRate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,20 @@ public class CurrencyParsingTest {
 
         List<ExchangeRate> rates = SingleRateMapper.getInstance().parse(response.get());
         Assertions.assertFalse(rates.isEmpty());
+    }
+
+    @Test
+    void shouldAlsoParseThis(){
+        CurrencyWorker cW = new CurrencyWorker();
+
+        Optional<String> response = cW.send(new AllCurrenciesURL.Builder(MoneyType.CURRENCY)
+                .addTable(Table.A).build().getURL());
+//.addDate(LocalDate.of(2022, 1, 3))
+        Assertions.assertTrue(response.isPresent());
+
+        List<CurrencyName> currencyNames = CurrencyNameMapper.getInstance().parse(response.get());
+        Assertions.assertFalse(currencyNames.isEmpty());
+        Assertions.assertTrue(currencyNames.size() > 1);
     }
 
 }

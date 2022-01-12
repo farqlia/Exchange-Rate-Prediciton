@@ -2,8 +2,8 @@ package currencyparsing.currencyurlbuilders;
 
 public class ConcreteCurrencyURL extends CurrencyURL{
 
-    private static final StringBuilder urlStrB = new StringBuilder();
-    private String currencyCode;
+    private StringBuilder urlStrB = new StringBuilder();
+    private String currencyCode = "";
 
     @Override
     StringBuilder getMiddlePart() {

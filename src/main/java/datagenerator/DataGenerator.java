@@ -19,7 +19,7 @@ public class DataGenerator {
         return dG;
     }
 
-    public List<Point<LocalDate>> generateDataWithTrend(int dataset, BigDecimal initialValue, BigDecimal trend){
+    public List<Point> generateDataWithTrend(int dataset, BigDecimal initialValue, BigDecimal trend){
         return generateDataWithTrend(dataset, initialValue, trend, 0);
     }
 
@@ -32,17 +32,17 @@ public class DataGenerator {
         return generateSimpleData(dataset, initialValue, trend, 0);
     }
 
-    public List<Point<LocalDate>> generateDataWithTrend(int dataset, BigDecimal initialValue, BigDecimal trend, double error){
+    public List<Point> generateDataWithTrend(int dataset, BigDecimal initialValue, BigDecimal trend, double error){
 
-        List<Point<LocalDate>> points = new ArrayList<>();
+        List<Point> points = new ArrayList<>();
         // The first point in our list is the oldest point
         LocalDate firstDay = LocalDate.now().minusDays(dataset - 1);
 
-        points.add(new Point<>(firstDay, initialValue));
+        points.add(new Point(firstDay, initialValue));
         for (int i = 1; i < dataset; i++) {
             // Time interval equals one day
             // General expression is F(t) = 2 * F(t - 1) - F(t - 2)
-            points.add(new Point<>(firstDay.plusDays(i),
+            points.add(new Point(firstDay.plusDays(i),
                     points.get(i - 1).getY().add(trend).add(BigDecimal.valueOf((Math.random() - .5) * error)))
             );
         }

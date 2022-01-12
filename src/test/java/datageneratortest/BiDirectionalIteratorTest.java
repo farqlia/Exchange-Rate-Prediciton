@@ -14,8 +14,8 @@ import java.util.List;
 
 public class BiDirectionalIteratorTest {
 
-    Iterator<Point<LocalDate>> itr;
-    List<Point<LocalDate>> data;
+    Iterator<Point> itr;
+    List<Point> data;
     int dataset = 5;
 
     @BeforeEach
@@ -54,7 +54,7 @@ public class BiDirectionalIteratorTest {
         itr = new BiDirectionalIterator(data, now.minusDays(1));
         itr.next();   // t
         itr.next();    // t - 1
-        Point<LocalDate> point = null;
+        Point point = null;
         if (itr.hasNext()) point = itr.next();
         // Initially the starting index is behind the point we wanted to start with
         Assertions.assertEquals(data.get(dataset - 2), point);

@@ -13,14 +13,14 @@ public class BiDirectionalIterator extends CustomIterator{
 
     // We get rid of step variable, since the number of steps is now number of calls to the
     // 'next()' method between two next call to the 'hasNext()'
-    public BiDirectionalIterator(List<Point<LocalDate>> data, LocalDate startDate, LocalDate endDate){
+    public BiDirectionalIterator(List<Point> data, LocalDate startDate, LocalDate endDate){
         super(data, startDate, endDate);
         // We start out of actual range because this index
         // is incremented by one with the first call to the hasNext() method
         indexMovingBackward = --currIndex;
     }
 
-    public BiDirectionalIterator(List<Point<LocalDate>> data, LocalDate startDate){
+    public BiDirectionalIterator(List<Point> data, LocalDate startDate){
         this(data, startDate, LocalDate.now());
     }
 
@@ -32,7 +32,7 @@ public class BiDirectionalIterator extends CustomIterator{
     }
 
     @Override
-    public Point<LocalDate> next() {
+    public Point next() {
 
         if (indexMovingBackward == 0){
             return data.get(0);

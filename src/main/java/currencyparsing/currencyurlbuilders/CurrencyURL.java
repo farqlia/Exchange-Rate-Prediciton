@@ -8,7 +8,7 @@ public abstract class CurrencyURL {
     static char sep = '/';
     String table, date;
     private final String baseAddress = "http://api.nbp.pl/api/";
-    private final StringBuilder urlStrB;
+    private StringBuilder urlStrB;
 
     // Middle part of the request is what varies, but the part about
     // date is shared so we should extract that
@@ -38,7 +38,7 @@ public abstract class CurrencyURL {
 
         public T addDate(int last){
             if (last > 0 && last < 93){
-                date = "last" + sep + last+ sep;
+                date = "last" + sep + last + sep;
             }
             return self();
         }
@@ -55,7 +55,7 @@ public abstract class CurrencyURL {
             if (date.compareTo(LocalDate.now()) == 0){
                 this.date = "today" + sep;
             }
-            if (date.compareTo(LocalDate.now()) < 0){
+            else if (date.compareTo(LocalDate.now()) < 0){
                 this.date = date.format(dTF) + sep;
             }
             return self();

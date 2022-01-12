@@ -3,6 +3,7 @@ package currencyparsingtest;
 import currencyparsing.currencyurlbuilders.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -115,6 +116,20 @@ public class CurrencyURLBuilderTest {
         currencyURL = b.build();
         Assertions.assertEquals(baseAddress + "exchangerates/rates/", currencyURL.getURL());
 
+    }
+
+    ConcreteCurrencyURL.Builder builder;
+
+    @BeforeEach
+    void setUp2(){
+        builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
+    }
+
+    @RepeatedTest(3)
+    void shouldResetAllFieldsMultipleTimes(){
+        CurrencyURL url = builder.reset().addTable(Table.A).addCurrencyCode("EUR").addDate(2).build();
+        Assertions.assertEquals("http://api.nbp.pl/api/exchangerates/rates/A/EUR/last/2/",
+                url.getURL());
     }
 
 }

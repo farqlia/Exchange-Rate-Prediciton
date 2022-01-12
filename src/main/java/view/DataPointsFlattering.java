@@ -1,39 +1,48 @@
 package view;
 
+import datasciencealgorithms.utils.UtilityMethods;
 import datasciencealgorithms.utils.point.Point;
+import iterators.AscendingIterator;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-public class DataPointsFlattering implements DataFlattering<Point<LocalDate>> {
+public class DataPointsFlattering {
 
-    private static final DataPointsFlattering instance = new DataPointsFlattering();
+    public static Vector<Vector<Object>> flatten(List<Point> biggerList,List<Point> smallerList) {
 
-    private DataPointsFlattering(){}
+        Vector<Vector<Object>> flatData = new Vector<Vector<Object>>(biggerList.size());
 
-    public static DataPointsFlattering getInstance(){
-        return instance;
-    }
+        Iterator<Point> bItr = new AscendingIterator(biggerList,
+                smallerList.get(0).getX(), smallerList.get(smallerList.size() - 1).getX());
 
-    @SafeVarargs
-    @Override
-    public final Object[][] flatten(List<Point<LocalDate>>... data) {
+        Iterator<Point> sItr = new AscendingIterator(smallerList);
 
-        assert data.length == 2;
-        assert !data[0].isEmpty() && !data[1].isEmpty();
-
-        List<Point<LocalDate>> l1 = data[0];
-        List<Point<LocalDate>> l2 = data[1];
-
-        Object[][] flatData = new Object[l1.size()][3];
-
-        for (int i = 0; i < l1.size(); i++){
-            flatData[i][0] = l1.get(i).getX();
-            flatData[i][1] = l1.get(i).getY();
-            flatData[i][2] = l2.get(i).getY();
+        for (int i = 0; (bItr.hasNext() && sItr.hasNext()); i++){
+            Point p = bItr.next();
+            flatData.add(new Vector<>(3));
+            flatData.get(i).add(p.getX());
+            flatData.get(i).add(p.getY());
+            flatData.get(i).add(sItr.next().getY());
         }
 
         return flatData;
     }
+
+    /**
+     * Adds to each vector (row) elements from column Object[] data
+     * @param data to be concat
+     * @param args arrays to be concatenated, column-wise
+     */
+    public static void concat (Vector<Vector<Object>> data, Object[] ... args){
+
+        for (Object[] arg : args){
+            for (int i = 0; (i < arg.length && i < data.size()); i++){
+                data.get(i).add(arg[i]);
+            }
+        }
+    }
+
 }

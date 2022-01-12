@@ -17,7 +17,7 @@ import java.util.List;
 
 public class NaiveAlgorithmTest {
 
-    List<Point<LocalDate>> dataPoints;
+    List<Point> dataPoints;
 
     @BeforeEach
     void setUp(){
@@ -34,8 +34,8 @@ public class NaiveAlgorithmTest {
         LocalDate sD = dataPoints.get(2).getX(),
                 eD = LocalDate.now().minusDays(1);
 
-        List<Point<LocalDate>> list = naiveAlgorithmWithTrend.forecastValuesForDates(dataPoints, sD, eD);
-        Iterator<Point<LocalDate>> itr = new AscendingIterator(dataPoints, sD, eD);
+        List<Point> list = naiveAlgorithmWithTrend.forecastValuesForDates(dataPoints, sD, eD);
+        Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
 
         Assertions.assertAll(
                 list.stream()
@@ -54,8 +54,8 @@ public class NaiveAlgorithmTest {
         LocalDate sD = dataPoints.get(3).getX(),
                 eD = LocalDate.now().minusDays(1);
 
-        List<Point<LocalDate>> list = naiveAlgorithmWithTrendAndAverageIncrement.forecastValuesForDates(dataPoints, sD, eD);
-        Iterator<Point<LocalDate>> itr = new AscendingIterator(dataPoints, sD, eD);
+        List<Point> list = naiveAlgorithmWithTrendAndAverageIncrement.forecastValuesForDates(dataPoints, sD, eD);
+        Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
 
         Assertions.assertAll(
                 list.stream()

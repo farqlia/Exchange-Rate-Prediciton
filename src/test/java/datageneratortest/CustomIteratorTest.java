@@ -15,8 +15,8 @@ import java.util.List;
 
 public class CustomIteratorTest {
 
-    Iterator<Point<LocalDate>> itr;
-    List<Point<LocalDate>> data;
+    Iterator<Point> itr;
+    List<Point> data;
     int dataset = 7;
 
     @BeforeEach
@@ -28,7 +28,7 @@ public class CustomIteratorTest {
     void shouldMoveToNextElementAscendingIterator(){
 
         itr = new AscendingIterator(data, LocalDate.now().minusDays(7));
-        Point<LocalDate> nextPoint = itr.next();
+        Point nextPoint = itr.next();
         Assertions.assertEquals(data.get(0).getX(), nextPoint.getX());
 
     }

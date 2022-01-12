@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface Algorithm {
 
-    List<Point<LocalDate>> forecastValuesForDates(List<Point<LocalDate>> expectedData,
+    List<Point> forecastValuesForDates(List<Point> expectedData,
                                                   LocalDate startDate, LocalDate endDate);
+
 }

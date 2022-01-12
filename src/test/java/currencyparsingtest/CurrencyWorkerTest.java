@@ -25,12 +25,22 @@ public class CurrencyWorkerTest {
     }
 
     @Test
+    void shouldSendSuccessfulRequestForTables(){
+        String exampleRequest = "http://api.nbp.pl/api/exchangerates/tables/a/";
+
+        Optional<String> opt = currencyWorker.send(exampleRequest);
+        Assertions.assertTrue(opt.isPresent());
+    }
+
+    @Test
     void shouldReturnEmptyOptionalForLackingData(){
         String exampleRequest = "http://api.nbp.pl/api/exchangerates/rates/c/usd/2022-01-01/";
 
         Optional<String> opt = currencyWorker.send(exampleRequest);
         Assertions.assertTrue(opt.isEmpty());
     }
+
+
     @Test
     void shouldReturnEmptyOptionalForTooLargeTimePeriod(){
         String exampleRequest = "http://api.nbp.pl/api/exchangerates/rates/c/usd/2022-01-01/";
@@ -46,7 +56,5 @@ public class CurrencyWorkerTest {
         Optional<String> opt = currencyWorker.send(exampleRequest);
         Assertions.assertTrue(opt.isEmpty());
     }
-
-/* */
 
 }

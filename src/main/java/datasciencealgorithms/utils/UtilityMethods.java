@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class UtilityMethods {
 
-    public static int findIndexOfDate(LocalDate date, List<Point<LocalDate>> data){
+    public static int findIndexOfDate(LocalDate date, List<Point> data){
         int currIndex = Collections.binarySearch(
                 // We look for an index based on a date: if it's not found, then based on return
                 // value we can compute the index of the next biggest value
@@ -18,6 +18,10 @@ public class UtilityMethods {
 
         if (currIndex < 0){
             currIndex = -currIndex - 1;
+        }
+
+        if (currIndex == data.size()){
+            currIndex--;
         }
         return currIndex;
     }
