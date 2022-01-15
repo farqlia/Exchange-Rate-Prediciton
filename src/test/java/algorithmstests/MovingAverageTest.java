@@ -1,6 +1,8 @@
 package algorithmstests;
 
 import algorithms.*;
+import dataconverter.writersandreaders.PointToCSV;
+import dataconverter.writersandreaders.TextFileReader;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
 import iterators.AscendingIterator;
@@ -8,10 +10,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class MovingAverageTest {
 
@@ -24,48 +29,83 @@ public class MovingAverageTest {
 
 
     @Test
-    void shouldTestForMovingAverageMean(){
+    void shouldTestForMovingAverageMean() throws InterruptedException {
 
+        int dataset = 40;
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(dataset);
         // Initial value for k
         Algorithm movingAverageMean =
-                new MovingAverageMeanAlgorithm();
+                new MovingAverageMeanAlgorithm(queue, 5);
 
-        int dataset = 30;
         dataPoints = DataGenerator.getInstance().generateDataWithTrend(dataset,
-                BigDecimal.ONE, new BigDecimal(".05"));
+                BigDecimal.ONE, new BigDecimal(".05"), 1);
 
         LocalDate sD = LocalDate.now().minusDays(20);
         LocalDate eD = LocalDate.now();
 
-        List<Point> predicted = movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
+        movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
 
-        Assertions.assertFalse(predicted.isEmpty());
+        Assertions.assertFalse(queue.isEmpty());
         Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
+
         Assertions.assertAll(
-                predicted.stream()
-                        .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .5))));
+                queue.stream()
+                        .filter(x -> !x.equals(Point.EMPTY_POINT))
+                        .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(),
+                                x.getY().doubleValue(), 2))));
+
+
 
     }
 
     @Test
-    void shouldTestForLinearlyWeightedAverageMean(){
-
-        Algorithm linearlyWeightedMovingAverage =
-                new LinearlyWeightedMovingAverage();
+    void shouldTestForMovingAverageMeanWithRealData() throws IOException, InterruptedException {
+        // Initial value for k
 
         int dataset = 30;
-        dataPoints = DataGenerator.getInstance().generateDataWithTrend(dataset,
-                BigDecimal.ONE, new BigDecimal(".05"));
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(dataset);
+        Algorithm movingAverageMean =
+                new MovingAverageMeanAlgorithm(queue, 5);
+
+        dataPoints = new TextFileReader<>(new PointToCSV()).readFromFile("exampledata\\dp2.txt");
 
         LocalDate sD = LocalDate.now().minusDays(20);
         LocalDate eD = LocalDate.now();
 
-        List<Point> predicted = linearlyWeightedMovingAverage.forecastValuesForDates(dataPoints, sD, eD);
+        movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
 
-        Assertions.assertFalse(predicted.isEmpty());
+        Assertions.assertFalse(queue.isEmpty());
+        Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
+
+        Assertions.assertAll(
+                queue.stream()
+                        .filter(x -> !x.equals(Point.EMPTY_POINT))
+                        .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .5))));
+
+
+    }
+
+    @Test
+    void shouldTestForLinearlyWeightedAverageMean() throws IOException, InterruptedException {
+
+        int dataset = 30;
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(dataset);
+
+        Algorithm linearlyWeightedMovingAverage =
+                new LinearlyWeightedMovingAverage(queue, 5);
+
+        dataPoints = new TextFileReader<>(new PointToCSV()).readFromFile("exampledata\\dp2.txt");
+
+        LocalDate sD = LocalDate.now().minusDays(20);
+        LocalDate eD = LocalDate.now();
+
+        linearlyWeightedMovingAverage.forecastValuesForDates(dataPoints, sD, eD);
+
+        Assertions.assertFalse(queue.isEmpty());
         Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
         Assertions.assertAll(
-                predicted.stream()
+                queue.stream()
+                        .filter(x -> !x.equals(Point.EMPTY_POINT))
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .5))));
 
     }

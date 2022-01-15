@@ -1,7 +1,6 @@
 package dataconverter.writersandreaders;
 
-import dataconverter.PrintableAsCSV;
-import dataconverter.writersandreaders.CustomFileWriter;
+import dataconverter.Formatter;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -11,16 +10,16 @@ import java.util.List;
 
 public class TextFileWriter<E> extends CustomFileWriter<E> {
 
-    PrintableAsCSV<E> p;
+    Formatter<E> p;
 
-    public TextFileWriter(PrintableAsCSV<E> printer){
+    public TextFileWriter(Formatter<E> printer){
         super("txt");
         p = printer;
     }
 
 
     @Override
-    void handleObjectWriting(String path, List<E> data) throws IOException {
+    void handleObjectWriting(String path, List<? extends E> data) throws IOException {
 
         // We assume that the fields are separated by a comma
         try (PrintWriter pW = new PrintWriter(new BufferedWriter(new FileWriter(path)))){

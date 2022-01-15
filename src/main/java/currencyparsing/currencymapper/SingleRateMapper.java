@@ -24,7 +24,7 @@ public class SingleRateMapper extends CurrencyObjectMapper<ExchangeRate>{
     protected List<ExchangeRate> parse(JsonNode root) {
         assert root != null;
         List<ExchangeRate> list = mapper.convertValue(root.at(ratesPointer),
-                new TypeReference<List<ExchangeRate>>(){});
+                new TypeReference<>(){});
         String currency = mapper.convertValue(root.at(currencyPointer), String.class);
         String code = mapper.convertValue(root.at(codePointer), String.class);
 

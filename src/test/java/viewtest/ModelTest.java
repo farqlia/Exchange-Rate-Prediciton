@@ -1,52 +1,76 @@
 package viewtest;
 
 import algorithms.AlgorithmName;
-import dataconverter.IncorrectDataFormat;
-import dataconverter.writersandreaders.CSVParser;
+import dataconverter.writersandreaders.PointToCSV;
 import dataconverter.writersandreaders.TextFileReader;
-import datasciencealgorithms.utils.UtilityMethods;
 import datasciencealgorithms.utils.point.Point;
-import mathlibraries.ScienceLibrary;
-import mathlibraries.Statistics;
 import model.Model;
-import net.bytebuddy.asm.Advice;
-import org.junit.jupiter.api.Assertions;
+import model.ModelEvent;
+import model.ModelObserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Stack;
-import java.util.stream.Collectors;
 
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 public class ModelTest {
 
     Model model;
     List<Point> exampleDataPoints;
+    @Mock
+    ModelObserver observer;
 
     @BeforeEach
-    void setUp() throws IOException, IncorrectDataFormat {
+    void setUp() throws IOException {
         model = new Model();
-        exampleDataPoints = new TextFileReader<Point>(CSVParser.getInstance())
+        exampleDataPoints = new TextFileReader<Point>(new PointToCSV())
                 .readFromFile("exampledata\\dp2.txt");
+        model.registerObserver(observer);
     }
 
     @Test
-    void shouldChooseCorrectAlgorithm(){
+    void shouldNotifyObserverAboutStart(){
         model.setAlgorithm(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM, 5);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 
-        List<Point> predicted = model.predict(exampleDataPoints, startDate,
-                LocalDate.now());
+        model.predict(exampleDataPoints, startDate, LocalDate.now());
 
-        int startIndex = UtilityMethods.findIndexOfDate(startDate, exampleDataPoints);
-        Assertions.assertEquals(exampleDataPoints.size() - startIndex, predicted.size());
+        verify(observer).update(ModelEvent.DATA_PROCESS_STARTED);
     }
 
+    @Test
+    void shouldNotifyObserver(){
 
+        model.setAlgorithm(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM, 5);
 
+        LocalDate startDate = LocalDate.of(2021, 12, 23);
+
+        model.predict(exampleDataPoints, startDate, LocalDate.now());
+
+        verify(observer, timeout(Duration.ofSeconds(2).toMillis())).update(ModelEvent.DATA_IN_PROCESS);
+
+    }
+
+    @Test
+    void shouldReturnNonNullList(){
+
+        model.setAlgorithm(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM, 5);
+
+        LocalDate startDate = LocalDate.of(2021, 12, 23);
+
+        model.predict(exampleDataPoints, startDate, LocalDate.now());
+
+        verify(observer, timeout(Duration.ofSeconds(2).toMillis())).update(ModelEvent.DATA_IN_PROCESS);
+
+    }
 }

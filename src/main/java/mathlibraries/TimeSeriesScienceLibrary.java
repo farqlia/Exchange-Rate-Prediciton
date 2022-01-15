@@ -14,20 +14,20 @@ public class TimeSeriesScienceLibrary {
             new MathContext(MathContext.DECIMAL32.getPrecision(), RoundingMode.HALF_UP);
 
 
-    public static BigDecimal calculateRootMeanSquareError(List<Point> predictedData, List<Point> expectedData){
-        return calculateRootMeanSquareErrorK(predictedData, expectedData, 1);
+    public static BigDecimal calculateRootMeanSquareError(List<Point> predictedDataData, List<Point> realDataData){
+        return calculateRootMeanSquareErrorK(predictedDataData, realDataData, 1);
     }
 
-    public static BigDecimal calculateRootMeanSquareErrorK(List<Point> predictedData, List<Point> expectedData,
+    public static BigDecimal calculateRootMeanSquareErrorK(List<Point> predictedDataData, List<Point> realDataData,
                                                            int k){
 
-        int n = predictedData.size();
+        int n = predictedDataData.size();
         BigDecimal sumOfErrors = BigDecimal.ZERO;
 
-        // Iterators for actual and expected data
-        AscendingIterator preItr = new AscendingIterator(predictedData);
-        AscendingIterator exItr = new AscendingIterator(expectedData, predictedData.get(0).getX(),
-                predictedData.get(n - 1).getX());
+        // Iterators for actual and realData data
+        AscendingIterator preItr = new AscendingIterator(predictedDataData);
+        AscendingIterator exItr = new AscendingIterator(realDataData, predictedDataData.get(0).getX(),
+                predictedDataData.get(n - 1).getX());
 
 
         while (preItr.hasNext() && exItr.hasNext()) {
@@ -42,18 +42,18 @@ public class TimeSeriesScienceLibrary {
 
     }
 
-    public static BigDecimal calculateRootMeanSquarePercentageError(List<Point> predictedData, List<Point> expectedData){
-        return calculateRootMeanSquarePercentageErrorK(predictedData, expectedData, 1);
+    public static BigDecimal calculateRootMeanSquarePercentageError(List<Point> predictedDataData, List<Point> realDataData){
+        return calculateRootMeanSquarePercentageErrorK(predictedDataData, realDataData, 1);
     }
 
-    public static BigDecimal calculateRootMeanSquarePercentageErrorK(List<Point> predictedData, List<Point> expectedData,
+    public static BigDecimal calculateRootMeanSquarePercentageErrorK(List<Point> predictedDataData, List<Point> realDataData,
                                                                      int k) {
-        int n = predictedData.size();
+        int n = predictedDataData.size();
         BigDecimal sumOfErrors = BigDecimal.ZERO;
-        // Iterators for actual and expected data
-        AscendingIterator preItr = new AscendingIterator(predictedData);
-        AscendingIterator exItr = new AscendingIterator(expectedData, predictedData.get(0).getX(),
-                predictedData.get(n - 1).getX());
+        // Iterators for actual and realData data
+        AscendingIterator preItr = new AscendingIterator(predictedDataData);
+        AscendingIterator exItr = new AscendingIterator(realDataData, predictedDataData.get(0).getX(),
+                predictedDataData.get(n - 1).getX());
 
 
         while (preItr.hasNext() && exItr.hasNext()) {
@@ -66,21 +66,21 @@ public class TimeSeriesScienceLibrary {
                 .sqrt(ROUNDING_MODE);
     }
 
-    public static BigDecimal calculateMeanAbsoluteError(List<Point> predictedData, List<Point> expectedData){
-        return calculateMeanAbsoluteErrorK(predictedData, expectedData, 1);
+    public static BigDecimal calculateMeanAbsoluteError(List<Point> predictedDataData, List<Point> realDataData){
+        return calculateMeanAbsoluteErrorK(predictedDataData, realDataData, 1);
     }
 
-    // predictedData : predicted data, it has an actual range of dates we should consider in
+    // predictedDataData : predictedData data, it has an actual range of dates we should consider in
     // calculations
-    public static BigDecimal calculateMeanAbsoluteErrorK(List<Point> predictedData, List<Point> expectedData,
+    public static BigDecimal calculateMeanAbsoluteErrorK(List<Point> predictedDataData, List<Point> realDataData,
                                                          int k){
 
-        int n = predictedData.size();
+        int n = predictedDataData.size();
         BigDecimal sumOfErrors = BigDecimal.ZERO;
-        // Iterators for actual and expected data
-        AscendingIterator preItr = new AscendingIterator(predictedData);
-        AscendingIterator exItr = new AscendingIterator(expectedData, predictedData.get(0).getX(),
-                predictedData.get(n - 1).getX());
+        // Iterators for actual and realData data
+        AscendingIterator preItr = new AscendingIterator(predictedDataData);
+        AscendingIterator exItr = new AscendingIterator(realDataData, predictedDataData.get(0).getX(),
+                predictedDataData.get(n - 1).getX());
 
 
         while (preItr.hasNext() && exItr.hasNext()) {
@@ -94,22 +94,22 @@ public class TimeSeriesScienceLibrary {
         return sumOfErrors.divide(new BigDecimal(n - k), ROUNDING_MODE);
     }
 
-    public static BigDecimal calculateMeanAbsolutePercentageError(List<Point> predictedData, List<Point> expectedData){
-        return calculateMeanAbsolutePercentageErrorK(predictedData, expectedData, 1);
+    public static BigDecimal calculateMeanAbsolutePercentageError(List<Point> predictedDataData, List<Point> realDataData){
+        return calculateMeanAbsolutePercentageErrorK(predictedDataData, realDataData, 1);
     }
 
-    // predictedData : predicted data, it has an actual range of dates we should consider in
+    // predictedDataData : predictedData data, it has an actual range of dates we should consider in
     // calculations
-    public static BigDecimal calculateMeanAbsolutePercentageErrorK(List<Point> predictedData, List<Point> expectedData,
+    public static BigDecimal calculateMeanAbsolutePercentageErrorK(List<Point> predictedDataData, List<Point> realDataData,
                                                                    int k){
 
-        int n = predictedData.size();
+        int n = predictedDataData.size();
         BigDecimal sumOfErrors = BigDecimal.ZERO;
 
-        // Iterators for actual and expected data
-        AscendingIterator preItr = new AscendingIterator(predictedData);
-        AscendingIterator exItr = new AscendingIterator(expectedData, predictedData.get(0).getX(),
-                predictedData.get(n - 1).getX());
+        // Iterators for actual and realData data
+        AscendingIterator preItr = new AscendingIterator(predictedDataData);
+        AscendingIterator exItr = new AscendingIterator(realDataData, predictedDataData.get(0).getX(),
+                predictedDataData.get(n - 1).getX());
 
 
         while (preItr.hasNext() && exItr.hasNext()) {
@@ -122,25 +122,37 @@ public class TimeSeriesScienceLibrary {
 
     }
 
-    public static BigDecimal[] calculateAbsoluteError(List<Point> expected, List<Point> predicted){
+    public static BigDecimal[] calculateAbsoluteError(List<Point> realData, List<Point> predictedData){
 
-        BigDecimal[] errorsArr = new BigDecimal[predicted.size()];
+        int n = predictedData.size();
+        BigDecimal[] errorsArr = new BigDecimal[n];
+        // Iterators for actual and realData data
+        AscendingIterator preItr = new AscendingIterator(predictedData);
+        AscendingIterator exItr = new AscendingIterator(realData, predictedData.get(0).getX(),
+                predictedData.get(n - 1).getX());
 
-        for (int i = 0; i < expected.size(); i++){
-            errorsArr[i] = expected.get(i).getY().subtract(predicted.get(i).getY());
+
+        int i = 0;
+        while (preItr.hasNext() && exItr.hasNext()) {
+            errorsArr[i++] = exItr.next().getY().subtract(preItr.next().getY());
         }
         return errorsArr;
     }
 
-    public static BigDecimal[] calculatePercentageError(List<Point> expected, List<Point> predicted){
+    public static BigDecimal[] calculatePercentageError(List<Point> realData, List<Point> predictedData){
 
-        BigDecimal[] errorsArr = new BigDecimal[predicted.size()];
+        int n = predictedData.size();
+        BigDecimal[] errorsArr = new BigDecimal[n];
+        // Iterators for actual and realData data
+        AscendingIterator preItr = new AscendingIterator(predictedData);
+        AscendingIterator exItr = new AscendingIterator(realData, predictedData.get(0).getX(),
+                predictedData.get(n- 1).getX());
 
-        for (int i = 0; i < expected.size(); i++){
-            // 1 - (yt*/yt)
-            errorsArr[i] = BigDecimal.ONE.subtract(expected.get(i).getY().divide(predicted.get(i).getY(),
-                    ROUNDING_MODE));
+        for (int i = 0; exItr.hasNext() && preItr.hasNext(); i++){
+            errorsArr[i] = BigDecimal.ONE.subtract(preItr.next().getY().divide(exItr.next().getY(), ROUNDING_MODE))
+                    .abs().multiply(new BigDecimal("100"));
         }
+
         return errorsArr;
     }
 

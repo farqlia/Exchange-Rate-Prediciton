@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface Algorithm {
 
-    List<Point> forecastValuesForDates(List<Point> expectedData,
-                                                  LocalDate startDate, LocalDate endDate);
+    void forecastValuesForDates(List<Point> realData,
+                                                  LocalDate startDate, LocalDate endDate) throws InterruptedException;
 
 }

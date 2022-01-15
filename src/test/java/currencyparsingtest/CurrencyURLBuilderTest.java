@@ -1,10 +1,7 @@
 package currencyparsingtest;
 
 import currencyparsing.currencyurlbuilders.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
 

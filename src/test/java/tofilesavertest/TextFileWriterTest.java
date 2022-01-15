@@ -1,10 +1,11 @@
 package tofilesavertest;
 
 import dataconverter.writersandreaders.CustomFileWriter;
+import dataconverter.writersandreaders.FileHandler;
 import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.Parser;
-import dataconverter.writersandreaders.CSVParser;
+import dataconverter.writersandreaders.PointToCSV;
 import datasciencealgorithms.utils.point.Point;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,23 +15,26 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class TextFileWriterTest {
 
     CustomFileWriter<Point> dataConverter;
+    FileHandler handler;
     List<Point> testData;
     String DELIMITER = "\\";
     String dir = "src" + DELIMITER + "test" + DELIMITER + "resources" + DELIMITER;
-    String name = "testfile";
+    String name;
     String extension = "txt";
-    String fileName = dir + name + "." + extension;
+    String fileName;
 
 
     @BeforeEach
     void setUp(){
-        dataConverter = new TextFileWriter<>(CSVParser.getInstance());
+        dataConverter = new TextFileWriter<>(new PointToCSV());
+        name = "testfile" + (int)(Math.random() * 10);
+        fileName = dir + name + "." + extension;
+        handler = new FileHandler(extension);
         testData = DataGenerator.getInstance()
                 .generateDataWithTrend(10, BigDecimal.ONE, new BigDecimal(".2"));
     }
@@ -38,13 +42,13 @@ public class TextFileWriterTest {
     @Test
     void shouldNtParseFileName(){
         Exception e = Assertions.assertThrows(IOException.class,
-            () -> dataConverter.parseFilePath("somefile"));
+            () -> handler.parseFilePath("somefile"));
         Assertions.assertEquals(e.getMessage(), "Incorrect File Name");
     }
 
     @Test
     void shouldParseWithTheCorrectExtension() {
-        Assertions.assertDoesNotThrow(() -> dataConverter.parseFilePath(fileName));
+        Assertions.assertDoesNotThrow(() -> handler.parseFilePath(fileName));
 
     }
 
@@ -53,7 +57,7 @@ public class TextFileWriterTest {
         String path = "some" + DELIMITER + "random.pdf";
 
         Exception e = Assertions.assertThrows(IOException.class,
-                () -> dataConverter.parseFilePath(path));
+                () -> handler.parseFilePath(path));
         Assertions.assertEquals(e.getMessage(), "Unsupported Extension; Supported Extensions are: txt");
     }
 
@@ -61,7 +65,8 @@ public class TextFileWriterTest {
     void shouldCreateDirectory() {
         // It should built the path and create all necessary directories and files
         Assertions.assertDoesNotThrow(() -> dataConverter.saveToFile(fileName, testData));
-        File file = new File(dataConverter.getProperty(Parser.Entries.DIRECTORY));
+        Assertions.assertDoesNotThrow(() -> handler.parseFilePath(fileName));
+        File file = new File(handler.getProperty(Parser.Entries.DIRECTORY));
         Assertions.assertTrue(file.isDirectory());
 
     }
@@ -70,7 +75,8 @@ public class TextFileWriterTest {
     void shouldCreateFile() throws IOException {
         // It should built the path and create all necessary directories and files
         dataConverter.saveToFile(fileName, testData);
-        File file = new File(dataConverter.getProperty(Parser.Entries.FILEPATH));
+        handler.parseFilePath(fileName);
+        File file = new File(handler.getProperty(Parser.Entries.FILEPATH));
         Assertions.assertTrue(file.exists());
     }
 

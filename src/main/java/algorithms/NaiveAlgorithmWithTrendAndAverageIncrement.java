@@ -5,29 +5,28 @@ import datasciencealgorithms.utils.UtilityMethods;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class NaiveAlgorithmWithTrendAndAverageIncrement implements Algorithm{
 
     RoundingMode roundingMode = RoundingMode.HALF_UP;
-    private int lookbackPeriod;
+    private final int lookbackPeriod;
+    private final BlockingQueue<Point> queue;
 
-    public NaiveAlgorithmWithTrendAndAverageIncrement(int lookbackPeriod){
+    public NaiveAlgorithmWithTrendAndAverageIncrement(BlockingQueue<Point> queue, int lookbackPeriod){
         this.lookbackPeriod = lookbackPeriod;
-    }
-
-    public NaiveAlgorithmWithTrendAndAverageIncrement(){
-        this.lookbackPeriod = 10;
+        this.queue = queue;
     }
 
     @Override
-    public List<Point> forecastValuesForDates(List<Point> expectedData, LocalDate startDate, LocalDate endDate) {
+    public void forecastValuesForDates(List<Point> realData, LocalDate startDate, LocalDate endDate) throws InterruptedException{
 
-        List<Point> generatedData = new ArrayList<>();
-        int startIndex = UtilityMethods.findIndexOfDate(startDate, expectedData);
-        int endIndex = UtilityMethods.findIndexOfDate(endDate, expectedData);
+        int startIndex = UtilityMethods.findIndexOfDate(startDate, realData);
+        int endIndex = UtilityMethods.findIndexOfDate(endDate, realData);
 
         for (int i = startIndex; i <= endIndex; i++){
 
@@ -36,14 +35,15 @@ public class NaiveAlgorithmWithTrendAndAverageIncrement implements Algorithm{
             for (int j = i - 2; j > (i - 2 - lookbackPeriod); j--){
                 sumForAverage = sumForAverage.add(
                         // min is not minus :)
-                        expectedData.get(j).getY().subtract(expectedData.get(j - 1).getY()));
+                        realData.get(j).getY().subtract(realData.get(j - 1).getY()));
             }
 
-            generatedData.add(new Point(expectedData.get(i).getX(),
-                    expectedData.get(i - 1).getY()
+            queue.put(new Point(realData.get(i).getX(),
+                    realData.get(i - 1).getY()
                             .add(sumForAverage.divide(new BigDecimal(lookbackPeriod), roundingMode))));
+            SleepingThread.sleep();
 
         }
-        return generatedData;
+        queue.put(Point.EMPTY_POINT);
     }
 }

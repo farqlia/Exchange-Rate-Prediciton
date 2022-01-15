@@ -14,51 +14,59 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class NaiveAlgorithmTest {
 
     List<Point> dataPoints;
+    int dataset;
 
     @BeforeEach
     void setUp(){
-        dataPoints = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, new BigDecimal(".2"));
+        dataset = 20;
+        dataPoints = DataGenerator.getInstance().generateDataWithTrend(dataset, BigDecimal.ONE, new BigDecimal(".2"));
     }
 
     @Test
-    void shouldTestForNaiveModelWithTrend(){
+    void shouldTestForNaiveModelWithTrend() throws InterruptedException {
 
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(dataset);
         Algorithm naiveAlgorithmWithTrend =
-                new NaiveAlgorithmWithTrend();
+                new NaiveAlgorithmWithTrend(queue);
 
         // We start off with some later date because the 1st values are not computed correctly
         LocalDate sD = dataPoints.get(2).getX(),
                 eD = LocalDate.now().minusDays(1);
 
-        List<Point> list = naiveAlgorithmWithTrend.forecastValuesForDates(dataPoints, sD, eD);
+        naiveAlgorithmWithTrend.forecastValuesForDates(dataPoints, sD, eD);
         Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
 
         Assertions.assertAll(
-                list.stream()
+                queue.stream()
+                        .filter(x -> !x.equals(Point.EMPTY_POINT))
                         // At this point of testing, we only test whether an algorithm computes values correctly
                         // We don't test a real data we would receive normally
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .1))));
     }
 
     @Test
-    void shouldTestForNaiveModelWithTrendAndAverageIncrement(){
+    void shouldTestForNaiveModelWithTrendAndAverageIncrement() throws InterruptedException {
 
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(dataset);
         Algorithm naiveAlgorithmWithTrendAndAverageIncrement =
-                new NaiveAlgorithmWithTrendAndAverageIncrement();
+                new NaiveAlgorithmWithTrendAndAverageIncrement(queue, 2);
 
         // We start off with some later date because the 1st values are not computed correctly
-        LocalDate sD = dataPoints.get(3).getX(),
+        LocalDate sD = LocalDate.now().minusDays(10),
                 eD = LocalDate.now().minusDays(1);
 
-        List<Point> list = naiveAlgorithmWithTrendAndAverageIncrement.forecastValuesForDates(dataPoints, sD, eD);
+        naiveAlgorithmWithTrendAndAverageIncrement.forecastValuesForDates(dataPoints, sD, eD);
         Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
 
         Assertions.assertAll(
-                list.stream()
+                queue.stream()
+                        .filter(x -> !x.equals(Point.EMPTY_POINT))
                         // At this point of testing, we only test whether an algorithm computes values correctly
                         // We don't test a real data we would receive normally
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(), x.getY().doubleValue(), .5))));

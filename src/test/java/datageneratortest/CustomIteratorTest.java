@@ -3,7 +3,6 @@ package datageneratortest;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
 import iterators.AscendingIterator;
-import iterators.DescendingIterator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,31 +50,5 @@ public class CustomIteratorTest {
 
     }
 
-    @Test
-    void shouldReturnNotNullWhenOutOfListDescendingIterator(){
-
-        itr = new DescendingIterator(data, LocalDate.now().minusDays(dataset + 1));
-        Assertions.assertEquals(itr.next(), data.get(0));
-
-    }
-
-    @Test
-    void shouldNtHaveNextElementDescendingIterator(){
-
-        itr = new DescendingIterator(data, LocalDate.now().minusDays(dataset));
-        itr.next();
-        Assertions.assertFalse(itr.hasNext());
-
-    }
-
-    @Test
-    void shouldNtMoveToNextElementDescendingIterator(){
-
-        itr = new DescendingIterator(data, LocalDate.now().minusDays(6), LocalDate.now().minusDays(7));
-        itr.next();  // returns the next element
-        itr.next();
-        Assertions.assertFalse(itr.hasNext());
-
-    }
 
 }

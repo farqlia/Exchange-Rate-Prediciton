@@ -1,6 +1,6 @@
 package currencyparsingtest;
 
-import currencyparsing.currencymapper.AllRatesMapper;
+
 import currencyparsing.currencymapper.CurrencyNameMapper;
 import currencyparsing.currencymapper.SingleRateMapper;
 import exchangerateclass.CurrencyName;

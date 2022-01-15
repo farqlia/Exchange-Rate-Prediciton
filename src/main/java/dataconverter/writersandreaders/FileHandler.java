@@ -8,22 +8,21 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
 
-public abstract class DataConverter {
+public class FileHandler {
 
     private final Parser parser;
-    private static String[] fileExtensions;
-    protected Map<Parser.Entries, String> mapping;
+    private Map<Parser.Entries, String> mapping;
+    private final String[] fileExtensions;
     // We will delegate a job of parsing a file name to this class,
     // but we have to handle further logic
 
     // It's a default constructor in the same time
-    public DataConverter(String ... fileExtensions){
-        DataConverter.fileExtensions = fileExtensions;
+    public FileHandler(String ... fileExtensions){
         parser = new Parser();
+        this.fileExtensions = fileExtensions;
     }
 
-
-    public boolean parseFilePath(String filePath) throws IOException{
+    public void parseFilePath(String filePath) throws IOException{
         mapping = parser.parseFilePath(filePath);
         if (mapping == null){
             // I decided to throw an exception to have a better insight on what went wrong
@@ -34,7 +33,6 @@ public abstract class DataConverter {
             throw new IOException("Unsupported Extension; Supported Extensions are: "
                     + String.join(", ", fileExtensions));
         }
-        return true;
 
     }
 

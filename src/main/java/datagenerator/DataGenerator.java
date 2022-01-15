@@ -23,15 +23,6 @@ public class DataGenerator {
         return generateDataWithTrend(dataset, initialValue, trend, 0);
     }
 
-    public List<BigDecimal> generateSimpleData(int dataset, BigDecimal initialValue, BigDecimal trend, double error){
-        return generateDataWithTrend(dataset, initialValue, trend, error)
-                .stream().map(Point::getY).collect(Collectors.toList());
-    }
-
-    public List<BigDecimal> generateSimpleData(int dataset, BigDecimal initialValue, BigDecimal trend){
-        return generateSimpleData(dataset, initialValue, trend, 0);
-    }
-
     public List<Point> generateDataWithTrend(int dataset, BigDecimal initialValue, BigDecimal trend, double error){
 
         List<Point> points = new ArrayList<>();

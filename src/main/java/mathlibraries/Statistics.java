@@ -19,7 +19,7 @@ public enum Statistics {
     }
 
     // Extracts from both lists only numeric values and applies statistical function
-    public BigDecimal apply(List<Point> expected, List<Point> actual){
-        return method.apply(expected, actual);
+    public BigDecimal apply(List<Point> realData, List<Point> actual){
+        return method.apply(realData, actual);
     }
 }

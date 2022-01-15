@@ -1,5 +1,6 @@
 package sciencelibrarytests;
 
+import datasciencealgorithms.utils.UtilityMethods;
 import mathlibraries.TimeSeriesScienceLibrary;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
@@ -74,7 +75,7 @@ public class TimeSeriesScienceLibraryTest {
     Stream<DynamicTest> shouldReturnArrayOfBigDecimalsAsAbsoluteError(){
 
         data = DataGenerator.getInstance()
-                .generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
+                .generateDataWithTrend(20, BigDecimal.ONE, BigDecimal.ONE);
 
         predicted = DataGenerator.getInstance().generateDataWithTrend(10,
                 BigDecimal.ONE, BigDecimal.ONE, 0.5);
@@ -82,9 +83,11 @@ public class TimeSeriesScienceLibraryTest {
         BigDecimal[] errors = TimeSeriesScienceLibrary
                 .calculateAbsoluteError(data, predicted);
 
+        int dataStartIndex = UtilityMethods.findIndexOfDate(predicted.get(0).getX(), data);
+
         return IntStream.rangeClosed(0, errors.length - 1)
                 .mapToObj(i -> DynamicTest.dynamicTest("Resolving: " + i,
-                        () -> {BigDecimal diff = data.get(i).getY().subtract(predicted.get(i).getY());
+                        () -> {BigDecimal diff = data.get(dataStartIndex + i).getY().subtract(predicted.get(i).getY());
                     Assertions.assertEquals(diff, errors[i]);
                         }));
     }
@@ -93,7 +96,7 @@ public class TimeSeriesScienceLibraryTest {
     Stream<DynamicTest> shouldReturnArrayOfBigDecimalsAsPercentageError(){
 
         data = DataGenerator.getInstance()
-                .generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
+                .generateDataWithTrend(20, BigDecimal.ONE, BigDecimal.ONE);
 
         predicted = DataGenerator.getInstance().generateDataWithTrend(10,
                 BigDecimal.ONE, BigDecimal.ONE, 0.5);
@@ -101,10 +104,12 @@ public class TimeSeriesScienceLibraryTest {
         BigDecimal[] errors = TimeSeriesScienceLibrary
                 .calculatePercentageError(data, predicted);
 
+        int dataStartIndex = UtilityMethods.findIndexOfDate(predicted.get(0).getX(), data);
+
         return IntStream.rangeClosed(0, errors.length - 1)
                 .mapToObj(i -> DynamicTest.dynamicTest("Resolving: " + i,
-                        () -> {BigDecimal diff = BigDecimal.ONE.subtract(data.get(i).getY().divide(predicted.get(i).getY(),
-                                TimeSeriesScienceLibrary.ROUNDING_MODE));
+                        () -> {BigDecimal diff = (BigDecimal.ONE.subtract(predicted.get(i).getY().divide(data.get(dataStartIndex + i).getY(),
+                                TimeSeriesScienceLibrary.ROUNDING_MODE))).multiply(new BigDecimal("100")).abs();
                             Assertions.assertEquals(diff, errors[i]);
                         }));
     }

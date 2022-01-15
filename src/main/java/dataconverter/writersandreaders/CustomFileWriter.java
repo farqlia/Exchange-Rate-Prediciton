@@ -5,18 +5,19 @@ import datasciencealgorithms.utils.Parser;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class CustomFileWriter<E> extends DataConverter {
+public abstract class CustomFileWriter<E>  {
 
-    public CustomFileWriter(String ... fileExtensions){
-        super(fileExtensions);
+    private FileHandler handler;
+    public CustomFileWriter(String fileExtension){
+        handler = new FileHandler(fileExtension);
     }
 
-    abstract void handleObjectWriting(String path, List<E> data) throws IOException;
+    abstract void handleObjectWriting(String path, List<? extends E> data) throws IOException;
 
     public void saveToFile(String fileName, List<E> data) throws IOException{
-        parseFilePath(fileName);
-        createFile();
-        handleObjectWriting(getProperty(Parser.Entries.FILEPATH), data);
+        handler.parseFilePath(fileName);
+        handler.createFile();
+        handleObjectWriting(handler.getProperty(Parser.Entries.FILEPATH), data);
     }
 
 }

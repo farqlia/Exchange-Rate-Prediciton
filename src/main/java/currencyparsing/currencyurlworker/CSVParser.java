@@ -1,10 +1,11 @@
 package currencyparsing.currencyurlworker;
 
-import dataconverter.IncorrectDataFormat;
-import dataconverter.PrintableAsCSV;
+import dataconverter.Formatter;
 import exchangerateclass.CurrencyName;
 
-public class CSVParser implements PrintableAsCSV<CurrencyName> {
+import java.io.IOException;
+
+public class CSVParser implements Formatter<CurrencyName> {
 
     StringBuilder sB = new StringBuilder(20);
 
@@ -17,10 +18,10 @@ public class CSVParser implements PrintableAsCSV<CurrencyName> {
     }
 
     @Override
-    public CurrencyName parseFromCSVString(String stringToParse) throws IncorrectDataFormat {
+    public CurrencyName parseFromCSVString(String stringToParse) throws IOException {
         String[] splitArr = stringToParse.split(delimiter);
         if (splitArr.length != 2){
-            throw new IncorrectDataFormat("Incorrect Data Format");
+            throw new IllegalArgumentException("Incorrect Data Format");
         }
         return new CurrencyName(splitArr[0], splitArr[1]);
     }

@@ -26,7 +26,7 @@ public class DataFlatteringTest {
     @Test
     void shouldFlattenDataPoints(){
 
-        Vector<Vector<Object>> flatData = DataPointsFlattering.flatten(data, data);
+        Vector<Vector> flatData = DataPointsFlattering.flatten(data, data);
 
         for (int i = 0; i < 10; i++){
 
@@ -43,7 +43,7 @@ public class DataFlatteringTest {
         List<Point> data = DataGenerator.getInstance()
                 .generateDataWithTrend(10, BigDecimal.ZERO, BigDecimal.ONE);
 
-        Vector<Vector<Object>> flatData = DataPointsFlattering.flatten(data, data);
+        Vector<Vector> flatData = DataPointsFlattering.flatten(data, data);
 
         Object[] arr1 = IntStream.rangeClosed(1, 10).boxed().toArray();
         Object[] arr2 = IntStream.rangeClosed(2, 11).boxed().toArray();
@@ -55,8 +55,8 @@ public class DataFlatteringTest {
                         () -> {
                             Assertions.assertEquals(data.get(i).getX(), flatData.get(i).get(0));
                             Assertions.assertEquals(data.get(i).getY(), flatData.get(i).get(1));
-                            Assertions.assertEquals(arr1, flatData.get(i).get(3));
-                            Assertions.assertEquals(arr2, flatData.get(i).get(4));
+                            Assertions.assertEquals(arr1[i], flatData.get(i).get(3));
+                            Assertions.assertEquals(arr2[i], flatData.get(i).get(4));
                         }));
 
     }

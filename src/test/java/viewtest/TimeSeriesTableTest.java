@@ -1,5 +1,6 @@
 package viewtest;
 
+import controller.TableModel;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
 import exchangerateclass.CurrencyName;
@@ -15,24 +16,23 @@ import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 import java.util.stream.IntStream;
 
 public class TimeSeriesTableTest {
 
-    DefaultTableModel table;
-    AbstractView view;
+    TableModel table;
     List<Point> data;
-    Object[][] flatData;
+    Vector<Vector> flatData;
     Object[] exampleColumn;
     int dataset = 10;
 
     @BeforeEach
     void setUp() {
-        view = new View(Collections.singletonList(new CurrencyName("euro", "EUR")));
-        table = ((View) view).algorithmTableModel;
+        table = new TableModel(new Vector<>(List.of("Column1", "Column2", "Column3")));
         data = DataGenerator.getInstance().generateDataWithTrend(dataset,
                 BigDecimal.ZERO, BigDecimal.ONE);
-        flatData = DataPointsFlattering.getInstance().flatten(data, data);
+        flatData = DataPointsFlattering.flatten(data, data);
         exampleColumn =  IntStream.rangeClosed(0, 10)
                 .boxed().toArray();
 
@@ -40,44 +40,30 @@ public class TimeSeriesTableTest {
 
     @Test
     void shouldAddInitialColumns(){
-        Assertions.assertEquals(5, table.getColumnCount());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(3, table.getColumnCount()),
+                () -> Assertions.assertEquals("Column1", table.getColumnName(0)),
+                () -> Assertions.assertEquals("Column2", table.getColumnName(1)),
+                () -> Assertions.assertEquals("Column3", table.getColumnName(2))
+        );
     }
 
     @Test
     void shouldAddDataToTable(){
         // Call to this method means we want to update rows
-        view.insertAlgorithmOutput(flatData);
-        Assertions.assertEquals(flatData[0][0], table.getValueAt(0, 0));
-        Assertions.assertEquals(flatData[0][1], table.getValueAt(0, 1));
-        Assertions.assertEquals(flatData[0][2], table.getValueAt(0, 2));
+        table.setDataVector(flatData);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(flatData.get(0).get(0), table.getValueAt(0, 0)),
+                () -> Assertions.assertEquals(flatData.get(0).get(1), table.getValueAt(0, 1)),
+                () -> Assertions.assertEquals(flatData.get(0).get(1), table.getValueAt(0, 2)));
     }
 
     @RepeatedTest(3)
     void shouldDeleteCurrentRows(){
-        view.insertAlgorithmOutput(flatData);
+        table.clear();
+        table.setDataVector(flatData);
         Assertions.assertEquals(dataset, table.getRowCount());
+
     }
-
-    /*
-    @Test
-    void shouldAddColumns(){
-
-        Object[][] cols = new Object[][]{exampleColumn};
-
-        view.insertStatistics(cols, new String[]{"New Column"});
-        Assertions.assertEquals(4, table.getColumnCount());
-    }
-
-    @Test // ?? Columns are probably deleted from the view,
-    // but not from the model
-    void shouldRemoveColumnsFromOldDisplay(){
-        Object[][] cols = new Object[][]{exampleColumn};
-        view.updateTable(cols, new String[]{"New Column"});
-
-        view.insertAlgorithmOutput(flatData);
-        Assertions.assertEquals(3, table.getColumnCount());
-    }
-
-     */
 
 }

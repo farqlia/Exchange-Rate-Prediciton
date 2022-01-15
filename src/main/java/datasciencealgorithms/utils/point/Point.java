@@ -10,6 +10,7 @@ public class Point {
 
     private LocalDate x;
     private BigDecimal y;
+    public static final Point EMPTY_POINT = new Point(LocalDate.EPOCH, BigDecimal.ZERO);
 
     public Point(LocalDate x, BigDecimal y) {
         this.x = x;

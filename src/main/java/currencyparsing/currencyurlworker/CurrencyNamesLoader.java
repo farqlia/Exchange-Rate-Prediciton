@@ -5,9 +5,7 @@ import currencyparsing.currencymapper.CurrencyObjectMapper;
 import currencyparsing.currencyurlbuilders.AllCurrenciesURL;
 import currencyparsing.currencyurlbuilders.CurrencyURL;
 import currencyparsing.currencyurlbuilders.MoneyType;
-import currencyparsing.currencyurlbuilders.Table;
-import dataconverter.IncorrectDataFormat;
-import dataconverter.writersandreaders.CustomFileReader;
+import currencyparsing.currencyurlbuilders.Table; import dataconverter.writersandreaders.CustomFileReader;
 import dataconverter.writersandreaders.TextFileReader;
 import exchangerateclass.CurrencyName;
 
@@ -36,7 +34,7 @@ public class CurrencyNamesLoader extends Loader<CurrencyName>{
         List<CurrencyName> currencyNamesList;
         try {
             currencyNamesList = reader.readFromFile(filePath);
-        } catch (IOException | IncorrectDataFormat e) {
+        } catch (IOException | IllegalArgumentException e) {
             return Collections.emptyList();
         }
         return currencyNamesList;

@@ -88,15 +88,13 @@ public class ExchangeRateTests {
 
     @Test
     void shouldConvertMidCourse() throws JsonProcessingException {
-        String json = "[{\"table\":\"A\",\"no\":\"003/A/NBP/2022\",\"effectiveDate\":\"2022-01-05\"," +
-                "\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1219}," +
-                "{\"currency\":\"dolar amerykański\",\"code\":\"USD\",\"mid\":4.0396}]}]";
+        String json = "[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1219}," +
+                "{\"currency\":\"dolar amerykański\",\"code\":\"USD\",\"mid\":4.0396}]";
 
         List<ExchangeRate> listOfExR = mapper.readValue(json,
                 new TypeReference<List<ExchangeRate>>() {});
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(LocalDate.parse("2022-01-05"), LocalDate.ofInstant(listOfExR.get(0).getEffectiveDate().toInstant(), ZoneId.of("CET"))),
                 () -> Assertions.assertEquals(new BigDecimal("0.1219"), listOfExR.get(0).getMid()),
                 () -> Assertions.assertEquals("THB", listOfExR.get(0).getCode())
         );

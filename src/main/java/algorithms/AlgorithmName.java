@@ -1,22 +1,38 @@
 package algorithms;
 
+import datasciencealgorithms.utils.point.Point;
+
 import java.util.Locale;
+import java.util.concurrent.BlockingQueue;
 import java.util.function.Function;
 
 public enum AlgorithmName {
 
-    LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM(LinearlyWeightedMovingAverage::new),
-    MOVING_AVERAGE_MEAN_ALGORITHM(MovingAverageMeanAlgorithm::new),
-    NAIVE_ALGORITHM_WITH_TREND((x) -> new NaiveAlgorithmWithTrend()),
-    NAIVE_ALGORITHM_WITH_TREND_AND_AVERAGE_INCREMENT(NaiveAlgorithmWithTrendAndAverageIncrement::new);
+    LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM{
+        public Algorithm createAlgorithm(BlockingQueue<Point> queue, int lookbackPeriod){
+            return new LinearlyWeightedMovingAverage(queue, lookbackPeriod);
+        }
+    },
+    MOVING_AVERAGE_MEAN_ALGORITHM{
+        public Algorithm createAlgorithm(BlockingQueue<Point> queue, int lookbackPeriod){
+            return new MovingAverageMeanAlgorithm(queue, lookbackPeriod);
+        }
+    },
+    NAIVE_ALGORITHM_WITH_TREND{
+        public Algorithm createAlgorithm(BlockingQueue<Point> queue, int lookbackPeriod){
+            return new NaiveAlgorithmWithTrend(queue);
+        }
+    },
+    NAIVE_ALGORITHM_WITH_TREND_AND_AVERAGE_INCREMENT{
+        public Algorithm createAlgorithm(BlockingQueue<Point> queue, int lookbackPeriod){
+            return new NaiveAlgorithmWithTrendAndAverageIncrement(queue, lookbackPeriod);
+        }
+    };
 
     private final String description;
 
-    private final Function<Integer, Algorithm> construct;
-
-    AlgorithmName(Function<Integer, Algorithm> construct){
+    AlgorithmName(){
         description = parseToReadableForm(this.name());
-        this.construct = construct;
     }
 
     @Override
@@ -24,9 +40,7 @@ public enum AlgorithmName {
         return description;
     }
 
-    public Function<Integer, Algorithm> createAlgorithm(){
-        return construct;
-    }
+    public abstract Algorithm createAlgorithm(BlockingQueue<Point> queue, int lookbackPeriod);
 
     private String parseToReadableForm(String word){
 

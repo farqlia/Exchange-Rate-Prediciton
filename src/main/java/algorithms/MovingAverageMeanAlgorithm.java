@@ -2,72 +2,44 @@ package algorithms;
 
 import datasciencealgorithms.utils.UtilityMethods;
 import datasciencealgorithms.utils.point.Point;
-import mathlibraries.TimeSeriesScienceLibrary;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MovingAverageMeanAlgorithm implements Algorithm{
 
     // Initial value of k
-    private int lookbackPeriod;
+    private final int lookbackPeriod;
     // How many k values are considered
-    private static final int VAL = 10;
+    private final BlockingQueue<Point> queue;
 
-    public MovingAverageMeanAlgorithm(int lookbackPeriod){
+    public MovingAverageMeanAlgorithm(BlockingQueue<Point> queue, int lookbackPeriod){
         this.lookbackPeriod = lookbackPeriod;
-    }
-
-    public MovingAverageMeanAlgorithm(){
-        this.lookbackPeriod = 10;
+        this.queue = queue;
     }
 
     @Override
-    public List<Point> forecastValuesForDates(List<Point> expectedData, LocalDate startDate, LocalDate endDate) {
+    public void forecastValuesForDates(List<Point> realData, LocalDate startDate, LocalDate endDate) throws InterruptedException {
 
-        // Holds final prediction
-        List<Point> outputList = new ArrayList<>();
-        // Stores result of predictions for each value of k
-        List<Point> currentValuesList = new ArrayList<>();
-        //int initK = (int) ChronoUnit.DAYS.between(expectedData.get(0).getX(), startDate);
-        int startIndex = UtilityMethods.findIndexOfDate(startDate, expectedData);
-        int endIndex = UtilityMethods.findIndexOfDate(endDate, expectedData);
+        int startIndex = UtilityMethods.findIndexOfDate(startDate, realData);
+        int endIndex = UtilityMethods.findIndexOfDate(endDate, realData);
 
-        BigDecimal minRMSE = expectedData.get(startIndex).getY();
-
-        //
-        for (int k = lookbackPeriod; (k <= (lookbackPeriod + VAL)); k++){
-
-            for (int i = startIndex; i <= endIndex; i++){
-                // Computes average of k-recent values
-                BigDecimal sumForAverage = BigDecimal.ZERO;
-                for (int j = i - 1; (j > 0 && j > (i - lookbackPeriod - 1)); j--){
-                    sumForAverage = sumForAverage.add(expectedData.get(j).getY());
-                }
-                // TODO : make this more memory efficient, many objects are created here
-                currentValuesList.add(new Point(expectedData.get(i).getX(),
-                        sumForAverage.divide(new BigDecimal(lookbackPeriod), RoundingMode.HALF_UP)));
+        for (int i = startIndex; i <= endIndex; i++){
+            // Computes average of k-recent values
+            BigDecimal sumForAverage = BigDecimal.ZERO;
+            for (int j = i - 1; (j > 0 && j > (i - lookbackPeriod - 1)); j--){
+                sumForAverage = sumForAverage.add(realData.get(j).getY());
             }
-
-            // Calculates root of mean square error
-            BigDecimal currentSRME = TimeSeriesScienceLibrary
-                    .calculateRootMeanSquareErrorK(currentValuesList, expectedData, k);
-
-            // Smaller error means better fit
-            if (currentSRME.compareTo(minRMSE) <= 0){
-
-                minRMSE = currentSRME;
-
-                // Saves presumably best prediction
-                outputList = List.copyOf(currentValuesList);
-            }
-            currentValuesList.clear();
-
+            queue.put(new Point(realData.get(i).getX(),
+                    sumForAverage.divide(new BigDecimal(lookbackPeriod), RoundingMode.HALF_UP)));
+            SleepingThread.sleep();
         }
-        return outputList;
+        queue.put(Point.EMPTY_POINT);
     }
 
 }

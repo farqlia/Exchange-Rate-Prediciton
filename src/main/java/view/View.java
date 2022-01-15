@@ -8,7 +8,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -17,23 +16,22 @@ import java.util.List;
 
 public class View extends AbstractView {
 
-    //Object[][] data;
-    Vector<String> alColumnNames = new Vector<>(Arrays.asList("Date", "Actual", "Forecasted", "y - y*", "(y - y*)/y"));
-    // Just for the time of testing
-    public DefaultTableModel algorithmTableModel = new DefaultTableModel(alColumnNames, 0);
-
-    Vector<String> stColumnNames = new Vector<>(Arrays.asList("Statistic", "Value"));
-    public DefaultTableModel statisticsTableModel = new DefaultTableModel(stColumnNames, 0);
-
     private final JSpinner startDateSpinner;
     private final JSpinner endDateSpinner;
     private final JComboBox<AlgorithmName> nameOfAlgorithmsComboBox;
     private final CustomComboBox customComboBox;
     private final JSlider lookBackPeriodSlider;
+    private DefaultTableModel[] tableModels;
+    private JMenuBar menuBar;
 
-    public View(java.util.List<CurrencyName> currencyNames){
+    public View(java.util.List<CurrencyName> currencyNames, DefaultTableModel ... tableModels){
 
-        setSize(800, 800);
+        setSize(900, 600);
+
+        this.tableModels = tableModels;
+
+        menuBar = new Menu();
+        setJMenuBar(menuBar);
 
         setLayout(null);
         JPanel mainPanel = new JPanel();
@@ -90,52 +88,23 @@ public class View extends AbstractView {
 
         // ----------- CREATE RIGHT PANEL ------------------
 
-        JPanel rightPanel = new JPanel(new BorderLayout());
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setForeground(new Color(104, 103, 103));
 
-        JTable algorithmOutputTable = new JTable(algorithmTableModel);
-        JTable statisticsTable = new JTable(statisticsTableModel);
-
-        JScrollPane atScroller = new JScrollPane(algorithmOutputTable,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        rightPanel.add(atScroller, BorderLayout.NORTH);
-
-        //addComp(rightPanel, atScroller, 0, 0, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL);
-
-        JScrollPane stScroller = new JScrollPane(statisticsTable,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        rightPanel.add(stScroller, BorderLayout.SOUTH);
-        //addComp(rightPanel, stScroller, 0, 1, 1, 1, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL);
+        for (DefaultTableModel tableModel : tableModels){
+            JTable table = new JTable(tableModel);
+            table.setFont(new Font("Roboto", Font.BOLD, 15));
+            table.setRowHeight(20);
+            JScrollPane scroller = new JScrollPane(table,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            tabbedPane.addTab("Table", scroller);
+        }
 
         addComp(mainPanel, leftPanel, 0, 0, 1,1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE);
-        addComp(mainPanel, rightPanel, 1, 0, 2,2, GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH);
+        addComp(mainPanel, tabbedPane, 1, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-    }
-
-    /**
-     * Puts new array of data into a algorithmOutputTable, deletes previous output
-     * @param data : array of rows
-     */
-    @Override
-    public void insertAlgorithmOutput(Vector<Vector<Object>> data) {
-
-        algorithmTableModel.setDataVector(data, alColumnNames);
-
-    }
-
-    /**
-     * Displays statistics in form of a separate algorithmOutputTable
-     * @param data : array of measured statistics
-     */
-    @Override
-    public void insertStatistics(Vector<Vector<Object>> data) {
-
-        statisticsTableModel.setDataVector(data, stColumnNames);
 
     }
 
@@ -171,9 +140,17 @@ public class View extends AbstractView {
                     cN.getCode(),
                     lookBackPeriodSlider.getValue());
 
-
+            for (DefaultTableModel tM : tableModels){
+               deleteRows(tM);
+            }
 
             notifyObservers(event);
+        }
+    }
+
+    private void deleteRows(DefaultTableModel model){
+        for (int i = model.getRowCount() - 1; i >= 0; i--){
+            model.removeRow(i);
         }
     }
 

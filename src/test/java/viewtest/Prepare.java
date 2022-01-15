@@ -5,10 +5,8 @@ import currencyparsing.currencyurlbuilders.MoneyType;
 import currencyparsing.currencyurlbuilders.Table;
 import currencyparsing.currencyurlworker.ExchangeRateLoader;
 import currencyparsing.currencyurlworker.Loader;
-import dataconverter.IncorrectDataFormat;
-import dataconverter.PrintableAsCSV;
+import dataconverter.Formatter;
 import dataconverter.writersandreaders.*;
-import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
 import exchangerateclass.ExchangeRate;
 
@@ -19,18 +17,17 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 
 public class Prepare {
 
-    public static void main(String[] args) throws IOException, IncorrectDataFormat {
+    public static void main(String[] args) throws IOException, IllegalArgumentException {
         new Prepare();
     }
 
-    public Prepare() throws IOException, IncorrectDataFormat {
+    public Prepare() throws IOException, IllegalArgumentException {
 
-        CustomFileWriter<Point> tFW = new TextFileWriter<>(CSVParser.getInstance());
+        CustomFileWriter<Point> tFW = new TextFileWriter<>(new PointToCSV());
 
         Loader<ExchangeRate> loader = new ExchangeRateLoader();
         loader.setCurrencyURL(new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY)
@@ -48,14 +45,14 @@ public class Prepare {
         //tFW.saveToFile("exampledata\\dp1.txt", DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE));
         tFW.saveToFile("exampledata\\dp2.txt", dataPoints);
 
-        CustomFileReader<Point> cFW = new TextFileReader<>(CSVParser.getInstance());
+        CustomFileReader<Point> cFW = new TextFileReader<>(new PointToCSV());
         //cFW.readFromFile("exampledata\\dp1.txt").forEach(System.out::println);
         cFW.readFromFile("exampledata\\dp2.txt").forEach(System.out::println);
 
 
     }
 
-    public static class PrintBigDec implements PrintableAsCSV<BigDecimal>{
+    public static class PrintBigDec implements Formatter<BigDecimal> {
 
         @Override
         public String getAsCSVString(BigDecimal o) {
@@ -63,12 +60,12 @@ public class Prepare {
         }
 
         @Override
-        public BigDecimal parseFromCSVString(String stringToParse) throws IncorrectDataFormat {
+        public BigDecimal parseFromCSVString(String stringToParse) throws IOException {
             return new BigDecimal(stringToParse);
         }
     }
 
-    public static class PrintLocDate implements PrintableAsCSV<LocalDate>{
+    public static class PrintLocDate implements Formatter<LocalDate> {
 
         DateTimeFormatter dF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         @Override
@@ -77,7 +74,7 @@ public class Prepare {
         }
 
         @Override
-        public LocalDate parseFromCSVString(String stringToParse) {
+        public LocalDate parseFromCSVString(String stringToParse) throws IOException {
             return LocalDate.parse(stringToParse);
         }
     }

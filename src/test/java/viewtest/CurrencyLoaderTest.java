@@ -1,6 +1,5 @@
 package viewtest;
 
-import currencyparsing.currencymapper.AllRatesMapper;
 import currencyparsing.currencymapper.CurrencyNameMapper;
 import currencyparsing.currencymapper.SingleRateMapper;
 import currencyparsing.currencyurlbuilders.*;

@@ -1,24 +1,22 @@
 package view;
 
-import datasciencealgorithms.utils.UtilityMethods;
 import datasciencealgorithms.utils.point.Point;
 import iterators.AscendingIterator;
 
-import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 public class DataPointsFlattering {
 
-    public static Vector<Vector<Object>> flatten(List<Point> biggerList,List<Point> smallerList) {
+    public static Vector<Vector> flatten(List<Point> realData, List<Point> predictedData) {
 
-        Vector<Vector<Object>> flatData = new Vector<Vector<Object>>(biggerList.size());
+        Vector<Vector> flatData = new Vector<>(realData.size());
 
-        Iterator<Point> bItr = new AscendingIterator(biggerList,
-                smallerList.get(0).getX(), smallerList.get(smallerList.size() - 1).getX());
+        Iterator<Point> bItr = new AscendingIterator(realData,
+                predictedData.get(0).getX(), predictedData.get(predictedData.size() - 1).getX());
 
-        Iterator<Point> sItr = new AscendingIterator(smallerList);
+        Iterator<Point> sItr = new AscendingIterator(predictedData);
 
         for (int i = 0; (bItr.hasNext() && sItr.hasNext()); i++){
             Point p = bItr.next();
@@ -36,7 +34,7 @@ public class DataPointsFlattering {
      * @param data to be concat
      * @param args arrays to be concatenated, column-wise
      */
-    public static void concat (Vector<Vector<Object>> data, Object[] ... args){
+    public static void concat (Vector<Vector> data, Object[] ... args){
 
         for (Object[] arg : args){
             for (int i = 0; (i < arg.length && i < data.size()); i++){

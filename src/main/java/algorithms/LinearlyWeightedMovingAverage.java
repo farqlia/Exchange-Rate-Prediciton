@@ -5,52 +5,56 @@ import datasciencealgorithms.utils.point.Point;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LinearlyWeightedMovingAverage implements Algorithm{
 
     static RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
-    private int lookbackPeriod;
+    private final int lookbackPeriod;
+    private final BlockingQueue<Point> queue;
 
-    public LinearlyWeightedMovingAverage(int lookbackPeriod){
+    public LinearlyWeightedMovingAverage(BlockingQueue<Point> queue, int lookbackPeriod){
         this.lookbackPeriod = lookbackPeriod;
-    }
-
-    public LinearlyWeightedMovingAverage(){
-        this.lookbackPeriod = 10;
+        this.queue = queue;
     }
 
     @Override
-    public List<Point> forecastValuesForDates(List<Point> expectedData, LocalDate startDate,
-                                                         LocalDate endDate) {
+    public void forecastValuesForDates(List<Point> realData, LocalDate startDate,
+                                                         LocalDate endDate) throws InterruptedException {
 
-        int startIndex = UtilityMethods.findIndexOfDate(startDate, expectedData);
-        int endIndex = UtilityMethods.findIndexOfDate(endDate, expectedData);
+        int startIndex = UtilityMethods.findIndexOfDate(startDate, realData);
+        int endIndex = UtilityMethods.findIndexOfDate(endDate, realData);
 
-        //int period = (int) ChronoUnit.DAYS.between(expectedData.get(0).getX(), startDate);
+        //int period = (int) ChronoUnit.DAYS.between(realData.get(0).getX(), startDate);
         Weight weight = new Weight(lookbackPeriod);
-        List<Point> actualData = new ArrayList<>();
 
         for (int i = startIndex; i <= endIndex; i++){
 
             BigDecimal sum = BigDecimal.ZERO;
             for (int j = i; j > 0 && j > (i - lookbackPeriod); j--){
                 // Sum the previous values * their corresponding weights
-                sum = sum.add(expectedData.get(j).getY().multiply(weight.nextWeight()));
+                sum = sum.add(realData.get(j).getY().multiply(weight.nextWeight()));
             }
 
             // Predicted value is sum / sum of weights
-            actualData.add(new Point(expectedData.get(i).getX(),
+            queue.put(new Point(realData.get(i).getX(),
                     sum.divide(weight.sumOfWeights(), ROUNDING_MODE)));
+
+            SleepingThread.sleep();
 
             // Set weight to the original state for the next point of data
             weight.resetWeight();
 
         }
-        return actualData;
+        // Add 'poison' object to signal that no more points will be produced
+        queue.put(Point.EMPTY_POINT);
+
     }
 
     public static class Weight{
