@@ -6,7 +6,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.nio.file.Path;
 
-
 public class Menu extends JMenuBar {
 
     public static final String SAVE_TO_FILE = "SAVE_TO_FILE", CREATE_PLOT = "CREATE_PLOT";
@@ -47,7 +46,7 @@ public class Menu extends JMenuBar {
             int result = chooser.showOpenDialog(Menu.this);
 
             if (result == JFileChooser.APPROVE_OPTION && textFilter.accept(chooser.getSelectedFile())){
-                Menu.this.firePropertyChange(SAVE_TO_FILE, null, chooser.getSelectedFile());
+                Menu.this.firePropertyChange(Menu.SAVE_TO_FILE, null, chooser.getSelectedFile());
             }
 
         }

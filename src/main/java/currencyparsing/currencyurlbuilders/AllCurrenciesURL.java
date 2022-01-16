@@ -17,7 +17,6 @@ public class AllCurrenciesURL extends CurrencyURL{
 
     public static class Builder extends CurrencyURL.URLBuilder<Builder>{
 
-
         public Builder(MoneyType moneyType){
             super(moneyType);
         }

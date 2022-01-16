@@ -57,7 +57,7 @@ public class ModelTest {
 
         model.predict(exampleDataPoints, startDate, LocalDate.now());
 
-        verify(observer, timeout(Duration.ofSeconds(2).toMillis())).update(ModelEvent.DATA_IN_PROCESS);
+        verify(observer, timeout(Duration.ofSeconds(5).toMillis())).update(ModelEvent.DATA_IN_PROCESS);
 
     }
 
@@ -70,7 +70,7 @@ public class ModelTest {
 
         model.predict(exampleDataPoints, startDate, LocalDate.now());
 
-        verify(observer, timeout(Duration.ofSeconds(2).toMillis())).update(ModelEvent.DATA_IN_PROCESS);
+        verify(observer, timeout(Duration.ofSeconds(5).toMillis())).update(ModelEvent.DATA_IN_PROCESS);
 
     }
 }

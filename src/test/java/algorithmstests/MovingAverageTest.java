@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,10 +19,12 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+
 public class MovingAverageTest {
 
     List<Point> dataPoints;
-
+    LocalDate sD = LocalDate.now().minusDays(20);
+    LocalDate eD = LocalDate.now();
     @BeforeEach
     void setUp(){
         dataPoints = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, new BigDecimal(".2"));
@@ -39,9 +42,6 @@ public class MovingAverageTest {
 
         dataPoints = DataGenerator.getInstance().generateDataWithTrend(dataset,
                 BigDecimal.ONE, new BigDecimal(".05"), 1);
-
-        LocalDate sD = LocalDate.now().minusDays(20);
-        LocalDate eD = LocalDate.now();
 
         movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
 
@@ -69,9 +69,6 @@ public class MovingAverageTest {
 
         dataPoints = new TextFileReader<>(new PointToCSV()).readFromFile("exampledata\\dp2.txt");
 
-        LocalDate sD = LocalDate.now().minusDays(20);
-        LocalDate eD = LocalDate.now();
-
         movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
 
         Assertions.assertFalse(queue.isEmpty());
@@ -96,9 +93,6 @@ public class MovingAverageTest {
 
         dataPoints = new TextFileReader<>(new PointToCSV()).readFromFile("exampledata\\dp2.txt");
 
-        LocalDate sD = LocalDate.now().minusDays(20);
-        LocalDate eD = LocalDate.now();
-
         linearlyWeightedMovingAverage.forecastValuesForDates(dataPoints, sD, eD);
 
         Assertions.assertFalse(queue.isEmpty());
@@ -122,6 +116,26 @@ public class MovingAverageTest {
 
         Assertions.assertEquals(new BigDecimal(55), weight.sumOfWeights());
 
+    }
+
+    @Test
+    void shouldTestBrownExponentialSmoothingModel() throws InterruptedException {
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(10);
+        BigDecimal a = new BigDecimal("0.7");
+        Algorithm algorithm = new BrownExponentialSmoothingModel(queue, a);
+
+        dataPoints = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE,
+                BigDecimal.ONE);
+        sD = LocalDate.now().minusDays(10);
+        algorithm.forecastValuesForDates(dataPoints, sD, eD);
+
+        Point firstPoint = queue.take();
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(new BigDecimal("2").compareTo(firstPoint.getY()) == 0),
+                () -> Assertions.assertEquals(dataPoints.get(0).getX(), firstPoint.getX()),
+                () -> Assertions.assertTrue(BigDecimal.ONE.multiply(a).add(BigDecimal.ONE.subtract(a).multiply(firstPoint.getY()))
+                                .compareTo(queue.take().getY()) == 0)
+        );
     }
 
 }

@@ -76,7 +76,6 @@ public abstract class CurrencyURL {
     }
 
     public String getURL(){
-        // We can provide safety with if-else statements
         return urlStrB
                 .append(getMiddlePart())
                 .append(date)

@@ -17,6 +17,7 @@ public class CurrencyWorker {
                 .GET()
                 .uri(URI.create(request))
                 .build();
+
         HttpResponse<String> response;
         try {
             response = client.send(r, HttpResponse.BodyHandlers.ofString());

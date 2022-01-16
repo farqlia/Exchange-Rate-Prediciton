@@ -23,6 +23,7 @@ public class View extends AbstractView {
     private final JSlider lookBackPeriodSlider;
     private DefaultTableModel[] tableModels;
     private JMenuBar menuBar;
+    private JButton predictButton;
 
     public View(java.util.List<CurrencyName> currencyNames, DefaultTableModel ... tableModels){
 
@@ -82,7 +83,7 @@ public class View extends AbstractView {
         addComp(leftPanel, new JLabel("Choose look back Period (Optional)"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(leftPanel, lookBackPeriodSlider, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
-        JButton predictButton = new JButton("Predict");
+        predictButton = new JButton("Predict");
         addComp(leftPanel, predictButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         predictButton.addActionListener(new HandleButtonListener());
 
@@ -125,6 +126,17 @@ public class View extends AbstractView {
         thePanel.add(comp, gridConstraints);
     }
 
+    @Override
+    public void disableActions() {
+        predictButton.setEnabled(false);
+    }
+
+    @Override
+    public void enableActions() {
+        predictButton.setEnabled(true);
+    }
+
+
     private class HandleButtonListener implements ActionListener{
 
         @Override
@@ -147,6 +159,8 @@ public class View extends AbstractView {
             notifyObservers(event);
         }
     }
+
+
 
     private void deleteRows(DefaultTableModel model){
         for (int i = model.getRowCount() - 1; i >= 0; i--){

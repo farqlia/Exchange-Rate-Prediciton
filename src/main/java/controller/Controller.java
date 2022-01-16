@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-
 public class Controller {
 
     Model model;
@@ -50,6 +49,7 @@ public class Controller {
         model.registerObserver(new ListenForModel1());
         model.registerObserver(new ListenForModel2());
         model.registerObserver(listener);
+        model.registerObserver(new HandleViewAction());
 
         view.getJMenuBar().addPropertyChangeListener(Menu.SAVE_TO_FILE,
                         new ListenForFileSave(new TextFileWriter<>(new VectorToCSV())));
@@ -64,9 +64,10 @@ public class Controller {
         Loader<ExchangeRate> exchangeRateLoader = new ExchangeRateLoader();
         ConcreteCurrencyURL.Builder builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
 
-
         @Override
         public void update(ViewEvent e) {
+
+            realDataPoints.clear();
 
             exchangeRateLoader.setCurrencyURL(builder
                     .reset()        // reuse the same object
@@ -103,6 +104,18 @@ public class Controller {
             }
         }
 
+    }
+
+    public class HandleViewAction implements ModelObserver{
+
+        @Override
+        public void update(ModelEvent event) {
+            if (event == ModelEvent.DATA_PROCESS_STARTED){
+                view.disableActions();
+            } else if (event == ModelEvent.DATA_PROCESSED){
+                view.enableActions();
+            }
+        }
     }
 
     public class ListenForModel1 implements ModelObserver{
@@ -166,8 +179,8 @@ public class Controller {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
 
-             Vector<Vector> v = new Vector<>();//;
-                v.add(getColumnNames(modelA));//
+             Vector<Vector> v = new Vector<>();
+                v.add(getColumnNames(modelA));
                 v.addAll(modelA.getDataVector());
                 try {
                     textFileWriter.saveToFile(((File)evt.getNewValue()).getAbsolutePath(), v);
@@ -200,7 +213,6 @@ public class Controller {
             // Shows frame with plot
             if (evt.getPropertyName().equals(Menu.CREATE_PLOT)){
                 plot.setVisible(true);
-                //plot.setChartTitle();
             }
         }
         @Override

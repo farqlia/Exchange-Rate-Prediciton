@@ -30,14 +30,6 @@
 	</properties>
 
 	<dependencies>
-		<!--
-               <dependency>
-                   <groupId>plotlib</groupId>
-                   <artifactId>plotlib</artifactId>
-                   <scope>system</scope>
-                   <version>1.0</version>
-                   <systemPath>C:/java libraries/plotlib.jar</systemPath>
-               </dependency>-->
 
 		<dependency>
 			<groupId>org.jfree</groupId>

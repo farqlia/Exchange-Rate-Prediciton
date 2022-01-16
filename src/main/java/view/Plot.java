@@ -88,7 +88,7 @@ public class Plot extends JFrame {
     public void addSeries(String title, double[] values){
 
         TimeSeries series;
-        // This is the 1st time that the data is added
+        // This is the 1st time that data is added
         if (dataset.getSeriesCount() < 2){
             series = new TimeSeries(title);
             addOrUpdateValues(values, series);

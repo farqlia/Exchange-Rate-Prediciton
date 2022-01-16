@@ -66,9 +66,13 @@ public class TimeSeriesScienceLibrary {
                 .sqrt(ROUNDING_MODE);
     }
 
-    public static BigDecimal calculateMeanAbsoluteError(List<Point> predictedDataData, List<Point> realDataData){
-        return calculateMeanAbsoluteErrorK(predictedDataData, realDataData, 1);
-    }
+   public static BigDecimal calculateAverage(Point ... points){
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Point p : points){
+            sum = sum.add(p.getY());
+        }
+        return sum.divide(new BigDecimal(points.length), ROUNDING_MODE);
+   }
 
     // predictedDataData : predictedData data, it has an actual range of dates we should consider in
     // calculations

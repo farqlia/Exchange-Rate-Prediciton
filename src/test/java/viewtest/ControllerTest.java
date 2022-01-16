@@ -1,9 +1,7 @@
 package viewtest;
 
 import algorithms.AlgorithmName;
-import com.sun.jdi.event.Event;
 import controller.Controller;
-import controller.TableModel;
 import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
@@ -18,19 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import view.*;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,33 +31,33 @@ import static org.mockito.Mockito.*;
 public class ControllerTest {
 
     Controller controller;
+    LocalDate startDate = LocalDate.of(2022, 1, 14);
+    LocalDate endDate = LocalDate.of(2022, 1, 15);
 
     @Mock
     AbstractView view;
     @Mock
     Model model;
     @Mock
-    TableModel modelA;
+    DefaultTableModel modelA;
     @Mock
-    TableModel modelS;
+    DefaultTableModel modelS;
 
     ViewEvent viewEvent;
     List<Point> exampleData;
 
     @BeforeEach
     void setUp(){
-        viewEvent = new ViewEvent(LocalDate.now().minusDays(10),
-                LocalDate.now(), AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM,
+        viewEvent = new ViewEvent(startDate, endDate, AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "EUR");
         exampleData = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
+        when(view.getJMenuBar()).thenReturn(new JMenuBar());
+
+        controller = new Controller(view, model, modelA, modelS);
     }
 
     @Test
     void shouldInvokePredictMethodOnModel(){
-
-        when(view.getJMenuBar()).thenReturn(new JMenuBar());
-
-        controller = new Controller(view, model, modelA, modelS);
 
         controller.new ListenForView().update(viewEvent);
 
@@ -78,9 +69,6 @@ public class ControllerTest {
 
     @Test
     void shouldNtPredictMethodOnModel(){
-        when(view.getJMenuBar()).thenReturn(new JMenuBar());
-
-        controller = new Controller(view, model, modelA, modelS);
 
         // Currency is invalid, so we can't be provided with response body
         ViewEvent viewEvent = new ViewEvent(LocalDate.now().minusDays(10),
@@ -89,10 +77,10 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model, never()).setAlgorithm(any(AlgorithmName.class), eq(5));
+        verify(model, never()).setAlgorithm(AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM, 5);
 
-        verify(model, never()).predict(any(List.class), any(LocalDate.class),
-                any(LocalDate.class));
+        verify(model, never()).predict(any(List.class), eq(startDate),
+                (eq(endDate)));
     }
 
     @Test
@@ -131,7 +119,7 @@ public class ControllerTest {
         // Now based on gathered data it computes general statistics
         o.update(ModelEvent.DATA_PROCESSED);
 
-        verify(modelS).setDataVector(any(Vector.class));
+        verify(modelS).setDataVector(any(Vector.class), any(Vector.class));
 
     }
 
@@ -139,41 +127,46 @@ public class ControllerTest {
     TextFileWriter<Vector> writer;
 
 
-    @Test
-    void shouldSaveToFile() throws IOException {
-        when(view.getJMenuBar()).thenReturn(new JMenuBar());
-        controller = new Controller(view, model, modelA, modelS);
-
-        PropertyChangeListener listener = controller.new ListenForFileSave(writer);
-
-        when(modelA.getDataVector())
-                .thenReturn(DataPointsFlattering.flatten(exampleData, exampleData));
-
-        listener.propertyChange(new PropertyChangeEvent(view,
-                Menu.SAVE_TO_FILE, null, "src\\test\\java\\viewtest\\random.txt"));
-
-        verify(modelA).getDataVector();
-        verify(writer).saveToFile(eq("src\\test\\java\\viewtest\\random.txt"),
-                any(Vector.class));
-
-    }
-
     @Mock
     Plot plot;
 
     @Test
     void shouldCreatePlot() {
-        when(view.getJMenuBar()).thenReturn(new JMenuBar());
-        controller = new Controller(view, model, modelA, modelS);
-
         ModelObserver listener = controller.new ListenForCreatePlot(plot);
-        //new PropertyChangeEvent(view, Menu.CREATE_PLOT, null, null)
+
         listener.update(ModelEvent.DATA_IN_PROCESS);
 
         // Sets domain range
         verify(plot).setDomainRange(any());
         verify(plot).addSeries(eq("Real"), any());
         verify(plot).addSeries(eq("Predicted"), any());
+    }
+
+
+    @Test
+    void shouldClearList(){
+
+        ViewObserver ob = controller.new ListenForView();
+
+        // List of real data points should be cleared each time we make a new prediction
+        ob.update(viewEvent);
+        ob.update(viewEvent);
+
+        verify(model, atLeastOnce()).predict(argThat(x -> x.size() < 30),
+                eq(startDate), eq(endDate));
+    }
+
+    @Test
+    void shouldDisableAndEnableViewAction(){
+
+        ModelObserver ob = controller.new HandleViewAction();
+        ob.update(ModelEvent.DATA_PROCESS_STARTED);
+
+        verify(view).disableActions();
+
+        ob.update(ModelEvent.DATA_PROCESSED);
+
+        verify(view).enableActions();
     }
 
 }

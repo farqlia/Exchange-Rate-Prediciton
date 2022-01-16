@@ -6,6 +6,7 @@ import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
 import org.junit.jupiter.api.*;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -38,7 +39,7 @@ public class TimeSeriesScienceLibraryTest {
 
         BigDecimal MAE = TimeSeriesScienceLibrary.calculateMeanAbsoluteErrorK(data, data,5);
         System.out.println("MAE= " + MAE);
-        Assertions.assertEquals(MAE, BigDecimal.ZERO);
+        Assertions.assertTrue(MAE.compareTo(BigDecimal.ZERO) == 0);
     }
 
     @Test
@@ -66,6 +67,17 @@ public class TimeSeriesScienceLibraryTest {
         BigDecimal MAPE = TimeSeriesScienceLibrary.calculateMeanAbsolutePercentageErrorK(predicted, data, 5);
         System.out.println("MAPE= " + MAPE);
         Assertions.assertTrue(MAPE.compareTo(BigDecimal.ONE) < 0);
+
+    }
+
+    @Test
+    void shouldCalculateAverageOfThreePoints(){
+
+        List<Point> dataPoints = DataGenerator.getInstance().generateDataWithTrend(3, BigDecimal.ONE, BigDecimal.ONE);
+
+        BigDecimal average = TimeSeriesScienceLibrary.calculateAverage(dataPoints.get(0), dataPoints.get(1),
+                dataPoints.get(2));
+        Assertions.assertEquals(new BigDecimal("2.000000"), average);
 
     }
 

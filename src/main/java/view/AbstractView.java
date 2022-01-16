@@ -12,13 +12,17 @@ public abstract class AbstractView extends JFrame {
         observers = new ArrayList<>();
     }
 
+    // Should disable button for the time of computations
+    public abstract void disableActions();
+    public abstract void enableActions();
+
     public void registerObserver(ViewObserver o){
         observers.add(o);
     }
 
     public void notifyObservers(ViewEvent data) {
         for (ViewObserver observer : observers){
-            observer.update(data);
+            new Thread(() -> observer.update(data)).start();
         }
     }
 }
