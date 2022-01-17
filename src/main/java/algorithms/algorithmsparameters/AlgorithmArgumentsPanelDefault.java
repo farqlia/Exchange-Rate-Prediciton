@@ -12,6 +12,8 @@ public class AlgorithmArgumentsPanelDefault extends AlgorithmArgumentsPanel{
         JPanel thePanel = new JPanel(new BorderLayout());
         thePanel.add(new JLabel("No Customization Needed"), BorderLayout.CENTER);
 
+        okButton.setText("OK");
+
         add(thePanel, BorderLayout.CENTER);
 
     }

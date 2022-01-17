@@ -5,32 +5,26 @@ import algorithms.BrownExponentialSmoothingModel;
 import algorithms.LinearlyWeightedMovingAverage;
 import algorithms.NaiveAlgorithmWithTrend;
 import algorithms.algorithmsparameters.AlgorithmArguments;
-import algorithms.algorithmsparameters.AlgorithmArgumentsPanel1;
 import datasciencealgorithms.utils.point.Point;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.common.processor.core.AbstractListProcessor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-@ExtendWith(MockitoExtension.class)
 public class AlgorithmNamesTest {
 
-    @Mock
     BlockingQueue<Point> queue;
     Map<AlgorithmArguments.Names, Number> argMap;
 
     @BeforeEach
     void setUp(){
         argMap = new HashMap<>();
+        queue = new ArrayBlockingQueue<>(10);
     }
 
     @Test

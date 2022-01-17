@@ -20,19 +20,18 @@ public class BrownExponentialSmoothingModel implements Algorithm{
     }
 
     @Override
-    public void forecastValuesForDates(List<Point> realData, LocalDate startDate, LocalDate endDate) throws InterruptedException {
+    public void forecastValuesForDates(List<Point> realData, LocalDate startDate, LocalDate endDate)
+            throws InterruptedException {
 
         int startIndex = UtilityMethods.findIndexOfDate(startDate, realData);
         int endIndex = UtilityMethods.findIndexOfDate(endDate, realData);
 
-        // First prediction is an average of three first points ()
+        // First prediction is an average of first three points
         BigDecimal prevPrediction = TimeSeriesScienceLibrary.calculateAverage(realData.get(startIndex),
                 realData.get(startIndex + 1), realData.get(startIndex + 2));
 
         queue.put(new Point(realData.get(startIndex).getX(),
                 prevPrediction));
-
-        SleepingThread.sleep();
 
         for (int i = startIndex + 1; i <= endIndex; i++){
 

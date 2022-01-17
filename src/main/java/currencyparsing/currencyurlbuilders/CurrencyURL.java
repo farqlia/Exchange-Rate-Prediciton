@@ -8,10 +8,9 @@ public abstract class CurrencyURL {
     static char sep = '/';
     String table, date;
     private final String baseAddress = "http://api.nbp.pl/api/";
-    private StringBuilder urlStrB;
+    private final StringBuilder urlStrB;
 
-    // Middle part of the request is what varies, but the part about
-    // date is shared so we should extract that
+    // Middle part of the request is what varies
     abstract StringBuilder getMiddlePart();
 
     public abstract static class URLBuilder<T extends URLBuilder<T>>{
@@ -24,7 +23,7 @@ public abstract class CurrencyURL {
             this.moneyType = moneyType;
         }
 
-        // Reset all the fields so we can use this object more than once
+        // Reset all the fields so we can reuse this object
         public T reset(){
             table = "";
             date = "";

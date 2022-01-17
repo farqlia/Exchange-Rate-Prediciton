@@ -161,10 +161,10 @@ public class Controller {
             } else if (event == ModelEvent.DATA_PROCESSED){
                 predictedData.addAll(model.getDataChunk());
 
-                Vector<Vector> statistics = new Vector<>(3);
+                Vector<Vector<Object>> statistics = new Vector<>(3);
 
                 for (Statistics s : Statistics.values()){
-                    statistics.add(new Vector<>(List.of(s.name(),
+                    statistics.add(new Vector<>(List.of(s.toString(),
                             s.apply(realDataPoints, predictedData))));
                 }
 
@@ -189,6 +189,9 @@ public class Controller {
              Vector<Vector> v = new Vector<>();
                 v.add(getColumnNames(modelA));
                 v.addAll(modelA.getDataVector());
+                v.add(getColumnNames(modelS));
+                v.addAll(modelS.getDataVector());
+
                 try {
                     textFileWriter.saveToFile(((File)evt.getNewValue()).getAbsolutePath(), v);
                     }

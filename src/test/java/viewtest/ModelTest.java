@@ -73,7 +73,7 @@ public class ModelTest {
     }
 
     @Test
-    void shouldReturnNonNullList(){
+    void shouldReturnNonNullList() {
 
         model.setAlgorithm(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
 
@@ -87,7 +87,7 @@ public class ModelTest {
 
     @Test
     void shouldReturnRuntimeClass(){
-        DefaultTableModel model = new TableModel(new Vector(List.of("col1", "col2")), 0);
+        DefaultTableModel model = new TableModel(new Vector(List.of("col1", "col2")), 0, "");
 
         model.addRow(new Vector<>(List.of(BigDecimal.ONE, LocalDate.now())));
         model.addRow(new Vector<>(List.of(BigDecimal.ONE, LocalDate.now())));

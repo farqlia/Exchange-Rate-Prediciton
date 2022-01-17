@@ -98,7 +98,7 @@ public class View extends AbstractView {
             JScrollPane scroller = new JScrollPane(table,
                     JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            tabbedPane.addTab("Table", scroller);
+            tabbedPane.addTab(tableModel.toString(), scroller);
         }
 
         addComp(mainPanel, leftPanel, 0, 0, 1,1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE);
@@ -128,11 +128,13 @@ public class View extends AbstractView {
     @Override
     public void disableActions() {
         predictButton.setEnabled(false);
+        customizeAlgorithmButton.setEnabled(false);
     }
 
     @Override
     public void enableActions() {
         predictButton.setEnabled(true);
+        customizeAlgorithmButton.setEnabled(true);
     }
 
     public class HandleButtonListener implements ActionListener{

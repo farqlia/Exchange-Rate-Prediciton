@@ -18,10 +18,10 @@ public class Application {
     public static void main(String[] args) {
 
         DefaultTableModel modelA =
-                new TableModel(new Vector<>(List.of("Date", "Real", "Predicted", "y - y*", "(y - y*) / y")), 0);
+                new TableModel(new Vector<>(List.of("Date", "Real", "Predicted", "y - y*", "(y - y*) / y")), 0, "Results");
 
         DefaultTableModel modelS =
-                new TableModel(new Vector<>(List.of("Name", "Value")), 0);
+                new TableModel(new Vector<>(List.of("Name", "Value")), 0, "Statistics");
 
         Loader<CurrencyName> currencyNameLoader =
                 new CurrencyNamesLoader();

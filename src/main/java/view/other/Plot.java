@@ -40,9 +40,10 @@ public class Plot extends JFrame {
         dataset = new TimeSeriesCollection();
 
         chart = ChartFactory.createTimeSeriesChart(
-                "Plot", "Date", "Y-lable",
+                "Plot", "Date", "Values",
                 dataset, true, true, false);
 
+        chart.getLegend().setItemFont(new Font("Roboto", Font.PLAIN, 20));
         DeviationRenderer renderer = new DeviationRenderer(true, false);
         renderer.setAlpha(0.12f);
         XYPlot plot = (XYPlot) chart.getPlot();

@@ -141,4 +141,23 @@ public class MovingAverageTest {
 
     }
 
+    @Test
+    void shouldTestHoltExponentialSmoothingModel() throws InterruptedException{
+
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(21);
+        BigDecimal a = new BigDecimal("0.4");
+        BigDecimal b = new BigDecimal("0.4");
+        Algorithm algorithm = new HoltExponentialSmoothingModel(queue, a, b);
+
+        dataPoints = DataGenerator.getInstance().generateDataWithTrend(20, BigDecimal.ONE,
+                BigDecimal.ONE);
+        sD = LocalDate.now().minusDays(18);
+        algorithm.forecastValuesForDates(dataPoints, sD, eD);
+
+        // s1 = y2 - y1 -> 2 - 1 = 1, 0.4 * 2 + (0.6) (1 + 1) = 0.8 + 1.2 = 2
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(new BigDecimal("2").compareTo(queue.take().getY()) == 0)
+        );
+    }
+
 }

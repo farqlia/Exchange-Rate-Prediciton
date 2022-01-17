@@ -74,7 +74,12 @@ public class TimeSeriesScienceLibrary {
             sum = sum.add(p.getY());
         }
         return sum.divide(new BigDecimal(points.length), ROUNDING_MODE);
-   }
+    }
+
+    public static BigDecimal calculateAverage(List<Point> points){
+        Point[] pointsArr = new Point[points.size()];
+        return calculateAverage(points.toArray(pointsArr));
+    }
 
     // predictedDataData : predictedData data, it has an actual range of dates we should consider in
     // calculations

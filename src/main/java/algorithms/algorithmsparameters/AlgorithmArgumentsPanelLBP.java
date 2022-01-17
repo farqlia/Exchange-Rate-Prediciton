@@ -7,17 +7,19 @@ import java.awt.event.ActionListener;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class AlgorithmArgumentsPanel1 extends AlgorithmArgumentsPanel {
+public class AlgorithmArgumentsPanelLBP extends AlgorithmArgumentsPanel {
 
     private Map<Names, Number> params;
     private final JSlider lookBackPeriodSlider;
+    int default_ = 5;
 
     @Override
     public Map<Names, Number> getMap() {
+        params.computeIfAbsent(Names.LOOK_BACK_PERIOD, o -> default_);
         return params;
     }
 
-    public AlgorithmArgumentsPanel1() {
+    public AlgorithmArgumentsPanelLBP() {
 
         params = new EnumMap<>(Names.class);
 
