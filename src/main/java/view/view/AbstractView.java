@@ -1,7 +1,6 @@
-package view;
+package view.view;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
 import java.util.*;
 
 public abstract class AbstractView extends JFrame {
@@ -22,7 +21,7 @@ public abstract class AbstractView extends JFrame {
 
     public void notifyObservers(ViewEvent data) {
         for (ViewObserver observer : observers){
-            new Thread(() -> observer.update(data)).start();
+            observer.update(data);
         }
     }
 }

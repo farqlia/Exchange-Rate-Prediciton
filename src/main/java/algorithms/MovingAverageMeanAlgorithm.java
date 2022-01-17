@@ -5,11 +5,9 @@ import datasciencealgorithms.utils.point.Point;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MovingAverageMeanAlgorithm implements Algorithm{
 
@@ -18,8 +16,8 @@ public class MovingAverageMeanAlgorithm implements Algorithm{
     // How many k values are considered
     private final BlockingQueue<Point> queue;
 
-    public MovingAverageMeanAlgorithm(BlockingQueue<Point> queue, int lookbackPeriod){
-        this.lookbackPeriod = lookbackPeriod;
+    public MovingAverageMeanAlgorithm(BlockingQueue<Point> queue, Number lookbackPeriod){
+        this.lookbackPeriod = lookbackPeriod.intValue();
         this.queue = queue;
     }
 

@@ -1,17 +1,14 @@
 package algorithms;
 
+import algorithms.algorithmsparameters.AlgorithmArguments;
 import datasciencealgorithms.utils.UtilityMethods;
 import datasciencealgorithms.utils.point.Point;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class LinearlyWeightedMovingAverage implements Algorithm{
 
@@ -19,8 +16,8 @@ public class LinearlyWeightedMovingAverage implements Algorithm{
     private final int lookbackPeriod;
     private final BlockingQueue<Point> queue;
 
-    public LinearlyWeightedMovingAverage(BlockingQueue<Point> queue, int lookbackPeriod){
-        this.lookbackPeriod = lookbackPeriod;
+    public LinearlyWeightedMovingAverage(BlockingQueue<Point> queue,Number lookbackPeriod){
+        this.lookbackPeriod = lookbackPeriod.intValue();
         this.queue = queue;
     }
 

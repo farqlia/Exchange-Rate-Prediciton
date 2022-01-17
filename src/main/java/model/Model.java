@@ -1,14 +1,19 @@
 package model;
 
 import algorithms.*;
+import algorithms.algorithmsparameters.AlgorithmArguments;
 import datasciencealgorithms.utils.point.Point;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import static algorithms.algorithmsparameters.AlgorithmArguments.Names;
 
 public class Model extends AbstractModel{
 
@@ -18,9 +23,9 @@ public class Model extends AbstractModel{
     private final List<ModelObserver> observers = new ArrayList<>();
     private final DataProcessor processor = new DataProcessor();
 
-    public void setAlgorithm(AlgorithmName algorithmName, int lookbackPeriod){
+    public void setAlgorithm(AlgorithmName algorithmName){
 
-        algorithm = algorithmName.createAlgorithm(queue, lookbackPeriod);
+        algorithm = algorithmName.createAlgorithm(queue, algorithmName.getAlgorithmArguments().getMap());
     }
 
     @Override

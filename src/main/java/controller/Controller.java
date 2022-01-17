@@ -14,6 +14,11 @@ import model.ModelEvent;
 import model.ModelObserver;
 import org.jfree.data.time.Day;
 import view.*;
+import view.other.Menu;
+import view.other.Plot;
+import view.view.AbstractView;
+import view.view.ViewEvent;
+import view.view.ViewObserver;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -42,9 +47,11 @@ public class Controller {
         this.model = model;
         this.modelA = modelA;
         this.modelS = modelS;
-        this.view.registerObserver(new ListenForView());
 
         ListenForCreatePlot listener = new ListenForCreatePlot(new Plot());
+
+        this.view.registerObserver(new ListenForView());
+        this.view.registerObserver(listener);
 
         model.registerObserver(new ListenForModel1());
         model.registerObserver(new ListenForModel2());
@@ -59,7 +66,7 @@ public class Controller {
 
     }
 
-    public class ListenForView implements ViewObserver{
+    public class ListenForView implements ViewObserver {
 
         Loader<ExchangeRate> exchangeRateLoader = new ExchangeRateLoader();
         ConcreteCurrencyURL.Builder builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
@@ -93,7 +100,7 @@ public class Controller {
                         ZoneId.systemDefault()),
                         eR.getMid()));
             }
-            model.setAlgorithm(e.getChosenAlgorithm(), e.getLookbackPeriod());
+            model.setAlgorithm(e.getChosenAlgorithm());
 
             try {
                 model.predict(realDataPoints, e.getStartDate(), e.getEndDate());
@@ -230,7 +237,7 @@ public class Controller {
 
         @Override
         public void update(ViewEvent e) {
-            plot.setTitle(e.getCurrencyCode() + ", " + e.getStartDate() + "-" + e.getEndDate());
+            plot.setTitle(e.getCurrencyCode() + ", " + e.getStartDate() + ":" + e.getEndDate());
         }
 
         private Day[] getDates(){

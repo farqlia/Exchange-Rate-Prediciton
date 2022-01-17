@@ -120,7 +120,7 @@ public class MovingAverageTest {
 
     @Test
     void shouldTestBrownExponentialSmoothingModel() throws InterruptedException {
-        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(10);
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(20);
         BigDecimal a = new BigDecimal("0.7");
         Algorithm algorithm = new BrownExponentialSmoothingModel(queue, a);
 
@@ -134,8 +134,11 @@ public class MovingAverageTest {
                 () -> Assertions.assertTrue(new BigDecimal("2").compareTo(firstPoint.getY()) == 0),
                 () -> Assertions.assertEquals(dataPoints.get(0).getX(), firstPoint.getX()),
                 () -> Assertions.assertTrue(BigDecimal.ONE.multiply(a).add(BigDecimal.ONE.subtract(a).multiply(firstPoint.getY()))
-                                .compareTo(queue.take().getY()) == 0)
+                                .compareTo(queue.take().getY()) == 0),
+                () -> Assertions.assertEquals(9, queue.size())      // Empty point also counts
         );
+
+
     }
 
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -59,6 +60,20 @@ public class ParserTest {
         File f = new File(fileName);
 
         Map<Parser.Entries, String> mapping = fileParser.parseFilePath(f.getPath());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(dir, mapping.get(Parser.Entries.DIRECTORY)),
+                () -> Assertions.assertEquals(fileName, mapping.get(Parser.Entries.FILEPATH)),
+                () -> Assertions.assertEquals(extension, mapping.get(Parser.Entries.EXTENSION))
+        );
+    }
+
+    @Test
+    void shouldParseFileNameFromFileObject2() {
+
+        File f = Path.of("some", "random", "dir", "file" + "." + extension).toFile();
+
+        Map<Parser.Entries, String> mapping = fileParser.parseFilePath(f.getPath());
+        System.out.print(f.getPath());
         Assertions.assertAll(
                 () -> Assertions.assertEquals(dir, mapping.get(Parser.Entries.DIRECTORY)),
                 () -> Assertions.assertEquals(fileName, mapping.get(Parser.Entries.FILEPATH)),

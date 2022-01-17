@@ -8,6 +8,6 @@ import java.util.List;
 public interface Algorithm {
 
     void forecastValuesForDates(List<Point> realData,
-                                                  LocalDate startDate, LocalDate endDate) throws InterruptedException;
+                                LocalDate startDate, LocalDate endDate) throws InterruptedException;
 
 }

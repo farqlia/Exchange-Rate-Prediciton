@@ -1,6 +1,7 @@
 package viewtest;
 
 import algorithms.AlgorithmName;
+import algorithms.algorithmsparameters.AlgorithmArguments;
 import controller.Controller;
 import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
@@ -13,15 +14,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import view.*;
+import view.other.Plot;
+import view.view.AbstractView;
+import view.view.View;
+import view.view.ViewEvent;
+import view.view.ViewObserver;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,7 +35,7 @@ import static org.mockito.Mockito.*;
 public class ControllerTest {
 
     Controller controller;
-    LocalDate startDate = LocalDate.of(2022, 1, 14);
+    LocalDate startDate = LocalDate.of(2022, 1, 1);
     LocalDate endDate = LocalDate.of(2022, 1, 15);
 
     @Mock
@@ -45,15 +49,19 @@ public class ControllerTest {
 
     ViewEvent viewEvent;
     List<Point> exampleData;
+    Map<AlgorithmArguments.Names, BigDecimal> argMap;
 
     @BeforeEach
     void setUp(){
+        argMap = new HashMap<>();
+        argMap.put(AlgorithmArguments.Names.LOOK_BACK_PERIOD, new BigDecimal(5));
         viewEvent = new ViewEvent(startDate, endDate, AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "EUR");
         exampleData = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
         when(view.getJMenuBar()).thenReturn(new JMenuBar());
 
         controller = new Controller(view, model, modelA, modelS);
+
     }
 
     @Test
@@ -61,7 +69,7 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model).setAlgorithm(any(AlgorithmName.class), eq(5));
+        verify(model).setAlgorithm(any(AlgorithmName.class));
 
         verify(model).predict(any(List.class), any(LocalDate.class),
                 any(LocalDate.class));
@@ -77,7 +85,7 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model, never()).setAlgorithm(AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM, 5);
+        verify(model, never()).setAlgorithm(AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM);
 
         verify(model, never()).predict(any(List.class), eq(startDate),
                 (eq(endDate)));
@@ -90,6 +98,7 @@ public class ControllerTest {
         controller = new Controller(realView, model, modelA, modelS);
         realView.notifyObservers(viewEvent);
 
+        verify(model).setAlgorithm(AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM);
         when(model.getDataChunk())
                 .thenReturn(exampleData);
 
@@ -151,8 +160,8 @@ public class ControllerTest {
         // List of real data points should be cleared each time we make a new prediction
         ob.update(viewEvent);
         ob.update(viewEvent);
-
-        verify(model, atLeastOnce()).predict(argThat(x -> x.size() < 30),
+        int length = (int) ChronoUnit.DAYS.between(startDate.minusMonths(1), endDate);
+        verify(model, atLeastOnce()).predict(argThat(x -> x.size() < length),
                 eq(startDate), eq(endDate));
     }
 

@@ -1,7 +1,8 @@
-package view;
+package view.view;
 
 import algorithms.AlgorithmName;
 import exchangerateclass.CurrencyName;
+import view.other.Menu;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -20,7 +21,7 @@ public class View extends AbstractView {
     private final JSpinner endDateSpinner;
     private final JComboBox<AlgorithmName> nameOfAlgorithmsComboBox;
     private final CustomComboBox customComboBox;
-    private final JSlider lookBackPeriodSlider;
+    private final JButton customizeAlgorithmButton;
     private DefaultTableModel[] tableModels;
     private JMenuBar menuBar;
     private JButton predictButton;
@@ -75,13 +76,11 @@ public class View extends AbstractView {
         addComp(leftPanel, new JLabel("Choose Algorithm"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(leftPanel, nameOfAlgorithmsComboBox, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
-        lookBackPeriodSlider = new JSlider(5, 15, 5);
-        lookBackPeriodSlider.setPaintTicks(true);
-        lookBackPeriodSlider.setPaintLabels(true);
-        lookBackPeriodSlider.setMinorTickSpacing(1);
-        lookBackPeriodSlider.setMajorTickSpacing(5);
-        addComp(leftPanel, new JLabel("Choose look back Period (Optional)"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(leftPanel, lookBackPeriodSlider, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        y++;
+        customizeAlgorithmButton = new JButton("Customize Algorithm");
+        addComp(leftPanel, customizeAlgorithmButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        customizeAlgorithmButton
+                .addActionListener(ev -> ((AlgorithmName) nameOfAlgorithmsComboBox.getSelectedItem()).getAlgorithmArguments().collectArguments());
 
         predictButton = new JButton("Predict");
         addComp(leftPanel, predictButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
@@ -136,8 +135,7 @@ public class View extends AbstractView {
         predictButton.setEnabled(true);
     }
 
-
-    private class HandleButtonListener implements ActionListener{
+    public class HandleButtonListener implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -145,12 +143,12 @@ public class View extends AbstractView {
             Date sD = (Date) startDateSpinner.getValue();
             Date eD = (Date) endDateSpinner.getValue();
             CurrencyName cN = (CurrencyName)customComboBox.currencyNamesComboBox.getSelectedItem();
+            AlgorithmName algorithmName = (AlgorithmName) nameOfAlgorithmsComboBox.getSelectedItem();
 
             ViewEvent event = new ViewEvent(LocalDate.ofInstant(sD.toInstant(), ZoneId.of("CET")),
                     LocalDate.ofInstant(eD.toInstant(), ZoneId.of("CET")),
-                    (AlgorithmName) nameOfAlgorithmsComboBox.getSelectedItem(),
-                    cN.getCode(),
-                    lookBackPeriodSlider.getValue());
+                    algorithmName,
+                    cN.getCode());
 
             for (DefaultTableModel tM : tableModels){
                deleteRows(tM);

@@ -1,4 +1,4 @@
-package view;
+package view.other;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

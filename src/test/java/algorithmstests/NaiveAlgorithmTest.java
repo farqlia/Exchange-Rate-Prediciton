@@ -55,7 +55,7 @@ public class NaiveAlgorithmTest {
 
         BlockingQueue<Point> queue = new ArrayBlockingQueue<>(dataset);
         Algorithm naiveAlgorithmWithTrendAndAverageIncrement =
-                new NaiveAlgorithmWithTrendAndAverageIncrement(queue, 2);
+                new NaiveAlgorithmWithTrendAndAverageIncrement(queue, new BigDecimal(2));
 
         // We start off with some later date because the 1st values are not computed correctly
         LocalDate sD = LocalDate.now().minusDays(10),

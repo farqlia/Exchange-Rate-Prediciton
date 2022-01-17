@@ -1,10 +1,12 @@
-package view;
+package view.other;
 
 import dataconverter.writersandreaders.FileHandler;
+import datasciencealgorithms.utils.Parser;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
 import org.jfree.data.general.Series;
@@ -14,7 +16,10 @@ import org.jfree.data.time.TimeSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -28,6 +33,7 @@ public class Plot extends JFrame {
     ChartPanel chartPanel;
     int numOfSeries;
     JMenuBar bar = new JMenuBar();
+    FileHandler handler = new FileHandler("png", "jpeg");
 
     public Plot(){
 
@@ -54,12 +60,9 @@ public class Plot extends JFrame {
         setJMenuBar(bar);
 
         JMenu subMenu = new JMenu("Save As");
-        JMenuItem itemPNG = new JMenuItem("png");
 
-        FileHandler handler = new FileHandler("");
-
-        //itemPNG.addActionListener();
-        JMenuItem itemJPEG = new JMenuItem("jpeg");
+        JMenuItem itemPNG = new JMenuItem(new HandlePlotSave("png"));
+        JMenuItem itemJPEG = new JMenuItem(new HandlePlotSave("jpeg"));
 
         subMenu.add(itemJPEG);
         subMenu.addSeparator();
@@ -68,10 +71,37 @@ public class Plot extends JFrame {
         bar.add(subMenu);
     }
 
+    public class HandlePlotSave extends AbstractAction{
 
+        String directory = "plots";
+
+        public HandlePlotSave(String extension){
+            putValue(Action.NAME, extension);
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Path path = Path.of(directory + "\\" + chart.getTitle().getText().replaceAll("\\W+", "_") + "." + getValue(Action.NAME));
+
+            try {
+                handler.parseFilePath(path.toString());
+                handler.createFile();
+                ChartUtils.saveChartAsPNG(path.toFile(),
+                        chart, chartPanel.getMinimumDrawWidth(), chartPanel.getMinimumDrawHeight());
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+                //JOptionPane.showMessageDialog(Plot.this, "Couldn't Save The Plot",
+                     //   "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 
     public void setTitle(String title){
         chart.setTitle(title);
+    }
+
+    public void setDomainRange(Day min, Day max){
+        XYPlot plot = chart.getXYPlot();
+
     }
 
     // If we want to reuse the plot we need to get rid of current displayed values

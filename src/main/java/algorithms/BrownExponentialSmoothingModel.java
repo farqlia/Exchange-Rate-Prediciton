@@ -5,7 +5,6 @@ import datasciencealgorithms.utils.point.Point;
 import mathlibraries.TimeSeriesScienceLibrary;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -46,6 +45,8 @@ public class BrownExponentialSmoothingModel implements Algorithm{
 
             prevPrediction = currPred;
         }
+
+        queue.put(Point.EMPTY_POINT);
 
     }
 }

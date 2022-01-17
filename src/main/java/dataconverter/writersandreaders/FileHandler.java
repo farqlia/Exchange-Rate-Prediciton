@@ -36,7 +36,7 @@ public class FileHandler {
 
     }
 
-    void createFile() throws IOException {
+    public void createFile() throws IOException {
         Path p = Path.of(mapping.get(Parser.Entries.DIRECTORY));
         // Creates all subdirectories
         Files.createDirectories(p);

@@ -5,11 +5,9 @@ import datasciencealgorithms.utils.UtilityMethods;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class NaiveAlgorithmWithTrendAndAverageIncrement implements Algorithm{
 
@@ -17,8 +15,8 @@ public class NaiveAlgorithmWithTrendAndAverageIncrement implements Algorithm{
     private final int lookbackPeriod;
     private final BlockingQueue<Point> queue;
 
-    public NaiveAlgorithmWithTrendAndAverageIncrement(BlockingQueue<Point> queue, int lookbackPeriod){
-        this.lookbackPeriod = lookbackPeriod;
+    public NaiveAlgorithmWithTrendAndAverageIncrement(BlockingQueue<Point> queue, Number lookbackPeriod){
+        this.lookbackPeriod = lookbackPeriod.intValue();
         this.queue = queue;
     }
 

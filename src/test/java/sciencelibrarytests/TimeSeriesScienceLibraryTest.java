@@ -56,7 +56,7 @@ public class TimeSeriesScienceLibraryTest {
 
         BigDecimal RMSPE = TimeSeriesScienceLibrary.calculateRootMeanSquarePercentageErrorK(predicted, data, 5);
         System.out.println("RMSPE= " + RMSPE);
-        Assertions.assertTrue(RMSPE.compareTo(new BigDecimal("1")) < 0);
+        Assertions.assertTrue(RMSPE.compareTo(new BigDecimal("100")) < 0);
 
     }
 
@@ -66,7 +66,7 @@ public class TimeSeriesScienceLibraryTest {
 
         BigDecimal MAPE = TimeSeriesScienceLibrary.calculateMeanAbsolutePercentageErrorK(predicted, data, 5);
         System.out.println("MAPE= " + MAPE);
-        Assertions.assertTrue(MAPE.compareTo(BigDecimal.ONE) < 0);
+        Assertions.assertTrue(MAPE.compareTo(new BigDecimal("100")) < 0);
 
     }
 
