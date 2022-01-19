@@ -1,6 +1,6 @@
 package dataconverter.writersandreaders;
 
-import dataconverter.Formatter;
+import dataconverter.formatters.Formatter;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

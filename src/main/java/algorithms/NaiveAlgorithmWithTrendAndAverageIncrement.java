@@ -32,7 +32,6 @@ public class NaiveAlgorithmWithTrendAndAverageIncrement implements Algorithm{
 
             for (int j = i - 2; j > (i - 2 - lookbackPeriod); j--){
                 sumForAverage = sumForAverage.add(
-                        // min is not minus :)
                         realData.get(j).getY().subtract(realData.get(j - 1).getY()));
             }
 

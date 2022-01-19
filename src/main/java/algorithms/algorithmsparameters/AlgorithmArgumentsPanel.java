@@ -12,6 +12,7 @@ public abstract class AlgorithmArgumentsPanel extends JPanel implements Algorith
 
         setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel();
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         okButton = new JButton("Save");
         okButton.addActionListener(ev -> dialog.setVisible(false));
         buttonPanel.add(okButton);

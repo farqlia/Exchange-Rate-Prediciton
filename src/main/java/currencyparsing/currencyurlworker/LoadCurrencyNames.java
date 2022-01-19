@@ -1,6 +1,6 @@
 package currencyparsing.currencyurlworker;
 
-import dataconverter.Formatter;
+import dataconverter.formatters.Formatter;
 import dataconverter.writersandreaders.CustomFileWriter;
 import dataconverter.writersandreaders.TextFileWriter;
 import exchangerateclass.CurrencyName;

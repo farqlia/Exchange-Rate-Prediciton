@@ -1,31 +1,26 @@
 package model;
 
 import algorithms.*;
-import algorithms.algorithmsparameters.AlgorithmArguments;
 import datasciencealgorithms.utils.point.Point;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import static algorithms.algorithmsparameters.AlgorithmArguments.Names;
 
 public class Model extends AbstractModel{
 
     private Algorithm algorithm;
-    public final int CHUNK_SIZE = 2;
+    public final int CHUNK_SIZE = 5;
     private final BlockingQueue<Point> queue = new ArrayBlockingQueue<>(CHUNK_SIZE);
     private final List<ModelObserver> observers = new ArrayList<>();
     private final DataProcessor processor = new DataProcessor();
 
-    public void setAlgorithm(AlgorithmName algorithmName){
+    public void setAlgorithm(AlgorithmInitializer algorithmInitializer){
 
-        algorithm = algorithmName.createAlgorithm(queue, algorithmName.getAlgorithmArguments().getMap());
+        algorithm = algorithmInitializer.createAlgorithm(queue, algorithmInitializer.getAlgorithmArguments().getMap());
     }
 
     @Override
@@ -79,7 +74,7 @@ public class Model extends AbstractModel{
                             if (!chunks.isEmpty()){
                                 notifyObservers(ModelEvent.DATA_IN_PROCESS);
                             }
-                            notifyObservers(ModelEvent.DATA_PROCESSED);
+                            notifyObservers(ModelEvent.DATA_PROCESS_FINISHED);
                             isDone = true;
                         } else {
                             chunks.add(p);

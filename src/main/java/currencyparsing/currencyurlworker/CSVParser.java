@@ -1,9 +1,7 @@
 package currencyparsing.currencyurlworker;
 
-import dataconverter.Formatter;
+import dataconverter.formatters.Formatter;
 import exchangerateclass.CurrencyName;
-
-import java.io.IOException;
 
 public class CSVParser implements Formatter<CurrencyName> {
 
@@ -18,7 +16,7 @@ public class CSVParser implements Formatter<CurrencyName> {
     }
 
     @Override
-    public CurrencyName parseFromCSVString(String stringToParse) throws IOException {
+    public CurrencyName parseFromCSVString(String stringToParse) {
         String[] splitArr = stringToParse.split(delimiter);
         if (splitArr.length != 2){
             throw new IllegalArgumentException("Incorrect Data Format");

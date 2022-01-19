@@ -82,29 +82,5 @@ public class CurrencyLoaderTest {
         verify(url).getURL();
     }
 
-    ConcreteCurrencyURL.Builder builder;
-    List<ExchangeRate> list;
-    Loader<ExchangeRate> loader;
-
-    @BeforeEach
-    void setUpReal(){
-        builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
-        list = new ArrayList<>();
-    }
-
-    @RepeatedTest(3)
-    void shouldTestOnRealInstances(){
-
-        loader = new ExchangeRateLoader();
-
-        loader.setCurrencyURL(url);
-
-        //list = loader.load();
-
-        //Assertions.assertFalse(list.isEmpty());
-       // Assertions.assertEquals(2, list.size());
-
-        //list.clear();
-    }
 
 }

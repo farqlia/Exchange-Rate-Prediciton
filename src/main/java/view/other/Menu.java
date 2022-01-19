@@ -8,47 +8,41 @@ import java.nio.file.Path;
 
 public class Menu extends JMenuBar {
 
-    public static final String SAVE_TO_FILE = "SAVE_TO_FILE", CREATE_PLOT = "CREATE_PLOT";
-    JMenuItem saveToFileItem, createPlotItem;
-    JFileChooser chooser;
-    FileFilter textFilter;
+    public static final String SAVE_AS_TEXT = "SAVE_AS_TEXT", SAVE_AS_JSON = "SAVE_AS_JSON",
+            CREATE_PLOT = "CREATE_PLOT",
+            SET_RENDERING = "SET_RENDERING";
+
+    JMenuItem saveAsTextItem, saveAsJsonItem, createPlotItem, setRenderingItem;
 
     public Menu(){
 
         JMenu optionsMenu = new JMenu("Options");
-
-        chooser = new JFileChooser();
+        JMenu saveMenu = new JMenu("Save");
+        JMenu renderMenu = new JMenu("Render");
 
         this.add(optionsMenu);
 
-        saveToFileItem = new JMenuItem("Save");
-        optionsMenu.add(saveToFileItem);
-        saveToFileItem.addActionListener(new ListenForSaveButton());
+        saveAsTextItem = new JMenuItem("Text");
+        saveMenu.add(saveAsTextItem);
+        saveAsTextItem.addActionListener(ev -> firePropertyChange(SAVE_AS_TEXT, null, null));
+
+        saveAsJsonItem = new JMenuItem("Json");
+        saveMenu.add(saveAsJsonItem);
+        saveAsJsonItem.addActionListener(ev -> firePropertyChange(SAVE_AS_JSON, null, null));
+
+        optionsMenu.add(saveMenu);
 
         createPlotItem = new JMenuItem("Generate Plot");
         optionsMenu.add(createPlotItem);
         createPlotItem.addActionListener(ev ->
                 firePropertyChange(CREATE_PLOT,null, null));
 
+        setRenderingItem = new JMenuItem("Set rendering");
+        setRenderingItem
+                .addActionListener(ev -> firePropertyChange(SET_RENDERING, null, null));
+        renderMenu.add(setRenderingItem);
 
-        textFilter = new FileNameExtensionFilter("Text Files",
-                "txt");
-        chooser.setFileFilter(textFilter);
-        chooser.setCurrentDirectory(Path.of(".").toFile());
+        this.add(renderMenu);
 
-    }
-
-    private class ListenForSaveButton extends AbstractAction{
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            int result = chooser.showOpenDialog(Menu.this);
-
-            if (result == JFileChooser.APPROVE_OPTION && textFilter.accept(chooser.getSelectedFile())){
-                Menu.this.firePropertyChange(Menu.SAVE_TO_FILE, null, chooser.getSelectedFile());
-            }
-
-        }
     }
 }

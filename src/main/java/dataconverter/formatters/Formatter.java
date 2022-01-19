@@ -1,4 +1,4 @@
-package dataconverter;
+package dataconverter.formatters;
 
 import java.io.IOException;
 

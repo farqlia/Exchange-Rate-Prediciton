@@ -34,6 +34,7 @@ public class TimeSeriesScienceLibraryTest {
         Assertions.assertTrue(MAE.compareTo(new BigDecimal("3")) < 0);
     }
 
+
     @Test
     void shouldReturn0AsMeanAbsoluteError2(){
 
@@ -64,10 +65,37 @@ public class TimeSeriesScienceLibraryTest {
     void shouldCalculateMeanAbsolutePercentageError(){
 
 
-        BigDecimal MAPE = TimeSeriesScienceLibrary.calculateMeanAbsolutePercentageErrorK(predicted, data, 5);
+        BigDecimal MAPE = TimeSeriesScienceLibrary.calculateMeanAbsolutePercentageError(predicted, data);
         System.out.println("MAPE= " + MAPE);
         Assertions.assertTrue(MAPE.compareTo(new BigDecimal("100")) < 0);
 
+    }
+
+    @Test
+    void shouldCalculateMeanAbsolutePercentageError2(){
+
+        List<Point> p2 = DataGenerator.getInstance().generateDataWithTrend(5, new BigDecimal("2"), BigDecimal.ONE);
+        BigDecimal MAPE = TimeSeriesScienceLibrary.calculateMeanAbsolutePercentageError(p2, data);
+        System.out.println("MAPE= " + MAPE);
+
+    }
+
+    @Test
+    void shouldCalculateMeanScaledError(){
+
+        List<Point> p2 = DataGenerator.getInstance().generateDataWithTrend(5, new BigDecimal("2"), BigDecimal.ONE);
+        BigDecimal MASE = TimeSeriesScienceLibrary.calculateMeanAbsoluteScaledError(p2,data);
+        System.out.println("MASE= " + MASE);
+
+    }
+
+    @Test
+    void shouldCorrectlyCalculateMeanAbsoluteError(){
+
+        List<Point> p2 = DataGenerator.getInstance().generateDataWithTrend(5, new BigDecimal("2"), BigDecimal.ONE);
+        BigDecimal MAE = TimeSeriesScienceLibrary.calculateMeanAbsoluteError(p2, data);
+        System.out.println("MAE= " + MAE);
+        Assertions.assertTrue(MAE.compareTo(new BigDecimal("5")) == 0);
     }
 
     @Test
@@ -80,6 +108,7 @@ public class TimeSeriesScienceLibraryTest {
         Assertions.assertEquals(new BigDecimal("2.000000"), average);
 
     }
+
 
     // Important note: DynamicTests are executed differently and therefore @BeforeEach and @AfterEach
     // will not be called

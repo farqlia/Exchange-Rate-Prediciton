@@ -1,9 +1,11 @@
 package utilstests;
 
-import dataconverter.Formatter;
-import dataconverter.writersandreaders.PointToCSV;
-import dataconverter.writersandreaders.VectorToCSV;
+import dataconverter.formatters.Formatter;
+import dataconverter.formatters.RowToCSV;
+import dataconverter.formatters.PointToCSV;
+import dataconverter.formatters.VectorToCSV;
 import datasciencealgorithms.utils.point.Point;
+import model.ResultsTableModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +52,18 @@ public class CSVPrintableTest {
                 BigDecimal.TEN));
 
         Assertions.assertEquals("2022-01-13,1,0,10", new VectorToCSV().getAsCSVString(v));
+
+    }
+
+    @Test
+    void shouldConvertToStringFromRow(){
+
+        Point p = new Point(LocalDate.of(2022, 1, 13), BigDecimal.ZERO);
+        ResultsTableModel.Row r = new ResultsTableModel.Row(
+                p, p, BigDecimal.ZERO, BigDecimal.ONE
+        );
+
+        Assertions.assertEquals("2022-01-13,0,0,0,1", new RowToCSV().getAsCSVString(r));
 
     }
 

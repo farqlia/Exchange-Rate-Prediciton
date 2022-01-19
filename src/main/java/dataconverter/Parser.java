@@ -1,4 +1,4 @@
-package datasciencealgorithms.utils;
+package dataconverter;
 
 import java.util.HashMap;
 import java.util.Map;

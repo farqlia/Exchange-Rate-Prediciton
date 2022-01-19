@@ -1,6 +1,6 @@
-package dataconverter.writersandreaders;
+package dataconverter.formatters;
 
-import dataconverter.Formatter;
+import dataconverter.formatters.Formatter;
 
 import java.util.Vector;
 

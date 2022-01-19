@@ -3,17 +3,18 @@ package controller;
 import currencyparsing.currencyurlbuilders.*;
 import currencyparsing.currencyurlworker.ExchangeRateLoader;
 import currencyparsing.currencyurlworker.Loader;
+import dataconverter.formatters.RowToCSV;
+import dataconverter.writersandreaders.CustomFileWriter;
+import dataconverter.writersandreaders.JsonFileWriter;
 import dataconverter.writersandreaders.TextFileWriter;
-import dataconverter.writersandreaders.VectorToCSV;
+import datasciencealgorithms.utils.UtilityMethods;
 import datasciencealgorithms.utils.point.Point;
 import exchangerateclass.ExchangeRate;
 import mathlibraries.Statistics;
 import mathlibraries.TimeSeriesScienceLibrary;
-import model.Model;
-import model.ModelEvent;
-import model.ModelObserver;
+import model.*;
 import org.jfree.data.time.Day;
-import view.*;
+import studyjson.ResultsInfo;
 import view.other.Menu;
 import view.other.Plot;
 import view.view.AbstractView;
@@ -21,28 +22,29 @@ import view.view.ViewEvent;
 import view.view.ViewObserver;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 public class Controller {
 
     Model model;
-    DefaultTableModel modelA, modelS;
+    CustomTableModel<ResultsTableModel.Row> modelA;
+    CustomTableModel<StatisticsTableModel.Row> modelS;
     AbstractView view;
 
     List<Point> realDataPoints = new ArrayList<>(100);
 
     public Controller(AbstractView view, Model model,
-                      DefaultTableModel modelA, DefaultTableModel modelS){
+                      CustomTableModel<ResultsTableModel.Row> modelA,
+                      CustomTableModel<StatisticsTableModel.Row> modelS){
         this.view = view;
         this.model = model;
         this.modelA = modelA;
@@ -58,11 +60,12 @@ public class Controller {
         model.registerObserver(listener);
         model.registerObserver(new HandleViewAction());
 
-        view.getJMenuBar().addPropertyChangeListener(Menu.SAVE_TO_FILE,
-                        new ListenForFileSave(new TextFileWriter<>(new VectorToCSV())));
+        HandleSaveToFile handler = new HandleSaveToFile();
+        view.getJMenuBar().addPropertyChangeListener(Menu.SAVE_AS_TEXT,handler);
+        view.getJMenuBar().addPropertyChangeListener(Menu.SAVE_AS_JSON, handler);
+        view.getJMenuBar().addPropertyChangeListener(Menu.CREATE_PLOT, listener);
 
-        view.getJMenuBar().addPropertyChangeListener(Menu.CREATE_PLOT,
-                listener);
+        view.registerObserver(handler);
 
     }
 
@@ -75,7 +78,6 @@ public class Controller {
         public void update(ViewEvent e) {
 
             realDataPoints.clear();
-
             exchangeRateLoader.setCurrencyURL(builder
                     .reset()        // reuse the same object
                     // Subtract days to provide some start-up points for the latest dates
@@ -95,7 +97,7 @@ public class Controller {
             }
 
             for (ExchangeRate eR : exchangeRatesList){
-                // Date in ExchangeRates class is 'Date' type so we convert it to LocalDate
+                // Date in ExchangeRates class is 'Date' type so convert it to LocalDate
                 realDataPoints.add(new Point(LocalDate.ofInstant(eR.getEffectiveDate().toInstant(),
                         ZoneId.systemDefault()),
                         eR.getMid()));
@@ -108,6 +110,8 @@ public class Controller {
             } catch (IllegalStateException ex){
                 JOptionPane.showMessageDialog(view,
                         "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+
             }
         }
 
@@ -119,7 +123,7 @@ public class Controller {
         public void update(ModelEvent event) {
             if (event == ModelEvent.DATA_PROCESS_STARTED){
                 view.disableActions();
-            } else if (event == ModelEvent.DATA_PROCESSED){
+            } else if (event == ModelEvent.DATA_PROCESS_FINISHED){
                 view.enableActions();
             }
         }
@@ -132,18 +136,19 @@ public class Controller {
 
             if (event == ModelEvent.DATA_IN_PROCESS){
                 BigDecimal[] absoluteError = TimeSeriesScienceLibrary
-                        .calculateAbsoluteError(realDataPoints, model.getDataChunk());
+                        .calculateAbsoluteError(model.getDataChunk(), realDataPoints);
 
                 BigDecimal[] absolutePercentageError = TimeSeriesScienceLibrary
-                        .calculatePercentageError(realDataPoints, model.getDataChunk());
+                        .calculatePercentageError(model.getDataChunk(), realDataPoints);
 
-                Vector<Vector> dataToSend = DataPointsFlattering.flatten(realDataPoints,
-                        model.getDataChunk());
+                int index = UtilityMethods.findIndexOfDate(model.getDataChunk().get(0).getX(),
+                        realDataPoints);
 
-                DataPointsFlattering.concat(dataToSend, absoluteError, absolutePercentageError);
 
-                for (Vector row : dataToSend){
-                    modelA.addRow(row);
+                for (int i = 0; i < model.getDataChunk().size(); i++){
+                    modelA.addRow(new ResultsTableModel.Row(model.getDataChunk().get(i), realDataPoints.get(index),
+                            absoluteError[i], absolutePercentageError[i]));
+                    index++;
                 }
             }
 
@@ -154,21 +159,17 @@ public class Controller {
 
         List<Point> predictedData = new ArrayList<>();
 
-        @Override
+         @Override
         public void update(ModelEvent event) {
             if (event == ModelEvent.DATA_IN_PROCESS){
                 predictedData.addAll(model.getDataChunk());
-            } else if (event == ModelEvent.DATA_PROCESSED){
+            } else if (event == ModelEvent.DATA_PROCESS_FINISHED){
                 predictedData.addAll(model.getDataChunk());
 
-                Vector<Vector<Object>> statistics = new Vector<>(3);
-
                 for (Statistics s : Statistics.values()){
-                    statistics.add(new Vector<>(List.of(s.toString(),
-                            s.apply(realDataPoints, predictedData))));
+                    modelS.addRow(new StatisticsTableModel.Row(s.toString(),
+                            s.apply(predictedData, realDataPoints)));
                 }
-
-                modelS.setDataVector(statistics, getColumnNames(modelS));
 
                 predictedData.clear();
 
@@ -176,38 +177,49 @@ public class Controller {
         }
     }
 
-    public class ListenForFileSave implements PropertyChangeListener{
+    public class HandleSaveToFile implements PropertyChangeListener, ViewObserver {
 
-        TextFileWriter<Vector> textFileWriter;
-        public ListenForFileSave(TextFileWriter<Vector> textFileWriter){
+        private CustomFileWriter<ResultsTableModel.Row> textFileWriter;
+        private CustomFileWriter<ResultsInfo> jsonFileWriter;
+        private ViewEvent ev;
+        private String dir = "results\\";
+        private DateTimeFormatter format = DateTimeFormatter.ofPattern("_yyyy_MM_dd_");
+
+        public HandleSaveToFile(){
+            this.textFileWriter = new TextFileWriter<>(new RowToCSV());
+            jsonFileWriter = new JsonFileWriter();
+        }
+
+        public HandleSaveToFile(CustomFileWriter<ResultsTableModel.Row> textFileWriter,
+                                CustomFileWriter<ResultsInfo> jsonFileWriter){
             this.textFileWriter = textFileWriter;
+            this.jsonFileWriter = jsonFileWriter;
         }
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-
-             Vector<Vector> v = new Vector<>();
-                v.add(getColumnNames(modelA));
-                v.addAll(modelA.getDataVector());
-                v.add(getColumnNames(modelS));
-                v.addAll(modelS.getDataVector());
-
                 try {
-                    textFileWriter.saveToFile(((File)evt.getNewValue()).getAbsolutePath(), v);
+                    String path = dir.concat(ev.getCurrencyCode().concat(LocalDate.now().format(format)));
+                    if (evt.getPropertyName().equals(Menu.SAVE_AS_TEXT)){
+                        textFileWriter.saveToFile(path.concat(".txt"), modelA.getListOfRows());
+
+                    } else if (evt.getPropertyName().equals(Menu.SAVE_AS_JSON)){
+                        ResultsInfo info = new ResultsInfo(ev.getChosenAlgorithm().toString(),
+                                ev.getCurrencyCode(), modelA.getListOfRows());
+                        jsonFileWriter.saveToFile(path.concat(".json"), Collections.singletonList(info));
                     }
+                }
                 catch (IOException e) {
                     JOptionPane.showMessageDialog(null,
                             "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
 
             }
         }
-    }
-    private Vector getColumnNames(DefaultTableModel model){
-        Vector v = new Vector<>(model.getColumnCount());
-        for (int i = 0; i < model.getColumnCount(); i++){
-            v.add(model.getColumnName(i));
+
+        @Override
+        public void update(ViewEvent e) {
+            ev = e;
         }
-        return v;
     }
 
     public class ListenForCreatePlot implements PropertyChangeListener, ModelObserver, ViewObserver{
@@ -225,6 +237,7 @@ public class Controller {
                 plot.setVisible(true);
             }
         }
+
         @Override
         public void update(ModelEvent event) {
             if (event == ModelEvent.DATA_PROCESS_STARTED){
@@ -233,8 +246,12 @@ public class Controller {
             } else if (event == ModelEvent.DATA_IN_PROCESS){
                 // real-time update plot
                 plot.setDomainRange(getDates());
-                plot.addSeries("Real", getValues(1));
-                plot.addSeries("Predicted", getValues(2));
+
+                plot.addSeries("Real", modelA.getListOfRows().stream()
+                        .mapToDouble(x -> x.getReal().doubleValue()).toArray());
+
+                plot.addSeries("Predicted", modelA.getListOfRows().stream()
+                        .mapToDouble(x -> x.getPredicted().doubleValue()).toArray());
             }
         }
 
@@ -246,21 +263,11 @@ public class Controller {
         private Day[] getDates(){
             Day[] arr = new Day[modelA.getRowCount()];
             for (int i = 0; i < modelA.getRowCount(); i++){
-                LocalDate d = (LocalDate) modelA.getValueAt(i, 0);
+                LocalDate d = modelA.getRow(i).getDate();
                 arr[i] = new Day(d.getDayOfMonth(), d.getMonthValue(), d.getYear());
             }
             return arr;
         }
-
-        private double[] getValues(int col){
-            double[] arr = new double[modelA.getRowCount()];
-            for (int i = 0; i < modelA.getRowCount(); i++){
-                arr[i] =((BigDecimal) modelA.getValueAt(i, col)).doubleValue();
-            }
-            return arr;
-        }
-
-
 
     }
 

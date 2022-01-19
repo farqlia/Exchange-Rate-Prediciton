@@ -1,15 +1,13 @@
 package viewtest;
 
-import algorithms.AlgorithmName;
+import algorithms.AlgorithmInitializer;
 import algorithms.algorithmsparameters.AlgorithmArguments;
-import dataconverter.writersandreaders.PointToCSV;
+import dataconverter.formatters.PointToCSV;
 import dataconverter.writersandreaders.TextFileReader;
 import datasciencealgorithms.utils.point.Point;
 import model.Model;
 import model.ModelEvent;
 import model.ModelObserver;
-import model.TableModel;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -25,7 +22,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import static org.mockito.Mockito.*;
 
@@ -50,7 +46,7 @@ public class ModelTest {
 
     @Test
     void shouldNotifyObserverAboutStart(){
-        model.setAlgorithm(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
+        model.setAlgorithm(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 
@@ -62,7 +58,7 @@ public class ModelTest {
     @Test
     void shouldNotifyObserver(){
 
-        model.setAlgorithm(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
+        model.setAlgorithm(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 
@@ -75,7 +71,7 @@ public class ModelTest {
     @Test
     void shouldReturnNonNullList() {
 
-        model.setAlgorithm(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
+        model.setAlgorithm(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 
@@ -85,13 +81,4 @@ public class ModelTest {
 
     }
 
-    @Test
-    void shouldReturnRuntimeClass(){
-        DefaultTableModel model = new TableModel(new Vector(List.of("col1", "col2")), 0, "");
-
-        model.addRow(new Vector<>(List.of(BigDecimal.ONE, LocalDate.now())));
-        model.addRow(new Vector<>(List.of(BigDecimal.ONE, LocalDate.now())));
-        Assertions.assertTrue(model.getColumnClass(0).isInstance(BigDecimal.ONE));
-        Assertions.assertTrue(model.getColumnClass(1).isInstance(LocalDate.now()));
-    }
 }

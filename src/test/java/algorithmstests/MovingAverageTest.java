@@ -1,7 +1,7 @@
 package algorithmstests;
 
 import algorithms.*;
-import dataconverter.writersandreaders.PointToCSV;
+import dataconverter.formatters.PointToCSV;
 import dataconverter.writersandreaders.TextFileReader;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;

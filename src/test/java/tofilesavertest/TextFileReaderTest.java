@@ -4,7 +4,7 @@ import dataconverter.writersandreaders.CustomFileReader;
 import dataconverter.writersandreaders.TextFileReader;
 import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
-import dataconverter.writersandreaders.PointToCSV;
+import dataconverter.formatters.PointToCSV;
 import datasciencealgorithms.utils.point.Point;
 import iterators.AscendingIterator;
 import org.junit.jupiter.api.Assertions;

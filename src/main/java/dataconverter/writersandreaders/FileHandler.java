@@ -1,6 +1,6 @@
 package dataconverter.writersandreaders;
 
-import datasciencealgorithms.utils.Parser;
+import dataconverter.Parser;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -34,7 +34,7 @@ public class LinearlyWeightedMovingAverage implements Algorithm{
         for (int i = startIndex; i <= endIndex; i++){
 
             BigDecimal sum = BigDecimal.ZERO;
-            for (int j = i; j > 0 && j > (i - lookbackPeriod); j--){
+            for (int j = i - 1; j > 0 && j >= (i - lookbackPeriod); j--){
                 // Sum the previous values * their corresponding weights
                 sum = sum.add(realData.get(j).getY().multiply(weight.nextWeight()));
             }

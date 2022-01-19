@@ -1,25 +1,20 @@
 package view.view;
 
-import algorithms.AlgorithmName;
-import algorithms.algorithmsparameters.AlgorithmArguments;
-import static algorithms.algorithmsparameters.AlgorithmArguments.Names;
+import algorithms.AlgorithmInitializer;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Map;
 
 public class ViewEvent {
 
     LocalDate startDate;
     LocalDate endDate;
-    AlgorithmName chosenAlgorithm;
+    AlgorithmInitializer chosenAlgorithm;
     String currencyCode;
 
     public ViewEvent(){};
 
     public ViewEvent(LocalDate startDate, LocalDate endDate,
-                     AlgorithmName chosenAlgorithm,
+                     AlgorithmInitializer chosenAlgorithm,
                      String currencyCode) {
         this.startDate = startDate;
         this.endDate = endDate;
@@ -35,7 +30,7 @@ public class ViewEvent {
         return endDate;
     }
 
-    public AlgorithmName getChosenAlgorithm() {
+    public AlgorithmInitializer getChosenAlgorithm() {
         return chosenAlgorithm;
     }
 

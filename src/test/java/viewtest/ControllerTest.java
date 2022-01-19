@@ -1,27 +1,27 @@
 package viewtest;
 
-import algorithms.AlgorithmName;
+import algorithms.AlgorithmInitializer;
 import algorithms.algorithmsparameters.AlgorithmArguments;
 import controller.Controller;
+import dataconverter.writersandreaders.JsonFileWriter;
 import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
-import model.Model;
-import model.ModelEvent;
-import model.ModelObserver;
+import mathlibraries.Statistics;
+import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import studyjson.ResultsInfo;
+import view.other.Menu;
 import view.other.Plot;
-import view.view.AbstractView;
-import view.view.View;
-import view.view.ViewEvent;
-import view.view.ViewObserver;
+import view.view.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -36,16 +36,16 @@ public class ControllerTest {
 
     Controller controller;
     LocalDate startDate = LocalDate.of(2022, 1, 1);
-    LocalDate endDate = LocalDate.of(2022, 1, 15);
+    LocalDate endDate = LocalDate.now().minusDays(2);
 
     @Mock
     AbstractView view;
     @Mock
     Model model;
     @Mock
-    DefaultTableModel modelA;
+    CustomTableModel<ResultsTableModel.Row> modelA;
     @Mock
-    DefaultTableModel modelS;
+    CustomTableModel<StatisticsTableModel.Row> modelS;
 
     ViewEvent viewEvent;
     List<Point> exampleData;
@@ -55,7 +55,7 @@ public class ControllerTest {
     void setUp(){
         argMap = new HashMap<>();
         argMap.put(AlgorithmArguments.Names.LOOK_BACK_PERIOD, new BigDecimal(5));
-        viewEvent = new ViewEvent(startDate, endDate, AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM,
+        viewEvent = new ViewEvent(startDate, endDate, AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "EUR");
         exampleData = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
         when(view.getJMenuBar()).thenReturn(new JMenuBar());
@@ -69,7 +69,7 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model).setAlgorithm(any(AlgorithmName.class));
+        verify(model).setAlgorithm(any(AlgorithmInitializer.class));
 
         verify(model).predict(any(List.class), any(LocalDate.class),
                 any(LocalDate.class));
@@ -80,12 +80,12 @@ public class ControllerTest {
 
         // Currency is invalid, so we can't be provided with response body
         ViewEvent viewEvent = new ViewEvent(LocalDate.now().minusDays(10),
-                LocalDate.now(), AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM,
+                LocalDate.now(), AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "INVALID");
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model, never()).setAlgorithm(AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM);
+        verify(model, never()).setAlgorithm(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM);
 
         verify(model, never()).predict(any(List.class), eq(startDate),
                 (eq(endDate)));
@@ -98,7 +98,7 @@ public class ControllerTest {
         controller = new Controller(realView, model, modelA, modelS);
         realView.notifyObservers(viewEvent);
 
-        verify(model).setAlgorithm(AlgorithmName.MOVING_AVERAGE_MEAN_ALGORITHM);
+        verify(model).setAlgorithm(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM);
         when(model.getDataChunk())
                 .thenReturn(exampleData);
 
@@ -106,7 +106,7 @@ public class ControllerTest {
         controller.new ListenForModel1().update(ModelEvent.DATA_IN_PROCESS);
 
         // For table with statistics, we can't add data all at once
-        verify(modelA, atLeast(1)).addRow(any(Vector.class));
+        verify(modelA, atLeast(1)).addRow(any(ResultsTableModel.Row.class));
 
     }
 
@@ -126,9 +126,10 @@ public class ControllerTest {
         // Should add data to it's internal array
         o.update(ModelEvent.DATA_IN_PROCESS);
         // Now based on gathered data it computes general statistics
-        o.update(ModelEvent.DATA_PROCESSED);
+        o.update(ModelEvent.DATA_PROCESS_FINISHED);
 
-        verify(modelS).setDataVector(any(Vector.class), any(Vector.class));
+        verify(modelS, times(Statistics.values().length))
+                .addRow(any(StatisticsTableModel.Row.class));
 
     }
 
@@ -173,9 +174,49 @@ public class ControllerTest {
 
         verify(view).disableActions();
 
-        ob.update(ModelEvent.DATA_PROCESSED);
+        ob.update(ModelEvent.DATA_PROCESS_FINISHED);
 
         verify(view).enableActions();
+    }
+
+    Point p = new Point(LocalDate.now(), BigDecimal.ZERO);
+    ResultsTableModel.Row r = new ResultsTableModel.Row(
+            p, p, BigDecimal.ZERO, BigDecimal.ONE
+    );
+
+    @Mock
+    JsonFileWriter jsonWriter;
+    @Mock
+    TextFileWriter<ResultsTableModel.Row> textWriter;
+
+    @Test
+    void shouldSaveToTextFile() throws IOException {
+
+        when(modelA.getListOfRows()).thenReturn(Collections.singletonList(r));
+
+        Controller.HandleSaveToFile handler = controller.new HandleSaveToFile(textWriter, jsonWriter);
+
+        handler.update(viewEvent);
+        handler.propertyChange(new PropertyChangeEvent(view, Menu.SAVE_AS_TEXT, null,null));
+
+        verify(textWriter).saveToFile(argThat(x -> x.endsWith(".txt")),
+                eq(Collections.singletonList(r)));
+    }
+
+    @Test
+    void shouldSaveToJsonFile() throws IOException {
+
+        when(modelA.getListOfRows()).thenReturn(Collections.singletonList(r));
+        ResultsInfo info = new ResultsInfo(viewEvent.getChosenAlgorithm().toString(),
+                viewEvent.getCurrencyCode(),  Collections.singletonList(r));
+
+        Controller.HandleSaveToFile handler = controller.new HandleSaveToFile(textWriter, jsonWriter);
+
+        handler.update(viewEvent);
+        handler.propertyChange(new PropertyChangeEvent(view, Menu.SAVE_AS_JSON, null,null));
+
+        verify(jsonWriter).saveToFile(argThat(x -> x.endsWith(".json")),
+                eq(Collections.singletonList(info)));
     }
 
 }

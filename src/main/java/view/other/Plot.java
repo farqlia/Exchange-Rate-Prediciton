@@ -1,15 +1,12 @@
 package view.other;
 
 import dataconverter.writersandreaders.FileHandler;
-import datasciencealgorithms.utils.Parser;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
-import org.jfree.data.general.Series;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -17,10 +14,8 @@ import org.jfree.data.time.TimeSeriesCollection;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.*;
 
 public class Plot extends JFrame {
@@ -98,11 +93,6 @@ public class Plot extends JFrame {
 
     public void setTitle(String title){
         chart.setTitle(title);
-    }
-
-    public void setDomainRange(Day min, Day max){
-        XYPlot plot = chart.getXYPlot();
-
     }
 
     // If we want to reuse the plot we need to get rid of current displayed values

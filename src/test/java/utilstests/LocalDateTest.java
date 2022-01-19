@@ -25,7 +25,6 @@ public class LocalDateTest {
 
         Date d = new Date();
         LocalDate lD = LocalDate.ofInstant(d.toInstant(), ZoneId.of("CET"));
-
     }
 
     @Test
@@ -36,5 +35,10 @@ public class LocalDateTest {
 
         Assertions.assertTrue(d.after(newD));
         System.out.println(newD);
+    }
+
+    @Test
+    void testFindIndexMethod(){
+
     }
 }

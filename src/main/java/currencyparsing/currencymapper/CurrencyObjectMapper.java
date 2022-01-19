@@ -8,8 +8,8 @@ import java.util.*;
 
 public abstract class CurrencyObjectMapper<E> {
 
-    protected ObjectMapper mapper = new ObjectMapper();
-    protected JsonPointer ratesPointer = JsonPointer.compile("/rates");
+    ObjectMapper mapper = new ObjectMapper();
+    JsonPointer ratesPointer = JsonPointer.compile("/rates");
 
     abstract List<E> parse(JsonNode node);
 

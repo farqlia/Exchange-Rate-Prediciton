@@ -1,6 +1,6 @@
 package tofilesavertest;
 
-import datasciencealgorithms.utils.Parser;
+import dataconverter.Parser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import static datasciencealgorithms.utils.Parser.PATH_REGEX;
+import static dataconverter.Parser.PATH_REGEX;
 
 public class ParserTest {
 

@@ -1,6 +1,6 @@
 package algorithmstests;
 
-import algorithms.AlgorithmName;
+import algorithms.AlgorithmInitializer;
 import algorithms.BrownExponentialSmoothingModel;
 import algorithms.LinearlyWeightedMovingAverage;
 import algorithms.NaiveAlgorithmWithTrend;
@@ -29,28 +29,28 @@ public class AlgorithmNamesTest {
 
     @Test
     void shouldReturnNameOfAlgorithm(){
-        Assertions.assertEquals(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM.toString(),
+        Assertions.assertEquals(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM.toString(),
                 "Linearly Weighted Moving Average Algorithm");
     }
 
     @Test
     void shouldReturnCorrectInstance(){
         argMap.put(AlgorithmArguments.Names.LOOK_BACK_PERIOD,5);
-        Assertions.assertTrue(AlgorithmName.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM.createAlgorithm(queue, argMap)
+        Assertions.assertTrue(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM.createAlgorithm(queue, argMap)
         instanceof LinearlyWeightedMovingAverage);
     }
 
     @Test
     void shouldReturnCorrectInstance2(){
         argMap.put(AlgorithmArguments.Names.LOOK_BACK_PERIOD, 5);
-        Assertions.assertTrue(AlgorithmName.NAIVE_ALGORITHM_WITH_TREND.createAlgorithm(queue, argMap)
+        Assertions.assertTrue(AlgorithmInitializer.NAIVE_ALGORITHM_WITH_TREND.createAlgorithm(queue, argMap)
                 instanceof NaiveAlgorithmWithTrend);
     }
 
     @Test
     void shouldReturnCorrectInstance3(){
         argMap.put(AlgorithmArguments.Names.ALPHA, new BigDecimal("0.7"));
-        Assertions.assertTrue(AlgorithmName.BROWN_EXPONENTIAL_SMOOTHING_MODEL.createAlgorithm(queue, argMap)
+        Assertions.assertTrue(AlgorithmInitializer.BROWN_EXPONENTIAL_SMOOTHING_MODEL.createAlgorithm(queue, argMap)
                 instanceof BrownExponentialSmoothingModel);
     }
 

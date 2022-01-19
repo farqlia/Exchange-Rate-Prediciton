@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SleepingThread {
 
     static int SLEEP = 2;
-    static boolean DEBUG = false;
+    static boolean DEBUG = true;
 
     public static void sleep() throws InterruptedException {
         if (DEBUG){

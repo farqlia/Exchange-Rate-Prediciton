@@ -1,7 +1,7 @@
-package dataconverter.writersandreaders;
+package dataconverter.formatters;
 
 
-import dataconverter.Formatter;
+import dataconverter.formatters.Formatter;
 import datasciencealgorithms.utils.point.Point;
 
 import java.io.IOException;

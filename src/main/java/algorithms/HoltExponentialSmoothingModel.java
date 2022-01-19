@@ -21,7 +21,8 @@ public class HoltExponentialSmoothingModel implements Algorithm{
     }
 
     @Override
-    public void forecastValuesForDates(List<Point> realData, LocalDate startDate, LocalDate endDate) throws InterruptedException {
+    public void forecastValuesForDates(List<Point> realData, LocalDate startDate,
+                                       LocalDate endDate) throws InterruptedException {
 
         int startIndex = UtilityMethods.findIndexOfDate(startDate, realData);
         int endIndex = UtilityMethods.findIndexOfDate(endDate, realData);
@@ -33,12 +34,12 @@ public class HoltExponentialSmoothingModel implements Algorithm{
 
         for (int i = startIndex; i <= endIndex; i++){
 
-            currentVal = realData.get(i).getY().multiply(alpha)
-                    .add(BigDecimal.ONE.subtract(alpha).multiply(previousVal.add(trendIncr)));
-
             queue.put(new Point(realData.get(i).getX(),
                     previousVal.add(trendIncr)));
             SleepingThread.sleep();
+
+            currentVal = realData.get(i).getY().multiply(alpha)
+                    .add(BigDecimal.ONE.subtract(alpha).multiply(previousVal.add(trendIncr)));
 
             // S/t/ = beta(F/t/ - F/t-1/) + (1 - beta)S/t-1
             trendIncr = beta.multiply(currentVal.subtract(previousVal))

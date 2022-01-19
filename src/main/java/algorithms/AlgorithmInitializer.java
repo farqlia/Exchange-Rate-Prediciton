@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 
 import static algorithms.algorithmsparameters.AlgorithmArguments.Names;
 
-public enum AlgorithmName {
+public enum AlgorithmInitializer {
 
     LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM(DialogStrategy.STRATEGY_LBP,
             (q, m) -> new LinearlyWeightedMovingAverage(q, m.get(Names.LOOK_BACK_PERIOD))),
@@ -53,8 +53,8 @@ public enum AlgorithmName {
     private final BiFunction<BlockingQueue<Point>, Map<Names, ? extends Number>, Algorithm> createAlgorithmExpression;
     private final DialogStrategy displayStrategy;
 
-    AlgorithmName(DialogStrategy displayStrategy,
-                  BiFunction<BlockingQueue<Point>, Map<Names, ? extends Number>, Algorithm> createAlgorithmExpression){
+    AlgorithmInitializer(DialogStrategy displayStrategy,
+                         BiFunction<BlockingQueue<Point>, Map<Names, ? extends Number>, Algorithm> createAlgorithmExpression){
 
         this.displayStrategy = displayStrategy;
         this.createAlgorithmExpression = createAlgorithmExpression;

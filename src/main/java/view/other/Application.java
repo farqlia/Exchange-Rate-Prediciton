@@ -4,8 +4,7 @@ import controller.Controller;
 import currencyparsing.currencyurlworker.CurrencyNamesLoader;
 import currencyparsing.currencyurlworker.Loader;
 import exchangerateclass.CurrencyName;
-import model.Model;
-import model.TableModel;
+import model.*;
 import view.view.View;
 
 import javax.swing.*;
@@ -17,11 +16,11 @@ public class Application {
 
     public static void main(String[] args) {
 
-        DefaultTableModel modelA =
-                new TableModel(new Vector<>(List.of("Date", "Real", "Predicted", "y - y*", "(y - y*) / y")), 0, "Results");
+        CustomTableModel<ResultsTableModel.Row> modelA =
+                new ResultsTableModel(List.of("Date", "Real", "Predicted", "Error", "Percentage Error") ,"Results");
 
-        DefaultTableModel modelS =
-                new TableModel(new Vector<>(List.of("Name", "Value")), 0, "Statistics");
+        CustomTableModel<StatisticsTableModel.Row> modelS =
+                new StatisticsTableModel(List.of("Name", "Value"),"Statistics");
 
         Loader<CurrencyName> currencyNameLoader =
                 new CurrencyNamesLoader();
