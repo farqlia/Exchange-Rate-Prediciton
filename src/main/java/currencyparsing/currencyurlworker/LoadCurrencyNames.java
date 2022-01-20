@@ -1,5 +1,6 @@
 package currencyparsing.currencyurlworker;
 
+import currencyparsing.currencymapper.CurrencyNameMapper;
 import dataconverter.formatters.Formatter;
 import dataconverter.writersandreaders.CustomFileWriter;
 import dataconverter.writersandreaders.TextFileWriter;
@@ -14,7 +15,7 @@ class LoadCurrencyNames {
         Formatter<CurrencyName> printable = new CSVParser();
         CustomFileWriter<CurrencyName> writer = new TextFileWriter<>(printable);
 
-        Loader<CurrencyName> currencyNameLoader = new CurrencyNamesLoader();
+        Loader<CurrencyName> currencyNameLoader = new Loader<>(new CurrencyNameMapper());
 
         writer.saveToFile("defaultcurrencies\\defaultcurrencies.txt",
                 currencyNameLoader.load());

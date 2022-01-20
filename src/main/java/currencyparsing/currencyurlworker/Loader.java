@@ -7,14 +7,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class Loader<E> {
+public class Loader<E> {
 
     private CurrencyURL url;
     private final CurrencyWorker currencyWorker;
     private CurrencyObjectMapper<E> mapper;
 
-    public Loader(CurrencyURL url, CurrencyObjectMapper<E> mapper){
-        this.url = url;
+    public Loader(CurrencyObjectMapper<E> mapper){
         this.mapper = mapper;
         currencyWorker = new CurrencyWorker();
     }
@@ -25,13 +24,13 @@ public abstract class Loader<E> {
                 = currencyWorker.send(url.getURL());
 
         if (response.isEmpty()){
-            return getDefault();
+            return Collections.emptyList();
         }
 
         List<E> mappedObjects = mapper.parse(response.get());
 
         if (mappedObjects.isEmpty()){
-            return getDefault();
+            return Collections.emptyList();
         }
 
         return mappedObjects;
@@ -39,12 +38,6 @@ public abstract class Loader<E> {
 
     public void setCurrencyURL(CurrencyURL newURL){
         this.url = newURL;
-    }
-
-    // This can be overridden by subclasses to provide
-    // a solution in case the load method failed
-    protected List<E> getDefault(){
-        return Collections.emptyList();
     }
 
 }

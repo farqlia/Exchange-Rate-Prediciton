@@ -9,16 +9,8 @@ import java.util.List;
 
 public class SingleRateMapper extends CurrencyObjectMapper<ExchangeRate>{
 
-    private static final SingleRateMapper instance = new SingleRateMapper();
-
     JsonPointer currencyPointer = JsonPointer.compile("/currency");
     JsonPointer codePointer = JsonPointer.compile("/code");
-
-    private SingleRateMapper(){}
-
-    public static SingleRateMapper getInstance(){
-        return instance;
-    }
 
     @Override
     protected List<ExchangeRate> parse(JsonNode root) {

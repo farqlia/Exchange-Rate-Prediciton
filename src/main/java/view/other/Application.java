@@ -1,16 +1,17 @@
 package view.other;
 
 import controller.Controller;
-import currencyparsing.currencyurlworker.CurrencyNamesLoader;
+import currencyparsing.currencymapper.CurrencyNameMapper;
+import currencyparsing.currencyurlbuilders.AllCurrenciesURL;
+import currencyparsing.currencyurlbuilders.MoneyType;
+import currencyparsing.currencyurlbuilders.Table;
 import currencyparsing.currencyurlworker.Loader;
 import exchangerateclass.CurrencyName;
 import model.*;
 import view.view.View;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.util.List;
-import java.util.Vector;
 
 public class Application {
 
@@ -23,7 +24,11 @@ public class Application {
                 new StatisticsTableModel(List.of("Name", "Value"),"Statistics");
 
         Loader<CurrencyName> currencyNameLoader =
-                new CurrencyNamesLoader();
+                new Loader<>(new CurrencyNameMapper());
+
+        currencyNameLoader.setCurrencyURL(new AllCurrenciesURL.Builder(MoneyType.CURRENCY)
+                .addTable(Table.A)
+                .build());
 
         View view = new View(currencyNameLoader.load(), modelA, modelS);
         Model model = new Model();
@@ -31,8 +36,6 @@ public class Application {
         Controller c = new Controller(view, model, modelA, modelS);
 
         SwingUtilities.invokeLater(() -> view.setVisible(true));
-
-
 
     }
 

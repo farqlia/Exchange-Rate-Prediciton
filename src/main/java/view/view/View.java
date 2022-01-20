@@ -8,6 +8,8 @@ import model.StatisticsTableModel;
 import view.other.Menu;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -81,6 +83,9 @@ public class View extends AbstractView {
         addComp(leftPanel, new JLabel("End Date"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(leftPanel, endDateSpinner, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
+        // Make sure that the upper date (end date) is always bigger than lower date (start date)
+        endDateSpinner.addChangeListener(ev -> ((SpinnerDateModel)endDateSpinner.getModel())
+                .setStart(((Date)startDateSpinner.getValue())));
 
         nameOfAlgorithmsComboBox = new JComboBox<>(AlgorithmInitializer.values());
         addComp(leftPanel, new JLabel("Choose Algorithm"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
@@ -165,6 +170,17 @@ public class View extends AbstractView {
     public void enableActions() {
         predictButton.setEnabled(true);
         customizeAlgorithmButton.setEnabled(true);
+    }
+
+    private class HandleCorrectDateValues implements ChangeListener{
+
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            // Make sure that the upper date (end date) is always bigger than lower date (start date)
+            SpinnerDateModel model = (SpinnerDateModel)endDateSpinner.getModel();
+            model.setStart(((Date)startDateSpinner.getValue()));
+        }
     }
 
     public class HandleButtonListener implements ActionListener{

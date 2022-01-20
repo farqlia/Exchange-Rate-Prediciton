@@ -122,7 +122,7 @@ public class TimeSeriesScienceLibraryTest {
                 BigDecimal.ONE, BigDecimal.ONE, 0.5);
 
         BigDecimal[] errors = TimeSeriesScienceLibrary
-                .calculateAbsoluteError(data, predicted);
+                .calculateAbsoluteError(predicted, data);
 
         int dataStartIndex = UtilityMethods.findIndexOfDate(predicted.get(0).getX(), data);
 
@@ -143,7 +143,7 @@ public class TimeSeriesScienceLibraryTest {
                 BigDecimal.ONE, BigDecimal.ONE, 0.5);
 
         BigDecimal[] errors = TimeSeriesScienceLibrary
-                .calculatePercentageError(data, predicted);
+                .calculatePercentageError(predicted, data);
 
         int dataStartIndex = UtilityMethods.findIndexOfDate(predicted.get(0).getX(), data);
 

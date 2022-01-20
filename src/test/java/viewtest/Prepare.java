@@ -1,9 +1,9 @@
 package viewtest;
 
+import currencyparsing.currencymapper.SingleRateMapper;
 import currencyparsing.currencyurlbuilders.ConcreteCurrencyURL;
 import currencyparsing.currencyurlbuilders.MoneyType;
 import currencyparsing.currencyurlbuilders.Table;
-import currencyparsing.currencyurlworker.ExchangeRateLoader;
 import currencyparsing.currencyurlworker.Loader;
 import dataconverter.formatters.Formatter;
 import dataconverter.formatters.PointToCSV;
@@ -30,7 +30,7 @@ public class Prepare {
 
         CustomFileWriter<Point> tFW = new TextFileWriter<>(new PointToCSV());
 
-        Loader<ExchangeRate> loader = new ExchangeRateLoader();
+        Loader<ExchangeRate> loader = new Loader<>(new SingleRateMapper());
         loader.setCurrencyURL(new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY)
                 .addCurrencyCode("EUR")
                 .addTable(Table.A)

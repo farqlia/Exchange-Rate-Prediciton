@@ -16,17 +16,16 @@ import java.util.List;
 
 public class CurrencyObjectMapperTest {
 
-
     @Test
     void shouldNtParseForCurrencyNames(){
         // ? Why null and not an exception
-        Assertions.assertTrue(CurrencyNameMapper.getInstance().parse("{\"badjson\":\"AAA\"}").isEmpty());
+        Assertions.assertTrue(new CurrencyNameMapper().parse("{\"badjson\":\"AAA\"}").isEmpty());
     }
 
 
     @Test
     void shouldNtParseForSingleRate(){
-        Assertions.assertTrue(SingleRateMapper.getInstance().parse("badjson").isEmpty());
+        Assertions.assertTrue(new SingleRateMapper().parse("badjson").isEmpty());
     }
 
 
@@ -36,7 +35,7 @@ public class CurrencyObjectMapperTest {
         String exampleJson = "[{\"algorithmTableModel\":\"A\",\"no\":\"253/A/NBP/2021\",\"effectiveDate\":\"2021-12-30\",\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1216}," +
                 "{\"currency\":\"dolar amerykański\",\"code\":\"USD\",\"mid\":4.0631}]}]";
 
-        List<CurrencyName> rates = CurrencyNameMapper.getInstance().parse(exampleJson);
+        List<CurrencyName> rates = new CurrencyNameMapper().parse(exampleJson);
 
         // If something went wrong with sending/receiving a request, then we return an empty list
         Assertions.assertFalse(rates.isEmpty());
@@ -53,7 +52,7 @@ public class CurrencyObjectMapperTest {
                 "[{\"no\":\"245/C/NBP/2021\",\"effectiveDate\":\"2021-12-20\",\"bid\":4.5901,\"ask\":4.6829}," +
                 "{\"no\":\"246/C/NBP/2021\",\"effectiveDate\":\"2021-12-21\",\"bid\":4.5870,\"ask\":4.6796}]}";
 
-        List<ExchangeRate> rates = SingleRateMapper.getInstance().parse(json);
+        List<ExchangeRate> rates = new SingleRateMapper().parse(json);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals("euro", rates.get(0).getCurrency()),
@@ -68,7 +67,7 @@ public class CurrencyObjectMapperTest {
                 "[{\"no\":\"001/A/NBP/2021\",\"effectiveDate\":\"2021-01-04\",\"mid\":4.5485}," +
                 "{\"no\":\"002/A/NBP/2021\",\"effectiveDate\":\"2021-01-05\",\"mid\":4.5446}]}";
 
-        List<ExchangeRate> listOfExR =  SingleRateMapper.getInstance().parse(json);
+        List<ExchangeRate> listOfExR = new SingleRateMapper().parse(json);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(LocalDate.parse("2021-01-04"), LocalDate.ofInstant(listOfExR.get(0).getEffectiveDate().toInstant(), ZoneId.of("CET"))),

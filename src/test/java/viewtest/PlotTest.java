@@ -23,14 +23,6 @@ public class PlotTest {
     ActionEvent e;
 
     @Test
-    void shouldCreateCorrectFilePath(){
-        plot.setTitle("EUR, 2021-12-01, 2022-01-01");
-        Path p = Path.of("plots" , plot.getTitle().replaceAll("\\W+", "_") + "." + "png");
-        Assertions.assertEquals("plots\\EUR_2021_12_01_2022_01_01.png",
-                p.toString());
-    }
-
-    @Test
     void shouldSaveAsPNGFile(){
         plot.setTitle("EUR, 2021-12-01, 2022-01-01");
         ActionListener listener = plot.new HandlePlotSave("png");

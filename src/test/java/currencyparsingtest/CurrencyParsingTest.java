@@ -32,7 +32,7 @@ public class CurrencyParsingTest {
 
         Assertions.assertTrue(response.isPresent());
 
-        List<ExchangeRate> rates = SingleRateMapper.getInstance().parse(response.get());
+        List<ExchangeRate> rates = new SingleRateMapper().parse(response.get());
         Assertions.assertFalse(rates.isEmpty());
     }
 
@@ -45,7 +45,7 @@ public class CurrencyParsingTest {
 //.addDate(LocalDate.of(2022, 1, 3))
         Assertions.assertTrue(response.isPresent());
 
-        List<CurrencyName> currencyNames = CurrencyNameMapper.getInstance().parse(response.get());
+        List<CurrencyName> currencyNames = new CurrencyNameMapper().parse(response.get());
         Assertions.assertFalse(currencyNames.isEmpty());
         Assertions.assertTrue(currencyNames.size() > 1);
     }

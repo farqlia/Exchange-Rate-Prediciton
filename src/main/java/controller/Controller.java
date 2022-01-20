@@ -1,7 +1,7 @@
 package controller;
 
+import currencyparsing.currencymapper.SingleRateMapper;
 import currencyparsing.currencyurlbuilders.*;
-import currencyparsing.currencyurlworker.ExchangeRateLoader;
 import currencyparsing.currencyurlworker.Loader;
 import dataconverter.formatters.RowToCSV;
 import dataconverter.writersandreaders.CustomFileWriter;
@@ -45,6 +45,7 @@ public class Controller {
     public Controller(AbstractView view, Model model,
                       CustomTableModel<ResultsTableModel.Row> modelA,
                       CustomTableModel<StatisticsTableModel.Row> modelS){
+
         this.view = view;
         this.model = model;
         this.modelA = modelA;
@@ -61,17 +62,17 @@ public class Controller {
         model.registerObserver(new HandleViewAction());
 
         HandleSaveToFile handler = new HandleSaveToFile();
+
         view.getJMenuBar().addPropertyChangeListener(Menu.SAVE_AS_TEXT,handler);
         view.getJMenuBar().addPropertyChangeListener(Menu.SAVE_AS_JSON, handler);
         view.getJMenuBar().addPropertyChangeListener(Menu.CREATE_PLOT, listener);
-
         view.registerObserver(handler);
 
     }
 
     public class ListenForView implements ViewObserver {
 
-        Loader<ExchangeRate> exchangeRateLoader = new ExchangeRateLoader();
+        Loader<ExchangeRate> exchangeRateLoader = new Loader<>(new SingleRateMapper());
         ConcreteCurrencyURL.Builder builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
 
         @Override
@@ -110,8 +111,6 @@ public class Controller {
             } catch (IllegalStateException ex){
                 JOptionPane.showMessageDialog(view,
                         "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
-            } finally {
-
             }
         }
 
@@ -200,6 +199,7 @@ public class Controller {
         public void propertyChange(PropertyChangeEvent evt) {
                 try {
                     String path = dir.concat(ev.getCurrencyCode().concat(LocalDate.now().format(format)));
+
                     if (evt.getPropertyName().equals(Menu.SAVE_AS_TEXT)){
                         textFileWriter.saveToFile(path.concat(".txt"), modelA.getListOfRows());
 
@@ -208,6 +208,7 @@ public class Controller {
                                 ev.getCurrencyCode(), modelA.getListOfRows());
                         jsonFileWriter.saveToFile(path.concat(".json"), Collections.singletonList(info));
                     }
+
                 }
                 catch (IOException e) {
                     JOptionPane.showMessageDialog(null,

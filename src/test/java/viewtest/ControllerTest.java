@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -61,7 +62,6 @@ public class ControllerTest {
         when(view.getJMenuBar()).thenReturn(new JMenuBar());
 
         controller = new Controller(view, model, modelA, modelS);
-
     }
 
     @Test
@@ -69,10 +69,10 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model).setAlgorithm(any(AlgorithmInitializer.class));
+        verify(model).setAlgorithm(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM);
 
-        verify(model).predict(any(List.class), any(LocalDate.class),
-                any(LocalDate.class));
+        verify(model).predict(any(List.class), eq(startDate),
+                eq(endDate));
     }
 
     @Test
@@ -99,6 +99,11 @@ public class ControllerTest {
         realView.notifyObservers(viewEvent);
 
         verify(model).setAlgorithm(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM);
+        // This test can broke down because of unequal domains
+        exampleData =
+                exampleData.stream().map(x -> new Point(x.getX().minusMonths(1),
+                        x.getY())).collect(Collectors.toList());
+
         when(model.getDataChunk())
                 .thenReturn(exampleData);
 
@@ -132,11 +137,6 @@ public class ControllerTest {
                 .addRow(any(StatisticsTableModel.Row.class));
 
     }
-
-    @Mock
-    TextFileWriter<Vector> writer;
-
-
     @Mock
     Plot plot;
 
@@ -161,6 +161,7 @@ public class ControllerTest {
         // List of real data points should be cleared each time we make a new prediction
         ob.update(viewEvent);
         ob.update(viewEvent);
+
         int length = (int) ChronoUnit.DAYS.between(startDate.minusMonths(1), endDate);
         verify(model, atLeastOnce()).predict(argThat(x -> x.size() < length),
                 eq(startDate), eq(endDate));
