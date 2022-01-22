@@ -1,20 +1,30 @@
 package model;
 
-import algorithms.AlgorithmInitializer;
+import algorithms.AlgorithmInitializerExPost;
 import datasciencealgorithms.utils.point.Point;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractModel {
 
-    public abstract void predict(List<Point> data, LocalDate startDate,
-                                 LocalDate endDate);
+    private final List<ModelObserver> observers = new ArrayList<>();
+    public abstract void predict(List<Point> realData,
+                                 LocalDate startDate, LocalDate endDate);
 
-    public abstract void setAlgorithm(AlgorithmInitializer algorithmInitializer);
+    public abstract void setAlgorithm(AlgorithmInitializerExPost algorithmInitializerExPost);
 
-    public abstract void registerObserver(ModelObserver ob);
+    public abstract List<Point> getRealData();
 
-    public abstract void notifyObservers(ModelEvent event);
+    public void registerObserver(ModelObserver ob){
+        observers.add(ob);
+    }
+
+    public void notifyObservers(ModelEvent event) {
+        for (ModelObserver o : observers){
+            o.update(event);
+        }
+    }
 
 }

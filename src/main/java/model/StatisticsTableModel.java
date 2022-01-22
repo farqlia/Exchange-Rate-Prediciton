@@ -1,12 +1,22 @@
 package model;
 
+import datasciencealgorithms.utils.point.Point;
+import mathlibraries.Statistics;
+import mvc.Model;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-public class StatisticsTableModel extends CustomTableModel<StatisticsTableModel.Row>{
+public class StatisticsTableModel extends CustomTableModel<StatisticsTableModel.Row>
+        implements ModelObserver{
 
-    public StatisticsTableModel(List<String> columnNames, String name){
+    private List<Point> predictedData = new ArrayList<>();
+    private Model dataModel;
+    public StatisticsTableModel(List<String> columnNames, String name, Model dataModel){
         super(columnNames, name);
+        this.dataModel = dataModel;
+        dataModel.registerObserver(this);
     }
     @Override
     public Class<?> getColumnClass(int columnIndex){
@@ -26,6 +36,23 @@ public class StatisticsTableModel extends CustomTableModel<StatisticsTableModel.
             return getRow(rowIndex).value;
         }
         return new Object();
+    }
+
+    @Override
+    public void update(ModelEvent event) {
+        if (event == ModelEvent.DATA_IN_PROCESS){
+            predictedData.addAll(dataModel.getDataChunk());
+        } else if (event == ModelEvent.DATA_PROCESS_FINISHED){
+            predictedData.addAll(dataModel.getDataChunk());
+
+            for (Statistics s : Statistics.values()){
+                addRow(new StatisticsTableModel.Row(s.toString(),
+                        s.apply(predictedData, dataModel.getRealData())));
+            }
+
+            predictedData.clear();
+
+        }
     }
 
     public static class Row{

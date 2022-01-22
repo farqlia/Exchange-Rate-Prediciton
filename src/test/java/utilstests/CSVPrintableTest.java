@@ -63,7 +63,7 @@ public class CSVPrintableTest {
                 p, p, BigDecimal.ZERO, BigDecimal.ONE
         );
 
-        Assertions.assertEquals("2022-01-13,0,0,0,1", new RowToCSV().getAsCSVString(r));
+        Assertions.assertEquals("2022-01-13,0E-8,0E-8,0,1", new RowToCSV().getAsCSVString(r));
 
     }
 

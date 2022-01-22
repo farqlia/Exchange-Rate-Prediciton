@@ -13,6 +13,8 @@ public abstract class CurrencyURL {
     // Middle part of the request is what varies
     abstract StringBuilder getMiddlePart();
 
+    // http://api.nbp.pl/api/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/
+
     public abstract static class URLBuilder<T extends URLBuilder<T>>{
 
         static DateTimeFormatter dTF = DateTimeFormatter.ofPattern("uuuu-MM-dd");

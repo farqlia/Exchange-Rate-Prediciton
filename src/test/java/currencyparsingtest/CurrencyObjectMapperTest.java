@@ -17,13 +17,6 @@ import java.util.List;
 public class CurrencyObjectMapperTest {
 
     @Test
-    void shouldNtParseForCurrencyNames(){
-        // ? Why null and not an exception
-        Assertions.assertTrue(new CurrencyNameMapper().parse("{\"badjson\":\"AAA\"}").isEmpty());
-    }
-
-
-    @Test
     void shouldNtParseForSingleRate(){
         Assertions.assertTrue(new SingleRateMapper().parse("badjson").isEmpty());
     }
@@ -32,7 +25,8 @@ public class CurrencyObjectMapperTest {
     @Test
     void shouldParseFullJsonForCurrencyNames(){
         // Json for all currencies call is in form of a list
-        String exampleJson = "[{\"algorithmTableModel\":\"A\",\"no\":\"253/A/NBP/2021\",\"effectiveDate\":\"2021-12-30\",\"rates\":[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1216}," +
+        String exampleJson = "[{\"algorithmTableModel\":\"A\",\"no\":\"253/A/NBP/2021\",\"effectiveDate\":\"2021-12-30\",\"rates\":" +
+                "[{\"currency\":\"bat (Tajlandia)\",\"code\":\"THB\",\"mid\":0.1216}," +
                 "{\"currency\":\"dolar amerykański\",\"code\":\"USD\",\"mid\":4.0631}]}]";
 
         List<CurrencyName> rates = new CurrencyNameMapper().parse(exampleJson);

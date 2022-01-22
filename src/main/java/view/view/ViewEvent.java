@@ -1,6 +1,6 @@
 package view.view;
 
-import algorithms.AlgorithmInitializer;
+import algorithms.AlgorithmInitializerExPost;
 
 import java.time.LocalDate;
 
@@ -8,13 +8,13 @@ public class ViewEvent {
 
     LocalDate startDate;
     LocalDate endDate;
-    AlgorithmInitializer chosenAlgorithm;
+    AlgorithmInitializerExPost chosenAlgorithm;
     String currencyCode;
 
     public ViewEvent(){};
 
     public ViewEvent(LocalDate startDate, LocalDate endDate,
-                     AlgorithmInitializer chosenAlgorithm,
+                     AlgorithmInitializerExPost chosenAlgorithm,
                      String currencyCode) {
         this.startDate = startDate;
         this.endDate = endDate;
@@ -30,7 +30,7 @@ public class ViewEvent {
         return endDate;
     }
 
-    public AlgorithmInitializer getChosenAlgorithm() {
+    public AlgorithmInitializerExPost getChosenAlgorithm() {
         return chosenAlgorithm;
     }
 

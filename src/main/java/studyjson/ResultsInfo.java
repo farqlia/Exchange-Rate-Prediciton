@@ -22,7 +22,8 @@ public class ResultsInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ResultsInfo info = (ResultsInfo) o;
-        return Objects.equals(algorithmName, info.algorithmName) && Objects.equals(code, info.code) && Objects.equals(rows, info.rows);
+        return Objects.equals(algorithmName, info.algorithmName) &&
+                Objects.equals(code, info.code) && Objects.equals(rows, info.rows);
     }
 
     @Override

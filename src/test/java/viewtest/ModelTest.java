@@ -1,11 +1,11 @@
 package viewtest;
 
-import algorithms.AlgorithmInitializer;
+import algorithms.AlgorithmInitializerExPost;
 import algorithms.algorithmsparameters.AlgorithmArguments;
 import dataconverter.formatters.PointToCSV;
 import dataconverter.writersandreaders.TextFileReader;
 import datasciencealgorithms.utils.point.Point;
-import model.Model;
+import mvc.Model;
 import model.ModelEvent;
 import model.ModelObserver;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@ public class ModelTest {
 
     @Test
     void shouldNotifyObserverAboutStart(){
-        model.setAlgorithm(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
+        model.setAlgorithm(AlgorithmInitializerExPost.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 
@@ -58,7 +58,7 @@ public class ModelTest {
     @Test
     void shouldNotifyObserver(){
 
-        model.setAlgorithm(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
+        model.setAlgorithm(AlgorithmInitializerExPost.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 
@@ -68,17 +68,5 @@ public class ModelTest {
 
     }
 
-    @Test
-    void shouldReturnNonNullList() {
-
-        model.setAlgorithm(AlgorithmInitializer.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
-
-        LocalDate startDate = LocalDate.of(2021, 12, 23);
-
-        model.predict(exampleDataPoints, startDate, LocalDate.now());
-
-        verify(observer, timeout(Duration.ofSeconds(5).toMillis()).atLeastOnce()).update(ModelEvent.DATA_IN_PROCESS);
-
-    }
 
 }

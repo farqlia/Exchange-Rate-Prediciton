@@ -45,22 +45,6 @@ public class CurrencyLoaderTest {
         verify(currencyNameMapper).parse(anyString());
     }
 
-    /*
-    @Test
-    void shouldLoadNamesAfterUnsuccessfulCall(){
-
-        cNL.setCurrencyURL(allCurrenciesURL);
-        when(allCurrenciesURL.getURL())
-                .thenReturn("http://api.nbp.pl/api/exchangerates/BADREQUEST");
-        // This command should load (in practise, this makes call
-        // to API)
-        Assertions.assertFalse(cNL.load().isEmpty());
-        // It shouldn't be called at all, since the call to API failed
-        verify(currencyNameMapper, never()).parse(anyString());
-    }
-
-     */
-
     @Mock
     SingleRateMapper singleRateMapper;
     @Mock

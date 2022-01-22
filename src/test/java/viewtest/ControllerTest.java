@@ -1,32 +1,34 @@
 package viewtest;
 
-import algorithms.AlgorithmInitializer;
+import algorithms.AlgorithmInitializerExPost;
 import algorithms.algorithmsparameters.AlgorithmArguments;
-import controller.Controller;
+import mvc.Controller;
 import dataconverter.writersandreaders.JsonFileWriter;
 import dataconverter.writersandreaders.TextFileWriter;
 import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
-import mathlibraries.Statistics;
 import model.*;
+import mvc.Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import studyjson.ResultsInfo;
-import view.other.Menu;
-import view.other.Plot;
+import view.IO.FileSaveHandler;
+import view.IO.FileTypes;
+import view.other.*;
 import view.view.*;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,9 +46,9 @@ public class ControllerTest {
     @Mock
     Model model;
     @Mock
-    CustomTableModel<ResultsTableModel.Row> modelA;
+    ResultsTableModel modelA;
     @Mock
-    CustomTableModel<StatisticsTableModel.Row> modelS;
+    StatisticsTableModel modelS;
 
     ViewEvent viewEvent;
     List<Point> exampleData;
@@ -56,7 +58,7 @@ public class ControllerTest {
     void setUp(){
         argMap = new HashMap<>();
         argMap.put(AlgorithmArguments.Names.LOOK_BACK_PERIOD, new BigDecimal(5));
-        viewEvent = new ViewEvent(startDate, endDate, AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM,
+        viewEvent = new ViewEvent(startDate, endDate, AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "EUR");
         exampleData = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
         when(view.getJMenuBar()).thenReturn(new JMenuBar());
@@ -69,7 +71,7 @@ public class ControllerTest {
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model).setAlgorithm(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM);
+        verify(model).setAlgorithm(AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM);
 
         verify(model).predict(any(List.class), eq(startDate),
                 eq(endDate));
@@ -80,71 +82,27 @@ public class ControllerTest {
 
         // Currency is invalid, so we can't be provided with response body
         ViewEvent viewEvent = new ViewEvent(LocalDate.now().minusDays(10),
-                LocalDate.now(), AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM,
+                LocalDate.now(), AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM,
                 "INVALID");
 
         controller.new ListenForView().update(viewEvent);
 
-        verify(model, never()).setAlgorithm(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM);
+        verify(model, never()).setAlgorithm(AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM);
 
         verify(model, never()).predict(any(List.class), eq(startDate),
                 (eq(endDate)));
     }
 
-    @Test
-    void shouldInvokeUpdateAlgorithmTableOnView(){
-
-        View realView = new View(Collections.emptyList(), modelA, modelS);
-        controller = new Controller(realView, model, modelA, modelS);
-        realView.notifyObservers(viewEvent);
-
-        verify(model).setAlgorithm(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM);
-        // This test can broke down because of unequal domains
-        exampleData =
-                exampleData.stream().map(x -> new Point(x.getX().minusMonths(1),
-                        x.getY())).collect(Collectors.toList());
-
-        when(model.getDataChunk())
-                .thenReturn(exampleData);
-
-        // We expect that it will get chunk of data from model and put it to the view
-        controller.new ListenForModel1().update(ModelEvent.DATA_IN_PROCESS);
-
-        // For table with statistics, we can't add data all at once
-        verify(modelA, atLeast(1)).addRow(any(ResultsTableModel.Row.class));
-
-    }
-
-    @Test
-    void shouldInvokeUpdateStatisticsTableOnView(){
-
-        View realView = new View(Collections.emptyList(), modelA, modelS);
-        controller = new Controller(realView, model, modelA, modelS);
-        realView.notifyObservers(viewEvent);
-
-        when(model.getDataChunk())
-                .thenReturn(exampleData);
-
-        // We expect that it will get chunk of data from model and put it to the view
-        ModelObserver o = controller.new ListenForModel2();
-
-        // Should add data to it's internal array
-        o.update(ModelEvent.DATA_IN_PROCESS);
-        // Now based on gathered data it computes general statistics
-        o.update(ModelEvent.DATA_PROCESS_FINISHED);
-
-        verify(modelS, times(Statistics.values().length))
-                .addRow(any(StatisticsTableModel.Row.class));
-
-    }
     @Mock
     Plot plot;
+    @Mock
+    TableModelEvent event;
 
     @Test
     void shouldCreatePlot() {
-        ModelObserver listener = controller.new ListenForCreatePlot(plot);
+        TableModelListener listener = new PlotControllerExPost(plot, modelA);
 
-        listener.update(ModelEvent.DATA_IN_PROCESS);
+        listener.tableChanged(event);
 
         // Sets domain range
         verify(plot).setDomainRange(any());
@@ -195,10 +153,11 @@ public class ControllerTest {
 
         when(modelA.getListOfRows()).thenReturn(Collections.singletonList(r));
 
-        Controller.HandleSaveToFile handler = controller.new HandleSaveToFile(textWriter, jsonWriter);
+        FileSaveHandler handler = new FileSaveHandler(modelA, textWriter, jsonWriter);
 
         handler.update(viewEvent);
-        handler.propertyChange(new PropertyChangeEvent(view, Menu.SAVE_AS_TEXT, null,null));
+        handler.propertyChange(new PropertyChangeEvent(view,
+                FileTypes.TEXT.name(), null,null));
 
         verify(textWriter).saveToFile(argThat(x -> x.endsWith(".txt")),
                 eq(Collections.singletonList(r)));
@@ -211,10 +170,11 @@ public class ControllerTest {
         ResultsInfo info = new ResultsInfo(viewEvent.getChosenAlgorithm().toString(),
                 viewEvent.getCurrencyCode(),  Collections.singletonList(r));
 
-        Controller.HandleSaveToFile handler = controller.new HandleSaveToFile(textWriter, jsonWriter);
+        FileSaveHandler handler = new FileSaveHandler(modelA, textWriter, jsonWriter);
 
         handler.update(viewEvent);
-        handler.propertyChange(new PropertyChangeEvent(view, Menu.SAVE_AS_JSON, null,null));
+        handler.propertyChange(new PropertyChangeEvent(view,
+                FileTypes.JSON.name(), null,null));
 
         verify(jsonWriter).saveToFile(argThat(x -> x.endsWith(".json")),
                 eq(Collections.singletonList(info)));

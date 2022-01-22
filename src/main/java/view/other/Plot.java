@@ -20,6 +20,7 @@ import java.util.*;
 
 public class Plot extends JFrame {
 
+    public static String CREATE_PLOT_ACTION = "CREATE_PLOT_ACTION";
     Random random = new Random();
     Day[] domainRange;
     TimeSeriesCollection dataset;
@@ -45,7 +46,7 @@ public class Plot extends JFrame {
         plot.setRenderer(renderer);
 
         chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(600, 300));
+        chartPanel.setPreferredSize(new Dimension(800, 400));
 
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
@@ -110,7 +111,7 @@ public class Plot extends JFrame {
 
         TimeSeries series;
         // This is the 1st time that data is added
-        if (dataset.getSeriesCount() < 2){
+        if (dataset.getSeries(title) == null){
             series = new TimeSeries(title);
             addOrUpdateValues(values, series);
             configSeries(numOfSeries);
@@ -126,6 +127,8 @@ public class Plot extends JFrame {
         for (int i = 0; i < values.length; i++) {
             // Add data point to time series if the date is not already there, or puts new value
             // if the date already exists
+            //System.out.println("Length: " + values.length);
+            //System.out.println("Num of Series: " + numOfSeries);
             series.addOrUpdate(domainRange[i], values[i]);
         }
     }
@@ -134,6 +137,7 @@ public class Plot extends JFrame {
         int RGB = 256;
         Color c = new Color(random.nextInt(RGB), random.nextInt(RGB), random.nextInt(RGB));
         DeviationRenderer r = (DeviationRenderer) chart.getXYPlot().getRenderer();
+        //Color c = index == 0 ? new Color(58, 177, 177) : new Color(65, 186, 25);
         r.setSeriesPaint(index, c);
         r.setSeriesStroke(index, stroke);
     }

@@ -40,7 +40,7 @@ public class MovingAverageTest {
                 new MovingAverageMeanAlgorithm(queue, 5);
 
         dataPoints = DataGenerator.getInstance().generateDataWithTrend(dataset,
-                BigDecimal.ONE, new BigDecimal(".05"), 1);
+                BigDecimal.ONE, new BigDecimal(".05"));
 
         movingAverageMean.forecastValuesForDates(dataPoints, sD, eD);
 
@@ -51,7 +51,7 @@ public class MovingAverageTest {
                 queue.stream()
                         .filter(x -> !x.equals(Point.EMPTY_POINT))
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(),
-                                x.getY().doubleValue(), 2))));
+                                x.getY().doubleValue(), 0.5))));
 
 
 

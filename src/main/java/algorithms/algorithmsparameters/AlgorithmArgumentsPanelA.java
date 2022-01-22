@@ -44,7 +44,6 @@ public class AlgorithmArgumentsPanelA extends AlgorithmArgumentsPanel{
 
         private final Pattern decimalPattern = Pattern.compile("0.[56789]\\d*");
 
-
         @Override
         public void actionPerformed(ActionEvent e) {
             Matcher matcher = decimalPattern.matcher(field.getText().trim());

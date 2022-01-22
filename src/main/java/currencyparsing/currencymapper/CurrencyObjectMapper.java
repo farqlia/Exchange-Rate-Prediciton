@@ -33,13 +33,7 @@ public abstract class CurrencyObjectMapper<E> {
             return Collections.emptyList();
         }
         // Returned node is an array, so we extract actual element
-        List<E> parsedData;
-
-        if (jsonNodeRoot.isArray()){
-            parsedData = parse(jsonNodeRoot.get(0));
-        } else {
-           parsedData = parse(jsonNodeRoot);
-        }
+        List<E> parsedData = parse(jsonNodeRoot);
 
         // If the String is correctly build according to json format,
         // but can't be parsed to given class, then null is returned

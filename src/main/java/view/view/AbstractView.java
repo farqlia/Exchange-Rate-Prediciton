@@ -19,9 +19,9 @@ public abstract class AbstractView extends JFrame {
         observers.add(o);
     }
 
-    public void notifyObservers(ViewEvent data) {
+    public void notifyObservers(ViewEvent e) {
         for (ViewObserver observer : observers){
-            observer.update(data);
+            observer.update(e);
         }
     }
 }

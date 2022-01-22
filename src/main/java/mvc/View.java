@@ -1,11 +1,13 @@
-package view.view;
+package mvc;
 
-import algorithms.AlgorithmInitializer;
+import algorithms.AlgorithmInitializerExPost;
 import exchangerateclass.CurrencyName;
 import model.CustomTableModel;
 import model.ResultsTableModel;
 import model.StatisticsTableModel;
 import view.other.Menu;
+import view.view.AbstractView;
+import view.view.ViewEvent;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -26,14 +28,15 @@ public class View extends AbstractView {
 
     private final JSpinner startDateSpinner;
     private final JSpinner endDateSpinner;
-    private final JComboBox<AlgorithmInitializer> nameOfAlgorithmsComboBox;
+    private final JComboBox<AlgorithmInitializerExPost> nameOfAlgorithmsComboBox;
     private final CustomComboBox customComboBox;
     private final JButton customizeAlgorithmButton;
     private CustomTableModel<ResultsTableModel.Row> modelA;
     private CustomTableModel<StatisticsTableModel.Row> modelS;
-    JTable tableA;
+    private JTable tableA;
     private JMenuBar menuBar;
     private JButton predictButton;
+    private HandleButtonListener buttonListener;
     Font font = new Font("Roboto", Font.BOLD, 15);
 
     public View(java.util.List<CurrencyName> currencyNames, CustomTableModel<ResultsTableModel.Row> modelA,
@@ -58,7 +61,7 @@ public class View extends AbstractView {
 
         // Goes back in time
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -2);
+        calendar.add(Calendar.MONTH, -6);
         Date startDate = calendar.getTime();
         Date todayDate = new Date();
         Date tenDaysEarlier = new Date(ChronoUnit.DAYS.addTo(todayDate.toInstant(), -10).toEpochMilli());
@@ -83,11 +86,12 @@ public class View extends AbstractView {
         addComp(leftPanel, new JLabel("End Date"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(leftPanel, endDateSpinner, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
+        ChangeListener correctDateValues = new HandleCorrectDateValues();
         // Make sure that the upper date (end date) is always bigger than lower date (start date)
-        endDateSpinner.addChangeListener(ev -> ((SpinnerDateModel)endDateSpinner.getModel())
-                .setStart(((Date)startDateSpinner.getValue())));
+        endDateSpinner.addChangeListener(correctDateValues);
+        startDateSpinner.addChangeListener(correctDateValues);
 
-        nameOfAlgorithmsComboBox = new JComboBox<>(AlgorithmInitializer.values());
+        nameOfAlgorithmsComboBox = new JComboBox<>(AlgorithmInitializerExPost.values());
         addComp(leftPanel, new JLabel("Choose Algorithm"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(leftPanel, nameOfAlgorithmsComboBox, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
@@ -95,11 +99,12 @@ public class View extends AbstractView {
         customizeAlgorithmButton = new JButton("Customize Algorithm");
         addComp(leftPanel, customizeAlgorithmButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         customizeAlgorithmButton
-                .addActionListener(ev -> ((AlgorithmInitializer) nameOfAlgorithmsComboBox.getSelectedItem()).getAlgorithmArguments().collectArguments());
+                .addActionListener(ev -> ((AlgorithmInitializerExPost) nameOfAlgorithmsComboBox.getSelectedItem()).getAlgorithmArguments().collectArguments());
 
         predictButton = new JButton("Predict");
         addComp(leftPanel, predictButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        predictButton.addActionListener(new HandleButtonListener());
+        buttonListener = new HandleButtonListener();
+        predictButton.addActionListener(buttonListener);
 
 
 
@@ -164,26 +169,38 @@ public class View extends AbstractView {
     public void disableActions() {
         predictButton.setEnabled(false);
         customizeAlgorithmButton.setEnabled(false);
+        for (MenuElement el : menuBar.getSubElements()){
+            el.getComponent().setEnabled(false);
+        }
     }
 
     @Override
     public void enableActions() {
         predictButton.setEnabled(true);
         customizeAlgorithmButton.setEnabled(true);
+        for (MenuElement el : menuBar.getSubElements()){
+            el.getComponent().setEnabled(true);
+        }
     }
 
     private class HandleCorrectDateValues implements ChangeListener{
-
 
         @Override
         public void stateChanged(ChangeEvent e) {
             // Make sure that the upper date (end date) is always bigger than lower date (start date)
             SpinnerDateModel model = (SpinnerDateModel)endDateSpinner.getModel();
-            model.setStart(((Date)startDateSpinner.getValue()));
+            Date currLow = (Date)startDateSpinner.getValue();
+            model.setStart(currLow);
+            if (currLow.compareTo((Date)endDateSpinner.getValue()) >= 0){
+                model.setValue(currLow);
+            }
+            model.setStart(currLow);
         }
     }
 
     public class HandleButtonListener implements ActionListener{
+
+        private ViewEvent event;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -191,11 +208,11 @@ public class View extends AbstractView {
             Date sD = (Date) startDateSpinner.getValue();
             Date eD = (Date) endDateSpinner.getValue();
             CurrencyName cN = (CurrencyName)customComboBox.currencyNamesComboBox.getSelectedItem();
-            AlgorithmInitializer algorithmInitializer = (AlgorithmInitializer) nameOfAlgorithmsComboBox.getSelectedItem();
+            AlgorithmInitializerExPost algorithmInitializerExPost = (AlgorithmInitializerExPost) nameOfAlgorithmsComboBox.getSelectedItem();
 
-            ViewEvent event = new ViewEvent(LocalDate.ofInstant(sD.toInstant(), ZoneId.of("CET")),
+            event = new ViewEvent(LocalDate.ofInstant(sD.toInstant(), ZoneId.of("CET")),
                     LocalDate.ofInstant(eD.toInstant(), ZoneId.of("CET")),
-                    algorithmInitializer,
+                    algorithmInitializerExPost,
                     cN.getCode());
 
             tableA.setDefaultRenderer(BigDecimal.class, null);
@@ -245,11 +262,12 @@ public class View extends AbstractView {
         int RGB = 255;
         BigDecimal a = new BigDecimal(100);
         BigDecimal averagePercError;
-        BigDecimal rangeOfValues;
+        BigDecimal max, min;
         Color[] colors;
 
         public NumberRenderer(BigDecimal averagePercError){
-            rangeOfValues = findMax(); // For now, it is equal to the biggest value
+            max = findMax();
+            min = findMin();
             this.averagePercError = averagePercError;
             colors = new Color[modelA.getRowCount()];
             // Computes color for a row based on column representing percentage error
@@ -273,13 +291,18 @@ public class View extends AbstractView {
             for (int row = 0; row < modelA.getRowCount(); row++){
 
                 BigDecimal percentageError = modelA.getRow(row).getPercentageError();
-                BigDecimal offset = percentageError.subtract(averagePercError).divide(rangeOfValues,
-                        RoundingMode.HALF_UP).abs();
-                int x = RGB - offset.multiply(a).intValue();
+                BigDecimal offset;
+                int x;
                 Color c = Color.WHITE;
                 if (percentageError.compareTo(averagePercError) > 0){
+                    offset = percentageError.subtract(averagePercError).divide(max.subtract(averagePercError),
+                            RoundingMode.HALF_UP).abs();
+                    x = RGB - offset.multiply(a).intValue();
                     c = new Color(RGB, x, x);
                 } else if (percentageError.compareTo(averagePercError) < 0){
+                    offset = percentageError.subtract(averagePercError).divide(averagePercError.subtract(min),
+                            RoundingMode.HALF_UP).abs();
+                    x = RGB - offset.multiply(a).intValue();
                     c = new Color(x, RGB, x);
                 }
 
@@ -292,6 +315,14 @@ public class View extends AbstractView {
             return modelA.getListOfRows().stream()
                     .map(ResultsTableModel.Row::getPercentageError)
                     .max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
+
+        }
+
+        private BigDecimal findMin(){
+
+            return modelA.getListOfRows().stream()
+                    .map(ResultsTableModel.Row::getPercentageError)
+                    .min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
 
         }
 

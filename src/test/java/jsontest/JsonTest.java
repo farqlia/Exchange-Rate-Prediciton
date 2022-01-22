@@ -1,6 +1,6 @@
 package jsontest;
 
-import algorithms.AlgorithmInitializer;
+import algorithms.AlgorithmInitializerExPost;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -51,7 +51,7 @@ public class JsonTest {
     void shouldSerialize() throws JsonProcessingException {
         Point p = new Point(LocalDate.now(), BigDecimal.ZERO);
         ResultsTableModel.Row row = new ResultsTableModel.Row(p, p, BigDecimal.ONE, BigDecimal.TEN);
-        ResultsInfo info = new ResultsInfo(AlgorithmInitializer.MOVING_AVERAGE_MEAN_ALGORITHM.toString(),
+        ResultsInfo info = new ResultsInfo(AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM.toString(),
                 "EUR", Collections.singletonList(row));
         String s = mapper.writeValueAsString(info);
         System.out.println(s);
