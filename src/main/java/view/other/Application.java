@@ -16,6 +16,8 @@ import java.util.List;
 
 public class Application {
 
+    public static List<String> cols = List.of("Date", "Real", "Predicted", "Error", "Percentage Error");
+
     public static void main(String[] args) {
 
         Loader<CurrencyName> currencyNameLoader =
@@ -25,19 +27,24 @@ public class Application {
                 .addTable(Table.A)
                 .build());
 
-        Model model = new Model();
+        Model modelExPost = new Model();
+        Model modelExAnte = new Model();
 
-        CustomTableModel<ResultsTableModel.Row> modelA =
-                new ResultsTableModel(List.of("Date", "Real", "Predicted", "Error", "Percentage Error") ,"Results",
-                        model);
+        CustomTableModel<ResultsTableModel.Row> tableModelExPost =
+                new ResultsTableModel(cols,"Results",
+                        modelExPost);
 
-        CustomTableModel<StatisticsTableModel.Row> modelS =
-                new StatisticsTableModel(List.of("Name", "Value"),"Statistics", model);
+        CustomTableModel<ResultsTableModel.Row> tableModelExAnte =
+                new ResultsTableModel(cols ,"Predictions",
+                        modelExPost);
+
+        CustomTableModel<StatisticsTableModel.Row> tableModelStatistics =
+                new StatisticsTableModel(List.of("Name", "Value"),"Statistics", modelExPost);
 
 
-        View view = new View(currencyNameLoader.load(), modelA, modelS);
+        View view = new View(currencyNameLoader.load(), tableModelExPost, tableModelStatistics);
 
-        Controller c = new Controller(view, model, modelA, modelS);
+        Controller c = new Controller(view, modelExPost, modelExAnte, tableModelExPost, tableModelExAnte);
 
         SwingUtilities.invokeLater(() -> view.setVisible(true));
 

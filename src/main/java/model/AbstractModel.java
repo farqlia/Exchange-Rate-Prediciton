@@ -1,6 +1,7 @@
 package model;
 
 import algorithms.AlgorithmInitializerExPost;
+import algorithms.algorithmsinitializer.AlgorithmInitializer;
 import datasciencealgorithms.utils.point.Point;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ public abstract class AbstractModel {
     public abstract void predict(List<Point> realData,
                                  LocalDate startDate, LocalDate endDate);
 
-    public abstract void setAlgorithm(AlgorithmInitializerExPost algorithmInitializerExPost);
+    public abstract void setAlgorithm(AlgorithmInitializer algorithmInitializer);
 
     public abstract List<Point> getRealData();
 

@@ -104,6 +104,34 @@ public class MovingAverageTest {
     }
 
     @Test
+    void shouldTestForFuturePredictions() throws InterruptedException {
+        int dataset = 40;
+        BlockingQueue<Point> queue = new ArrayBlockingQueue<>(dataset);
+        BigDecimal a = new BigDecimal("0.4");
+        BigDecimal b = new BigDecimal("0.4");
+        Algorithm algorithm =
+                new FutureForecastAlgortihm(queue, a, b);
+
+        dataPoints = DataGenerator.getInstance().generateDataWithTrend(dataset,
+                BigDecimal.ONE, new BigDecimal(".05"));
+
+        algorithm.forecastValuesForDates(dataPoints, sD, eD);
+
+        Assertions.assertFalse(queue.isEmpty());
+        Iterator<Point> itr = new AscendingIterator(dataPoints, sD, eD);
+
+        Assertions.assertAll(
+                queue.stream()
+                        .filter(x -> !x.equals(Point.EMPTY_POINT))
+                        .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(),
+                                x.getY().doubleValue(), 0.5))));
+
+
+
+
+    }
+
+    @Test
     void shouldReturnSumOfArithmeticSequence(){
 
         int period = 10;

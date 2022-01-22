@@ -1,6 +1,6 @@
 package viewtest;
 
-import algorithms.AlgorithmInitializerExPost;
+import algorithms.algorithmsinitializer.AlgorithmInitializerExPost;
 import algorithms.algorithmsparameters.AlgorithmArguments;
 import mvc.Controller;
 import dataconverter.writersandreaders.JsonFileWriter;
@@ -58,20 +58,20 @@ public class ControllerTest {
     void setUp(){
         argMap = new HashMap<>();
         argMap.put(AlgorithmArguments.Names.LOOK_BACK_PERIOD, new BigDecimal(5));
-        viewEvent = new ViewEvent(startDate, endDate, AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM,
+        viewEvent = new ViewEvent(startDate, endDate, AlgorithmInitializerExPost.MAMA,
                 "EUR");
         exampleData = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
         when(view.getJMenuBar()).thenReturn(new JMenuBar());
 
-        controller = new Controller(view, model, modelA, modelS);
+        controller = new Controller(view, model, model, modelA, modelS);
     }
 
     @Test
     void shouldInvokePredictMethodOnModel(){
 
-        controller.new ListenForView().update(viewEvent);
+        new ListenForView(model).update(viewEvent);
 
-        verify(model).setAlgorithm(AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM);
+        verify(model).setAlgorithm(AlgorithmInitializerExPost.MAMA);
 
         verify(model).predict(any(List.class), eq(startDate),
                 eq(endDate));
@@ -82,12 +82,12 @@ public class ControllerTest {
 
         // Currency is invalid, so we can't be provided with response body
         ViewEvent viewEvent = new ViewEvent(LocalDate.now().minusDays(10),
-                LocalDate.now(), AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM,
+                LocalDate.now(), AlgorithmInitializerExPost.MAMA,
                 "INVALID");
 
-        controller.new ListenForView().update(viewEvent);
+        new ListenForView(model).update(viewEvent);
 
-        verify(model, never()).setAlgorithm(AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM);
+        verify(model, never()).setAlgorithm(AlgorithmInitializerExPost.MAMA);
 
         verify(model, never()).predict(any(List.class), eq(startDate),
                 (eq(endDate)));
@@ -114,7 +114,7 @@ public class ControllerTest {
     @Test
     void shouldClearList(){
 
-        ViewObserver ob = controller.new ListenForView();
+        ViewObserver ob = new ListenForView(model);
 
         // List of real data points should be cleared each time we make a new prediction
         ob.update(viewEvent);

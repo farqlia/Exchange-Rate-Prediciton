@@ -46,19 +46,20 @@ public class ModelTest {
 
     @Test
     void shouldNotifyObserverAboutStart(){
-        model.setAlgorithm(AlgorithmInitializerExPost.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
+
+        model.setAlgorithm(algorithms.algorithmsinitializer.AlgorithmInitializerExPost.LWMAA);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 
         model.predict(exampleDataPoints, startDate, LocalDate.now());
 
-        verify(observer).update(ModelEvent.DATA_PROCESS_STARTED);
+        verify(observer, timeout(Duration.ofSeconds(2).toMillis())).update(ModelEvent.DATA_PROCESS_STARTED);
     }
 
     @Test
     void shouldNotifyObserver(){
 
-        model.setAlgorithm(AlgorithmInitializerExPost.LINEARLY_WEIGHTED_MOVING_AVERAGE_ALGORITHM);
+        model.setAlgorithm(algorithms.algorithmsinitializer.AlgorithmInitializerExPost.LWMAA);
 
         LocalDate startDate = LocalDate.of(2021, 12, 23);
 

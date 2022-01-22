@@ -1,6 +1,7 @@
 package mvc;
 
 import algorithms.*;
+import algorithms.algorithmsinitializer.AlgorithmInitializer;
 import datasciencealgorithms.utils.point.Point;
 import model.AbstractModel;
 import model.ModelEvent;
@@ -20,10 +21,10 @@ public class Model extends AbstractModel {
     private List<Point> realData;
     private List<Point> chunks;
 
-    public void setAlgorithm(AlgorithmInitializerExPost algorithmInitializerExPost){
+    public void setAlgorithm(AlgorithmInitializer algorithmInitializer){
 
-        algorithm = algorithmInitializerExPost.createAlgorithm(queue,
-                algorithmInitializerExPost.getAlgorithmArguments().getMap());
+        algorithm = algorithmInitializer.createAlgorithm(queue,
+                algorithmInitializer.getAlgorithmArguments().getMap());
     }
 
     @Override
@@ -37,7 +38,7 @@ public class Model extends AbstractModel {
         Runnable producer = () -> {
             try {
                 realData = data;
-                algorithm.forecastValuesForDates(data, startDate, endDate);
+                algorithm.forecastValuesForDates(getRealData(), startDate, endDate);
             } catch (InterruptedException e) {
                 throw new IllegalStateException("Illegal state");
             }

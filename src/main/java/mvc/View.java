@@ -1,6 +1,8 @@
 package mvc;
 
-import algorithms.AlgorithmInitializerExPost;
+import algorithms.algorithmsinitializer.AlgorithmInitializer;
+import algorithms.algorithmsinitializer.AlgorithmInitializerExAnte;
+import algorithms.algorithmsinitializer.AlgorithmInitializerExPost;
 import exchangerateclass.CurrencyName;
 import model.CustomTableModel;
 import model.ResultsTableModel;
@@ -8,6 +10,7 @@ import model.StatisticsTableModel;
 import view.other.Menu;
 import view.view.AbstractView;
 import view.view.ViewEvent;
+import view.view.ViewEventType;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -28,15 +31,17 @@ public class View extends AbstractView {
 
     private final JSpinner startDateSpinner;
     private final JSpinner endDateSpinner;
-    private final JComboBox<AlgorithmInitializerExPost> nameOfAlgorithmsComboBox;
+    private final JComboBox<AlgorithmInitializer> nameOfAlgorithmsExPostComboBox;
+    private final JComboBox<AlgorithmInitializer> nameOfAlgorithmsExAnteComboBox;
     private final CustomComboBox customComboBox;
     private final JButton customizeAlgorithmButton;
     private CustomTableModel<ResultsTableModel.Row> modelA;
     private CustomTableModel<StatisticsTableModel.Row> modelS;
     private JTable tableA;
     private JMenuBar menuBar;
-    private JButton predictButton;
-    private HandleButtonListener buttonListener;
+    private JButton predictExPostButton;
+    private JButton predictExAnteButton;
+    private HandleButtonListenerExPost buttonListener;
     Font font = new Font("Roboto", Font.BOLD, 15);
 
     public View(java.util.List<CurrencyName> currencyNames, CustomTableModel<ResultsTableModel.Row> modelA,
@@ -91,22 +96,29 @@ public class View extends AbstractView {
         endDateSpinner.addChangeListener(correctDateValues);
         startDateSpinner.addChangeListener(correctDateValues);
 
-        nameOfAlgorithmsComboBox = new JComboBox<>(AlgorithmInitializerExPost.values());
+        nameOfAlgorithmsExPostComboBox = new JComboBox<>(AlgorithmInitializerExPost.values());
         addComp(leftPanel, new JLabel("Choose Algorithm"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(leftPanel, nameOfAlgorithmsComboBox, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(leftPanel, nameOfAlgorithmsExPostComboBox, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
         y++;
         customizeAlgorithmButton = new JButton("Customize Algorithm");
         addComp(leftPanel, customizeAlgorithmButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         customizeAlgorithmButton
-                .addActionListener(ev -> ((AlgorithmInitializerExPost) nameOfAlgorithmsComboBox.getSelectedItem()).getAlgorithmArguments().collectArguments());
+                .addActionListener(ev -> ((AlgorithmInitializer) nameOfAlgorithmsExPostComboBox.getSelectedItem()).getAlgorithmArguments().collectArguments());
 
-        predictButton = new JButton("Predict");
-        addComp(leftPanel, predictButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        buttonListener = new HandleButtonListener();
-        predictButton.addActionListener(buttonListener);
+        predictExPostButton = new JButton("Predict Past");
+        addComp(leftPanel, predictExPostButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        buttonListener = new HandleButtonListenerExPost();
+        predictExPostButton.addActionListener(buttonListener);
 
+        nameOfAlgorithmsExAnteComboBox = new JComboBox<>(AlgorithmInitializerExAnte.values());
+        addComp(leftPanel, new JLabel("Choose Algorithm"), 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(leftPanel, nameOfAlgorithmsExAnteComboBox, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
+        predictExAnteButton = new JButton("Predict Future");
+        predictExAnteButton.addActionListener(new HandleButtonListenerExAnte());
+
+        addComp(leftPanel, predictExAnteButton, 0, y++, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
         // ----------- CREATE RIGHT PANEL ------------------
 
@@ -123,7 +135,8 @@ public class View extends AbstractView {
                 }
         );
 
-        predictButton.addActionListener(ev -> tableA.setDefaultRenderer(BigDecimal.class, null));
+        predictExPostButton.addActionListener(ev ->
+                tableA.setDefaultRenderer(BigDecimal.class, null));
 
         tableA.setFont(font);
         tableA.setRowHeight(20);
@@ -167,7 +180,8 @@ public class View extends AbstractView {
 
     @Override
     public void disableActions() {
-        predictButton.setEnabled(false);
+        predictExPostButton.setEnabled(false);
+        predictExAnteButton.setEnabled(false);
         customizeAlgorithmButton.setEnabled(false);
         for (MenuElement el : menuBar.getSubElements()){
             el.getComponent().setEnabled(false);
@@ -176,7 +190,8 @@ public class View extends AbstractView {
 
     @Override
     public void enableActions() {
-        predictButton.setEnabled(true);
+        predictExPostButton.setEnabled(true);
+        predictExAnteButton.setEnabled(true);
         customizeAlgorithmButton.setEnabled(true);
         for (MenuElement el : menuBar.getSubElements()){
             el.getComponent().setEnabled(true);
@@ -198,7 +213,27 @@ public class View extends AbstractView {
         }
     }
 
-    public class HandleButtonListener implements ActionListener{
+    public class HandleButtonListenerExAnte implements ActionListener{
+
+        private ViewEvent event;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Date sD = (Date) startDateSpinner.getValue();
+            Date eD = (Date) endDateSpinner.getValue();
+            CurrencyName cN = (CurrencyName)customComboBox.currencyNamesComboBox.getSelectedItem();
+            AlgorithmInitializer algorithmInitializerExPost = (AlgorithmInitializer) nameOfAlgorithmsExAnteComboBox.getSelectedItem();
+
+            event = new ViewEvent(LocalDate.ofInstant(sD.toInstant(), ZoneId.of("CET")),
+                    LocalDate.ofInstant(eD.toInstant(), ZoneId.of("CET")),
+                    algorithmInitializerExPost,
+                    cN.getCode());
+
+            notifyObservers(ViewEventType.EX_ANTE, event);
+        }
+    }
+
+    public class HandleButtonListenerExPost implements ActionListener{
 
         private ViewEvent event;
 
@@ -208,7 +243,7 @@ public class View extends AbstractView {
             Date sD = (Date) startDateSpinner.getValue();
             Date eD = (Date) endDateSpinner.getValue();
             CurrencyName cN = (CurrencyName)customComboBox.currencyNamesComboBox.getSelectedItem();
-            AlgorithmInitializerExPost algorithmInitializerExPost = (AlgorithmInitializerExPost) nameOfAlgorithmsComboBox.getSelectedItem();
+            AlgorithmInitializer algorithmInitializerExPost = (AlgorithmInitializer) nameOfAlgorithmsExPostComboBox.getSelectedItem();
 
             event = new ViewEvent(LocalDate.ofInstant(sD.toInstant(), ZoneId.of("CET")),
                     LocalDate.ofInstant(eD.toInstant(), ZoneId.of("CET")),
@@ -219,7 +254,7 @@ public class View extends AbstractView {
             modelA.deleteRows();
             modelS.deleteRows();
 
-            notifyObservers(event);
+            notifyObservers(ViewEventType.EX_POST, event);
         }
     }
 

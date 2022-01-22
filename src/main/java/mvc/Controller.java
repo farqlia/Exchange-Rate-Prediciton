@@ -1,106 +1,47 @@
 package mvc;
 
-import currencyparsing.currencymapper.SingleRateMapper;
-import currencyparsing.currencyurlbuilders.*;
-import currencyparsing.currencyurlworker.Loader;
-import datasciencealgorithms.utils.point.Point;
-import exchangerateclass.ExchangeRate;
 import model.*;
 import view.IO.FileSaveHandler;
 import view.IO.FileTypes;
 import view.other.*;
-import view.view.AbstractView;
-import view.view.ViewEvent;
-import view.view.ViewObserver;
+import view.view.*;
 
-import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Controller {
 
-    Model model;
-    CustomTableModel<ResultsTableModel.Row> modelA;
-    CustomTableModel<StatisticsTableModel.Row> modelS;
+    Model modelExPost, modelExAnte;
     AbstractView view;
     Plot plot;
 
-    public Controller(AbstractView view, Model model,
-                      CustomTableModel<ResultsTableModel.Row> modelA,
-                      CustomTableModel<StatisticsTableModel.Row> modelS){
+    public Controller(AbstractView view, Model modelExPost,
+                      Model modelExAnte,
+                      CustomTableModel<ResultsTableModel.Row> tableModelExPost,
+                      CustomTableModel<ResultsTableModel.Row> tableModelAntePost){
 
         this.view = view;
-        this.model = model;
-        this.modelA = modelA;
-        this.modelS = modelS;
+        this.modelExPost = modelExPost;
+        this.modelExAnte = modelExAnte;
         plot = new Plot();
 
-        PlotControllerExPost exPostPlotCon = new PlotControllerExPost(plot, modelA);
+        PlotControllerExPost exPostPlotCon = new PlotControllerExPost(plot, tableModelExPost);
+        AbstractPlotController antePostPlotCon = new PlotControllerExAnte(plot, tableModelAntePost);
 
-        this.view.registerObserver(new ListenForView());
-        this.view.registerObserver(new HandlePlotTitle());
+        this.view.registerObserver(ViewEventType.EX_POST, new ListenForView(modelExPost));
+        this.view.registerObserver(ViewEventType.EX_POST, new HandlePlotTitle());
 
-        model.registerObserver(new HandleViewAction());
+        modelExPost.registerObserver(new HandleViewAction());
 
-        FileSaveHandler handler = new FileSaveHandler(modelA);
+        FileSaveHandler handler = new FileSaveHandler(tableModelExPost);
 
         view.getJMenuBar().addPropertyChangeListener(FileTypes.TEXT.toString(),handler);
         view.getJMenuBar().addPropertyChangeListener(FileTypes.JSON.toString(), handler);
         view.getJMenuBar().addPropertyChangeListener(Plot.CREATE_PLOT_ACTION,
                 new HandlePlotVisibility());
 
-        view.registerObserver(handler);
+        view.registerObserver(ViewEventType.EX_POST, handler);
 
-    }
-
-    public class ListenForView implements ViewObserver {
-
-        Loader<ExchangeRate> exchangeRateLoader = new Loader<>(new SingleRateMapper());
-        ConcreteCurrencyURL.Builder builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
-        List<Point> realDataPoints = new ArrayList<>(20);
-
-        @Override
-        public void update(ViewEvent e) {
-
-            realDataPoints.clear();
-            exchangeRateLoader.setCurrencyURL(builder
-                    .reset()        // reuse the same object
-                    // Subtract days to provide some start-up points for the latest dates
-                    .addDate(e.getStartDate().minusMonths(1), e.getEndDate())
-                    .addTable(Table.A)
-                    .addCurrencyCode(e.getCurrencyCode())
-                    .build()
-            );
-
-            List<ExchangeRate> exchangeRatesList = exchangeRateLoader.load();
-
-            if (exchangeRatesList.isEmpty()){
-                System.out.println("Something went wrong");
-                JOptionPane.showMessageDialog(null,
-                        "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            for (ExchangeRate eR : exchangeRatesList){
-                // Date in ExchangeRates class is 'Date' type so convert it to LocalDate
-                realDataPoints.add(new Point(LocalDate.ofInstant(eR.getEffectiveDate().toInstant(),
-                        ZoneId.systemDefault()),
-                        eR.getMid()));
-            }
-            model.setAlgorithm(e.getChosenAlgorithm());
-
-            try {
-                model.predict(realDataPoints, e.getStartDate(), e.getEndDate());
-
-            } catch (IllegalStateException ex){
-                JOptionPane.showMessageDialog(view,
-                        "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
     }
 
     public class HandleViewAction implements ModelObserver{
