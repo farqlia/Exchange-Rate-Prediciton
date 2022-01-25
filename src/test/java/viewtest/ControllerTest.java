@@ -9,6 +9,7 @@ import datagenerator.DataGenerator;
 import datasciencealgorithms.utils.point.Point;
 import model.*;
 import mvc.Model;
+import mvc.View;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +45,8 @@ public class ControllerTest {
     @Mock
     AbstractView view;
     @Mock
+    JTable table;
+    @Mock
     Model model;
     @Mock
     ResultsTableModel modelA;
@@ -63,7 +66,7 @@ public class ControllerTest {
         exampleData = DataGenerator.getInstance().generateDataWithTrend(10, BigDecimal.ONE, BigDecimal.ONE);
         when(view.getJMenuBar()).thenReturn(new JMenuBar());
 
-        controller = new Controller(view, model, model, modelA, modelS);
+        controller = new Controller(view, table, model, model, modelA, modelS, modelA);
     }
 
     @Test
@@ -100,7 +103,7 @@ public class ControllerTest {
 
     @Test
     void shouldCreatePlot() {
-        TableModelListener listener = new PlotControllerExPost(plot, modelA);
+        TableModelListener listener = new PlotController(plot, modelA, "Predicted");
 
         listener.tableChanged(event);
 
@@ -128,6 +131,7 @@ public class ControllerTest {
     @Test
     void shouldDisableAndEnableViewAction(){
 
+        when(modelS.getRow(2)).thenReturn(new StatisticsTableModel.Row("", BigDecimal.ONE));
         ModelObserver ob = controller.new HandleViewAction();
         ob.update(ModelEvent.DATA_PROCESS_STARTED);
 
@@ -178,6 +182,30 @@ public class ControllerTest {
 
         verify(jsonWriter).saveToFile(argThat(x -> x.endsWith(".json")),
                 eq(Collections.singletonList(info)));
+    }
+
+    @Test
+    void shouldReactOnActions(){
+
+        ViewObserver observer = controller.new HandleExPostPredictions();
+
+        observer.update(viewEvent);
+
+        verify(model).predict(any(), eq(viewEvent.getStartDate()), eq(viewEvent.getEndDate()));
+
+    }
+
+    @Test
+    void shouldReactOnActionsFromView(){
+
+        JTable table = new JTable();
+        View view = new View(Collections.emptyList(), table);
+        controller = new Controller(view, table, model, model, modelA, modelS, modelA);
+        view.notifyObservers(ViewEventType.EX_POST, viewEvent);
+
+
+        verify(model).predict(any(), eq(viewEvent.getStartDate()), eq(viewEvent.getEndDate()));
+
     }
 
 }

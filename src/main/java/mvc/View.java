@@ -35,22 +35,15 @@ public class View extends AbstractView {
     private final JComboBox<AlgorithmInitializer> nameOfAlgorithmsExAnteComboBox;
     private final CustomComboBox customComboBox;
     private final JButton customizeAlgorithmButton;
-    private CustomTableModel<ResultsTableModel.Row> modelA;
-    private CustomTableModel<StatisticsTableModel.Row> modelS;
-    private JTable tableA;
     private JMenuBar menuBar;
     private JButton predictExPostButton;
     private JButton predictExAnteButton;
     private HandleButtonListenerExPost buttonListener;
     Font font = new Font("Roboto", Font.BOLD, 15);
 
-    public View(java.util.List<CurrencyName> currencyNames, CustomTableModel<ResultsTableModel.Row> modelA,
-                CustomTableModel<StatisticsTableModel.Row> modelS){
+    public View(java.util.List<CurrencyName> currencyNames, JTable ... tables){
 
         setSize(900, 600);
-
-        this.modelA = modelA;
-        this.modelS = modelS;
 
         menuBar = new Menu();
         setJMenuBar(menuBar);
@@ -125,33 +118,15 @@ public class View extends AbstractView {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        tableA = new JTable(modelA);
-
-        // When user clicks on this menu option, we set rendering for table
-        menuBar.addPropertyChangeListener(Menu.SET_RENDERING, ev ->{
-                    tableA.setDefaultRenderer(BigDecimal.class, new NumberRenderer((BigDecimal)
-                            modelS.getValueAt(2, 1))); // Pass in MAPE from statistics table
-                    tableA.repaint();
-                }
-        );
-
-        predictExPostButton.addActionListener(ev ->
-                tableA.setDefaultRenderer(BigDecimal.class, null));
-
-        tableA.setFont(font);
-        tableA.setRowHeight(20);
-        JScrollPane scroller = new JScrollPane(tableA,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbedPane.addTab(modelA.toString(), scroller);
-
-        JTable tableS = new JTable(modelS);
-        tableS.setFont(font);
-        tableS.setRowHeight(20);
-        JScrollPane scroller2 = new JScrollPane(tableS,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbedPane.addTab(modelS.toString(), scroller2);
+        for (JTable table : tables){
+            table.setFont(font);
+            table.setRowHeight(20);
+            JScrollPane scroller = new JScrollPane(table,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            tabbedPane.addTab(table.toString(), scroller);
+        }
 
 
         addComp(mainPanel, leftPanel, 0, 0, 1,1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE);
@@ -250,10 +225,6 @@ public class View extends AbstractView {
                     algorithmInitializerExPost,
                     cN.getCode());
 
-            tableA.setDefaultRenderer(BigDecimal.class, null);
-            modelA.deleteRows();
-            modelS.deleteRows();
-
             notifyObservers(ViewEventType.EX_POST, event);
         }
     }
@@ -290,79 +261,6 @@ public class View extends AbstractView {
             setText(String.format("%s, (%s)", value.getCode(), value.getCurrency()));
             return this;
         }
-    }
-
-    public class NumberRenderer extends JLabel implements TableCellRenderer {
-
-        int RGB = 255;
-        BigDecimal a = new BigDecimal(100);
-        BigDecimal averagePercError;
-        BigDecimal max, min;
-        Color[] colors;
-
-        public NumberRenderer(BigDecimal averagePercError){
-            max = findMax();
-            min = findMin();
-            this.averagePercError = averagePercError;
-            colors = new Color[modelA.getRowCount()];
-            // Computes color for a row based on column representing percentage error
-            computeColors();
-            setOpaque(true);
-
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                                                       boolean isSelected, boolean hasFocus,
-                                                       int row, int column) {
-            setBackground(colors[row]);
-            setFont(font);
-            setText(value.toString());
-            return this;
-        }
-
-
-        private void computeColors(){
-            for (int row = 0; row < modelA.getRowCount(); row++){
-
-                BigDecimal percentageError = modelA.getRow(row).getPercentageError();
-                BigDecimal offset;
-                int x;
-                Color c = Color.WHITE;
-                if (percentageError.compareTo(averagePercError) > 0){
-                    offset = percentageError.subtract(averagePercError).divide(max.subtract(averagePercError),
-                            RoundingMode.HALF_UP).abs();
-                    x = RGB - offset.multiply(a).intValue();
-                    c = new Color(RGB, x, x);
-                } else if (percentageError.compareTo(averagePercError) < 0){
-                    offset = percentageError.subtract(averagePercError).divide(averagePercError.subtract(min),
-                            RoundingMode.HALF_UP).abs();
-                    x = RGB - offset.multiply(a).intValue();
-                    c = new Color(x, RGB, x);
-                }
-
-                colors[row] = c;
-            }
-        }
-
-        private BigDecimal findMax(){
-
-            return modelA.getListOfRows().stream()
-                    .map(ResultsTableModel.Row::getPercentageError)
-                    .max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
-
-        }
-
-        private BigDecimal findMin(){
-
-            return modelA.getListOfRows().stream()
-                    .map(ResultsTableModel.Row::getPercentageError)
-                    .min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
-
-        }
-
-
-
     }
 
 }

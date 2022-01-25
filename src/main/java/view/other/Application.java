@@ -8,6 +8,7 @@ import currencyparsing.currencyurlbuilders.Table;
 import currencyparsing.currencyurlworker.Loader;
 import exchangerateclass.CurrencyName;
 import model.*;
+import mvc.JTableView;
 import mvc.Model;
 import mvc.View;
 
@@ -36,15 +37,20 @@ public class Application {
 
         CustomTableModel<ResultsTableModel.Row> tableModelExAnte =
                 new ResultsTableModel(cols ,"Predictions",
-                        modelExPost);
+                        modelExAnte);
 
         CustomTableModel<StatisticsTableModel.Row> tableModelStatistics =
                 new StatisticsTableModel(List.of("Name", "Value"),"Statistics", modelExPost);
 
+        JTable tableExPost = new JTableView(tableModelExPost, "Results");
+        JTable tableExAnte = new JTableView(tableModelExAnte, "Predictions");
+        JTable tableStatistics = new JTableView(tableModelStatistics, "Results");
 
-        View view = new View(currencyNameLoader.load(), tableModelExPost, tableModelStatistics);
+        View view = new View(currencyNameLoader.load(), tableExPost, tableExAnte, tableStatistics);
 
-        Controller c = new Controller(view, modelExPost, modelExAnte, tableModelExPost, tableModelExAnte);
+        Controller c = new Controller(view, tableExPost,
+                modelExPost, modelExAnte,
+                tableModelExPost, tableModelStatistics, tableModelExAnte);
 
         SwingUtilities.invokeLater(() -> view.setVisible(true));
 

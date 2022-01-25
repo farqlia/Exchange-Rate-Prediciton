@@ -14,14 +14,15 @@ import javax.swing.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ListenForView implements ViewObserver {
 
-    Loader<ExchangeRate> exchangeRateLoader = new Loader<>(new SingleRateMapper());
-    ConcreteCurrencyURL.Builder builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
-    List<Point> realDataPoints = new ArrayList<>(20);
-    Model model;
+    private Loader<ExchangeRate> exchangeRateLoader = new Loader<>(new SingleRateMapper());
+    private ConcreteCurrencyURL.Builder builder = new ConcreteCurrencyURL.Builder(MoneyType.CURRENCY);
+    protected List<Point> realDataPoints = new ArrayList<>(20);
+    private Model model;
 
     public ListenForView(Model model){
         this.model = model;
@@ -43,26 +44,40 @@ public class ListenForView implements ViewObserver {
         List<ExchangeRate> exchangeRatesList = exchangeRateLoader.load();
 
         if (exchangeRatesList.isEmpty()){
+
             System.out.println("Something went wrong");
             JOptionPane.showMessageDialog(null,
                     "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+
+        } else {
+
+            model.setAlgorithm(e.getChosenAlgorithm());
+
+            try {
+                //Subclass can decide here how they want to convert from one type to another
+                formatPoints(exchangeRatesList);
+                model.predict(realDataPoints, e.getStartDate(), e.getEndDate());
+
+            } catch (IllegalStateException ex){
+                JOptionPane.showMessageDialog(null,
+                        "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         }
+    }
+
+    protected void formatPoints(List<ExchangeRate> exchangeRatesList){
 
         for (ExchangeRate eR : exchangeRatesList){
             // Date in ExchangeRates class is 'Date' type so convert it to LocalDate
-            realDataPoints.add(new Point(LocalDate.ofInstant(eR.getEffectiveDate().toInstant(),
-                    ZoneId.systemDefault()),
+            realDataPoints.add(new Point(formatDate(eR.getEffectiveDate()),
                     eR.getMid()));
         }
-        model.setAlgorithm(e.getChosenAlgorithm());
-
-        try {
-            model.predict(realDataPoints, e.getStartDate(), e.getEndDate());
-
-        } catch (IllegalStateException ex){
-            JOptionPane.showMessageDialog(null,
-                    "Error Occurred", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
+
+    public LocalDate formatDate(Date date){
+        return LocalDate.ofInstant(date.toInstant(),
+                ZoneId.systemDefault());
+    }
+
 }

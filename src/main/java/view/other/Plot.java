@@ -83,7 +83,7 @@ public class Plot extends JFrame {
                 handler.parseFilePath(path.toString());
                 handler.createFile();
                 ChartUtils.saveChartAsPNG(path.toFile(),
-                        chart, chartPanel.getMinimumDrawWidth(), chartPanel.getMinimumDrawHeight());
+                        chart, chartPanel.getWidth(), chartPanel.getHeight());
             } catch (IOException ioException) {
                 ioException.printStackTrace();
                 //JOptionPane.showMessageDialog(Plot.this, "Couldn't Save The Plot",

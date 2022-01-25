@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 
 public class AlgorithmInitializerExAnte extends AlgorithmInitializer{
 
-    public static AlgorithmInitializerExAnte FA = new AlgorithmInitializerExAnte(AlgorithmInitializer.DialogStrategy.STRATEGY_A,
+    public static AlgorithmInitializerExAnte FA = new AlgorithmInitializerExAnte(DialogStrategy.STRATEGY_AB,
             (q, m) -> new FutureForecastAlgortihm(q, (BigDecimal) m.get(AlgorithmArguments.Names.ALPHA), (BigDecimal) m.get(AlgorithmArguments.Names.BETA)),
             "FUTURE_ALGORITHM");
     public static AlgorithmInitializer[] values = new AlgorithmInitializer[]{FA};

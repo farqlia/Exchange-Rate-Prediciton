@@ -8,17 +8,18 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.time.LocalDate;
 
-public abstract class AbstractPlotController implements TableModelListener {
+public class PlotController implements TableModelListener {
 
     protected Plot plot;
     protected CustomTableModel<ResultsTableModel.Row> model;
-    public AbstractPlotController(Plot plot, CustomTableModel<ResultsTableModel.Row> model){
+    private String seriesName;
+    public PlotController(Plot plot, CustomTableModel<ResultsTableModel.Row> model,
+                          String seriesName){
         this.plot = plot;
         this.model = model;
         model.addTableModelListener(this);
+        this.seriesName = seriesName;
     }
-
-    public abstract void updatePlot();
 
     protected Day[] getDates(){
         Day[] arr = new Day[model.getRowCount()];
@@ -32,6 +33,16 @@ public abstract class AbstractPlotController implements TableModelListener {
     @Override
     public void tableChanged(TableModelEvent e) {
         updatePlot();
+    }
+
+    private void updatePlot() {
+        plot.setDomainRange(getDates());
+
+        plot.addSeries("Real", model.getListOfRows().stream()
+                .mapToDouble(x -> x.getReal().doubleValue()).toArray());
+
+        plot.addSeries(seriesName, model.getListOfRows().stream()
+                .mapToDouble(x -> x.getPredicted().doubleValue()).toArray());
     }
 
 }

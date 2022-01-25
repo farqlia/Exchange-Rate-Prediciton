@@ -29,8 +29,7 @@ public class FutureForecastAlgortihm implements Algorithm {
         // Assumes that passed data is big enough
         BigDecimal currentVal, previousVal = realData.get(startIndex - 1).getY()
                 , postPreviousVal = realData.get(startIndex - 2).getY();
-        BigDecimal trendIncr = realData.get(startIndex - 1).getY()
-                .subtract(realData.get(startIndex - 2).getY());
+        BigDecimal trendIncr = realData.get(startIndex).getY().subtract(realData.get(startIndex - 1).getY());
 
         for (int i = startIndex; i <= endIndex; i++){
 
@@ -42,8 +41,8 @@ public class FutureForecastAlgortihm implements Algorithm {
                     .add(BigDecimal.ONE.subtract(alpha).multiply(postPreviousVal.add(trendIncr)));
 
             // S/t/ = beta(F/t/ - F/t-1/) + (1 - beta)S/t-1
-            trendIncr = beta.multiply(currentVal.subtract(previousVal))
-                    .add(BigDecimal.ONE.subtract(beta).multiply(trendIncr));
+            //trendIncr = beta.multiply(currentVal.subtract(previousVal))
+            //        .add(BigDecimal.ONE.subtract(beta).multiply(trendIncr));
 
             postPreviousVal = previousVal;
             previousVal = currentVal;

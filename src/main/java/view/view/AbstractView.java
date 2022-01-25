@@ -16,7 +16,7 @@ public abstract class AbstractView extends JFrame {
     public abstract void enableActions();
 
     public void registerObserver(ViewEventType eventType, ViewObserver o){
-        observers.computeIfAbsent(eventType, k -> List.of(o));
+        observers.computeIfAbsent(eventType, k -> new ArrayList<>()).add(o);
     }
 
     public void notifyObservers(ViewEventType eventType, ViewEvent e) {

@@ -25,6 +25,14 @@ public class Point {
         return y;
     }
 
+    public void setX(LocalDate x) {
+        this.x = x;
+    }
+
+    public void setY(BigDecimal y) {
+        this.y = y;
+    }
+
     @Override
     public String toString() {
 
