@@ -110,7 +110,7 @@ public class MovingAverageTest {
         BigDecimal a = new BigDecimal("0.4");
         BigDecimal b = new BigDecimal("0.4");
         Algorithm algorithm =
-                new FutureForecastAlgortihm(queue, a, b);
+                new FutureForecastAlgorithm(queue, a, b);
 
         dataPoints = DataGenerator.getInstance().generateDataWithTrend(dataset,
                 BigDecimal.ONE, new BigDecimal(".05"));
@@ -124,7 +124,7 @@ public class MovingAverageTest {
                 queue.stream()
                         .filter(x -> !x.equals(Point.EMPTY_POINT))
                         .map(x -> (() -> Assertions.assertEquals(itr.next().getY().doubleValue(),
-                                x.getY().doubleValue(), 0.5))));
+                                x.getY().doubleValue(), 1))));
 
 
 

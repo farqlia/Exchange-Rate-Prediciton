@@ -1,6 +1,7 @@
 package currencyparsingtest;
 
 import currencyparsing.currencyurlbuilders.*;
+import org.junit.After;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ public class CurrencyURLBuilderTest {
 
     CurrencyURL currencyURL;
     String baseAddress = "http://api.nbp.pl/api/";
+
 
     @Test
     void shouldCorrectlyCreateInstanceOfTable(){

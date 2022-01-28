@@ -44,7 +44,7 @@ public class Application {
 
         JTable tableExPost = new JTableView(tableModelExPost, "Results");
         JTable tableExAnte = new JTableView(tableModelExAnte, "Predictions");
-        JTable tableStatistics = new JTableView(tableModelStatistics, "Results");
+        JTable tableStatistics = new JTableView(tableModelStatistics, "Statistics");
 
         View view = new View(currencyNameLoader.load(), tableExPost, tableExAnte, tableStatistics);
 

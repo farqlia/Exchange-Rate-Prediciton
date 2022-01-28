@@ -4,9 +4,6 @@ import algorithms.algorithmsinitializer.AlgorithmInitializer;
 import algorithms.algorithmsinitializer.AlgorithmInitializerExAnte;
 import algorithms.algorithmsinitializer.AlgorithmInitializerExPost;
 import exchangerateclass.CurrencyName;
-import model.CustomTableModel;
-import model.ResultsTableModel;
-import model.StatisticsTableModel;
 import view.other.Menu;
 import view.view.AbstractView;
 import view.view.ViewEvent;
@@ -15,12 +12,9 @@ import view.view.ViewEventType;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -194,14 +188,14 @@ public class View extends AbstractView {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Date sD = (Date) startDateSpinner.getValue();
-            Date eD = (Date) endDateSpinner.getValue();
+
+            Date sD = (Date) endDateSpinner.getValue();
             CurrencyName cN = (CurrencyName)customComboBox.currencyNamesComboBox.getSelectedItem();
-            AlgorithmInitializer algorithmInitializerExPost = (AlgorithmInitializer) nameOfAlgorithmsExAnteComboBox.getSelectedItem();
+            AlgorithmInitializer algorithmInitializer = (AlgorithmInitializer) nameOfAlgorithmsExAnteComboBox.getSelectedItem();
 
             event = new ViewEvent(LocalDate.ofInstant(sD.toInstant(), ZoneId.of("CET")),
-                    LocalDate.ofInstant(eD.toInstant(), ZoneId.of("CET")),
-                    algorithmInitializerExPost,
+                    LocalDate.now(),
+                    algorithmInitializer,
                     cN.getCode());
 
             notifyObservers(ViewEventType.EX_ANTE, event);
@@ -214,15 +208,14 @@ public class View extends AbstractView {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
             Date sD = (Date) startDateSpinner.getValue();
             Date eD = (Date) endDateSpinner.getValue();
             CurrencyName cN = (CurrencyName)customComboBox.currencyNamesComboBox.getSelectedItem();
-            AlgorithmInitializer algorithmInitializerExPost = (AlgorithmInitializer) nameOfAlgorithmsExPostComboBox.getSelectedItem();
+            AlgorithmInitializer algorithmInitializer = (AlgorithmInitializer) nameOfAlgorithmsExPostComboBox.getSelectedItem();
 
             event = new ViewEvent(LocalDate.ofInstant(sD.toInstant(), ZoneId.of("CET")),
                     LocalDate.ofInstant(eD.toInstant(), ZoneId.of("CET")),
-                    algorithmInitializerExPost,
+                    algorithmInitializer,
                     cN.getCode());
 
             notifyObservers(ViewEventType.EX_POST, event);

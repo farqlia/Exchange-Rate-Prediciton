@@ -1,8 +1,7 @@
 package algorithms.algorithmsinitializer;
 
 import algorithms.Algorithm;
-import algorithms.BrownExponentialSmoothingModel;
-import algorithms.FutureForecastAlgortihm;
+import algorithms.FutureForecastAlgorithm;
 import algorithms.algorithmsparameters.AlgorithmArguments;
 import datasciencealgorithms.utils.point.Point;
 
@@ -13,8 +12,8 @@ import java.util.function.BiFunction;
 
 public class AlgorithmInitializerExAnte extends AlgorithmInitializer{
 
-    public static AlgorithmInitializerExAnte FA = new AlgorithmInitializerExAnte(DialogStrategy.STRATEGY_AB,
-            (q, m) -> new FutureForecastAlgortihm(q, (BigDecimal) m.get(AlgorithmArguments.Names.ALPHA), (BigDecimal) m.get(AlgorithmArguments.Names.BETA)),
+    public static AlgorithmInitializerExAnte FA = new AlgorithmInitializerExAnte(DialogStrategy.STRATEGY_DEFAULT,
+            (q, m) -> new FutureForecastAlgorithm(q, (BigDecimal) m.get(AlgorithmArguments.Names.ALPHA), (BigDecimal) m.get(AlgorithmArguments.Names.BETA)),
             "FUTURE_ALGORITHM");
     public static AlgorithmInitializer[] values = new AlgorithmInitializer[]{FA};
 

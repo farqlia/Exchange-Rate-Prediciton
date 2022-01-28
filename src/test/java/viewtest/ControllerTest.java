@@ -131,7 +131,6 @@ public class ControllerTest {
     @Test
     void shouldDisableAndEnableViewAction(){
 
-        when(modelS.getRow(2)).thenReturn(new StatisticsTableModel.Row("", BigDecimal.ONE));
         ModelObserver ob = controller.new HandleViewAction();
         ob.update(ModelEvent.DATA_PROCESS_STARTED);
 

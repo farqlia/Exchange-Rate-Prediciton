@@ -49,13 +49,14 @@ public class JsonTest {
 
     @Test
     void shouldSerialize() throws JsonProcessingException {
-        Point p = new Point(LocalDate.now(), BigDecimal.ZERO);
+        Point p = new Point(LocalDate.of(2022, 1, 18), BigDecimal.ZERO);
         ResultsTableModel.Row row = new ResultsTableModel.Row(p, p, BigDecimal.ONE, BigDecimal.TEN);
         ResultsInfo info = new ResultsInfo(AlgorithmInitializerExPost.MOVING_AVERAGE_MEAN_ALGORITHM.toString(),
                 "EUR", Collections.singletonList(row));
         String s = mapper.writeValueAsString(info);
         System.out.println(s);
-        Assertions.assertEquals("{\"algorithm\":\"Moving Average Mean Algorithm\",\"code\":\"EUR\",\"Predictions\":[{\"Date\":\"2022-01-18\",\"Real\":0E-8,\"Predicted\":0E-8}]}",
+        Assertions.assertEquals("{\"algorithm\":\"Moving Average Mean Algorithm\",\"code\":\"EUR\",\"Predictions\":" +
+                        "[{\"Date\":\"2022-01-18\",\"Real\":0E-8,\"Predicted\":0E-8}]}",
                 s);
     }
 

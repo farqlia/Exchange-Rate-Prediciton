@@ -1,14 +1,11 @@
 package view.view;
 
 import datasciencealgorithms.utils.UtilityMethods;
-import datasciencealgorithms.utils.point.Point;
 import exchangerateclass.ExchangeRate;
-import iterators.AscendingIterator;
 import model.CustomTableModel;
 import model.ResultsTableModel;
 import mvc.Model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 

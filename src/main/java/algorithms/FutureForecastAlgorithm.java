@@ -8,16 +8,16 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class FutureForecastAlgortihm implements Algorithm {
+public class FutureForecastAlgorithm implements Algorithm {
 
     BlockingQueue<Point> queue;
     BigDecimal alpha;
     BigDecimal beta;
 
-    public FutureForecastAlgortihm(BlockingQueue<Point> queue, BigDecimal alpha, BigDecimal beta) {
+    public FutureForecastAlgorithm(BlockingQueue<Point> queue, BigDecimal alpha, BigDecimal beta) {
         this.queue = queue;
-        this.alpha = alpha;
-        this.beta = beta;
+        this.alpha = new BigDecimal("0.4");
+        this.beta = new BigDecimal("0.4");
     }
 
     @Override
