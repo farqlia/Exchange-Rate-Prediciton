@@ -6,10 +6,10 @@ import java.time.LocalDate;
 
 public class ViewEvent {
 
-    LocalDate startDate;
-    LocalDate endDate;
-    AlgorithmInitializer chosenAlgorithm;
-    String currencyCode;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private AlgorithmInitializer chosenAlgorithm;
+    private String currencyCode;
 
     public ViewEvent(){};
 

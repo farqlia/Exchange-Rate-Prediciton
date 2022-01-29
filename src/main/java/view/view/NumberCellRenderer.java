@@ -13,12 +13,12 @@ import java.math.RoundingMode;
 public class NumberCellRenderer extends JLabel implements TableCellRenderer {
 
     int RGB = 255;
-    BigDecimal a = new BigDecimal(100);
-    BigDecimal averagePercError;
-    BigDecimal max, min;
-    Color[] colors;
-    CustomTableModel<ResultsTableModel.Row> model;
-    Font font = new Font("Roboto", Font.BOLD, 15);
+    private BigDecimal a = new BigDecimal(100);
+    private BigDecimal averagePercError;
+    private BigDecimal max, min;
+    private Color[] colors;
+    private CustomTableModel<ResultsTableModel.Row> model;
+    private Font font = new Font("Roboto", Font.BOLD, 15);
 
     public NumberCellRenderer(BigDecimal averagePercError, CustomTableModel<ResultsTableModel.Row> model){
         this.model = model;

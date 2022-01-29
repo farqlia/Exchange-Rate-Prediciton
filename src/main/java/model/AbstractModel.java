@@ -1,6 +1,5 @@
 package model;
 
-import algorithms.AlgorithmInitializerExPost;
 import algorithms.algorithmsinitializer.AlgorithmInitializer;
 import datasciencealgorithms.utils.point.Point;
 

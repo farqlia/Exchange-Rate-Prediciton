@@ -30,6 +30,7 @@ public class ListenForViewExAnte extends ListenForView {
 
         int index = UtilityMethods.findIndexOfDate(startDate, realDataPoints);
 
+        //
         for (int i = 0; i < row; i++){
             realDataPoints.get(index++).setY(tableModel.getRow(tableModel.getRowCount() - row + i).getPredicted());
         }

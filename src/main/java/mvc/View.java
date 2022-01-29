@@ -33,7 +33,7 @@ public class View extends AbstractView {
     private JButton predictExPostButton;
     private JButton predictExAnteButton;
     private HandleButtonListenerExPost buttonListener;
-    Font font = new Font("Roboto", Font.BOLD, 15);
+    private Font font = new Font("Roboto", Font.BOLD, 15);
 
     public View(java.util.List<CurrencyName> currencyNames, JTable ... tables){
 

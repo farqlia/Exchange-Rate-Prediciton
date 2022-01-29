@@ -1,6 +1,5 @@
 package viewtest;
 
-import algorithms.AlgorithmInitializerExPost;
 import algorithms.algorithmsparameters.AlgorithmArguments;
 import dataconverter.formatters.PointToCSV;
 import dataconverter.writersandreaders.TextFileReader;

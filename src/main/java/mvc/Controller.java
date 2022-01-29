@@ -13,13 +13,13 @@ import java.math.BigDecimal;
 
 public class Controller {
 
-    Model modelExPost, modelExAnte;
-    AbstractView view;
-    JTable tableExPost;
-    CustomTableModel<ResultsTableModel.Row> tableModelExPost;
-    CustomTableModel<StatisticsTableModel.Row> tableModelStatistics;
-    CustomTableModel<ResultsTableModel.Row> tableModelAntePost;
-    Plot plot;
+    private Model modelExPost, modelExAnte;
+    private AbstractView view;
+    private JTable tableExPost;
+    private CustomTableModel<ResultsTableModel.Row> tableModelExPost;
+    private CustomTableModel<StatisticsTableModel.Row> tableModelStatistics;
+    private CustomTableModel<ResultsTableModel.Row> tableModelAntePost;
+    private final Plot plot;
 
     public Controller(AbstractView view,
                       JTable tableExPost,
