@@ -4,7 +4,7 @@ import algorithms.algorithmsinitializer.AlgorithmInitializer;
 import algorithms.algorithmsinitializer.AlgorithmInitializerExAnte;
 import algorithms.algorithmsinitializer.AlgorithmInitializerExPost;
 import exchangerateclass.CurrencyName;
-import view.other.Menu;
+import view.view.other.Menu;
 import view.view.AbstractView;
 import view.view.ViewEvent;
 import view.view.ViewEventType;

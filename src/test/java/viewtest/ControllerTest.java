@@ -18,8 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import studyjson.ResultsInfo;
 import view.IO.FileSaveHandler;
 import view.IO.FileTypes;
-import view.other.*;
 import view.view.*;
+import view.view.other.Plot;
+import view.view.other.PlotController;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -39,7 +40,7 @@ import static org.mockito.Mockito.*;
 public class ControllerTest {
 
     Controller controller;
-    LocalDate startDate = LocalDate.of(2022, 1, 1);
+    LocalDate startDate = LocalDate.now().minusDays(20);
     LocalDate endDate = LocalDate.now().minusDays(2);
 
     @Mock

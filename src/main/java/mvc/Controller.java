@@ -3,8 +3,10 @@ package mvc;
 import model.*;
 import view.IO.FileSaveHandler;
 import view.IO.FileTypes;
-import view.other.*;
 import view.view.*;
+import view.view.other.Menu;
+import view.view.other.Plot;
+import view.view.other.PlotController;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

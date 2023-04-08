@@ -1,4 +1,4 @@
-package view.other;
+package view.view.other;
 
 import dataconverter.writersandreaders.FileHandler;
 import org.jfree.chart.ChartFactory;

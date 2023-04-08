@@ -1,4 +1,4 @@
-package view.other;
+package view.view.other;
 
 import mvc.Controller;
 import currencyparsing.currencymapper.CurrencyNameMapper;

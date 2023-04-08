@@ -1,4 +1,4 @@
-package view.other;
+package view.view.other;
 
 import algorithms.SleepingThread;
 import view.IO.FileTypes;
