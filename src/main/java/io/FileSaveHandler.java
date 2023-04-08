@@ -1,4 +1,4 @@
-package view.IO;
+package io;
 
 import dataconverter.formatters.RowToCSV;
 import dataconverter.writersandreaders.CustomFileWriter;
@@ -7,8 +7,8 @@ import dataconverter.writersandreaders.TextFileWriter;
 import model.CustomTableModel;
 import model.ResultsTableModel;
 import studyjson.ResultsInfo;
-import view.view.ViewEvent;
-import view.view.ViewObserver;
+import view.ViewEvent;
+import view.ViewObserver;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

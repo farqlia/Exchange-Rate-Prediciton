@@ -4,10 +4,10 @@ import algorithms.algorithmsinitializer.AlgorithmInitializer;
 import algorithms.algorithmsinitializer.AlgorithmInitializerExAnte;
 import algorithms.algorithmsinitializer.AlgorithmInitializerExPost;
 import exchangerateclass.CurrencyName;
-import view.view.other.Menu;
-import view.view.AbstractView;
-import view.view.ViewEvent;
-import view.view.ViewEventType;
+import main.Menu;
+import view.AbstractView;
+import view.ViewEvent;
+import view.ViewEventType;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

@@ -1,6 +1,4 @@
-package view.view;
-
-import view.view.ViewEvent;
+package view;
 
 public interface ViewObserver {
 

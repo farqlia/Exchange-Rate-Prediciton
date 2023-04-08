@@ -2,6 +2,7 @@ package viewtest;
 
 import algorithms.algorithmsinitializer.AlgorithmInitializerExPost;
 import algorithms.algorithmsparameters.AlgorithmArguments;
+import view.*;
 import mvc.Controller;
 import dataconverter.writersandreaders.JsonFileWriter;
 import dataconverter.writersandreaders.TextFileWriter;
@@ -16,11 +17,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import studyjson.ResultsInfo;
-import view.IO.FileSaveHandler;
-import view.IO.FileTypes;
-import view.view.*;
-import view.view.other.Plot;
-import view.view.other.PlotController;
+import io.FileSaveHandler;
+import io.FileTypes;
+import view.main.*;
+import main.Plot;
+import main.PlotController;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;

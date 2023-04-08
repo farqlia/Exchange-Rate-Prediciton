@@ -1,4 +1,4 @@
-package view.view.other;
+package main;
 
 import model.CustomTableModel;
 import model.ResultsTableModel;

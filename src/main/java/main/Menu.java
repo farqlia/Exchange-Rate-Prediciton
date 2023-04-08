@@ -1,7 +1,7 @@
-package view.view.other;
+package main;
 
 import algorithms.SleepingThread;
-import view.IO.FileTypes;
+import io.FileTypes;
 
 import javax.swing.*;
 

@@ -1,4 +1,4 @@
-package view.view;
+package view;
 
 public enum ViewEventType {
 

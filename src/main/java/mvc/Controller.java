@@ -1,12 +1,12 @@
 package mvc;
 
+import view.*;
 import model.*;
-import view.IO.FileSaveHandler;
-import view.IO.FileTypes;
-import view.view.*;
-import view.view.other.Menu;
-import view.view.other.Plot;
-import view.view.other.PlotController;
+import io.FileSaveHandler;
+import io.FileTypes;
+import main.Menu;
+import main.Plot;
+import main.PlotController;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

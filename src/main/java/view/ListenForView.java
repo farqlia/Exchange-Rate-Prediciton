@@ -1,6 +1,5 @@
-package view.view;
+package view;
 
-import algorithms.algorithmsinitializer.AlgorithmInitializer;
 import currencyparsing.currencymapper.SingleRateMapper;
 import currencyparsing.currencyurlbuilders.ConcreteCurrencyURL;
 import currencyparsing.currencyurlbuilders.MoneyType;

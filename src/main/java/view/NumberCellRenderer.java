@@ -1,10 +1,9 @@
-package view.view;
+package view;
 
 import model.CustomTableModel;
 import model.ResultsTableModel;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.math.BigDecimal;
